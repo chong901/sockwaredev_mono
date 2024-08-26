@@ -1,3 +1,4 @@
+import { LoadingSpinner } from "@/components/atoms/LoadingSpinner";
 import { PageContainer } from "@/components/containers/PageContainer";
 import useGeolocation from "@/hooks/useGeoLocation";
 import { divIcon } from "leaflet";
@@ -9,7 +10,7 @@ export default function Map() {
   if (loading || !latitude || !longitude)
     return (
       <PageContainer>
-        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+        <LoadingSpinner />
       </PageContainer>
     );
   return (
