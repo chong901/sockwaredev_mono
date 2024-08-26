@@ -1,7 +1,8 @@
 import { callLTAApi } from "@/app/api/(utils)/ltaUtil";
 import { db } from "@/db/db";
 import { BusStop, BusStopModal } from "@/db/schema/BusStop";
-import console from "console";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(req: Request, res: Response) {
   try {
