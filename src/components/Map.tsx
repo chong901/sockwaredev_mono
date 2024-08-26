@@ -1,3 +1,4 @@
+import { PageContainer } from "@/components/containers/PageContainer";
 import useGeolocation from "@/hooks/useGeoLocation";
 import { divIcon } from "leaflet";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
@@ -7,9 +8,9 @@ export default function Map() {
 
   if (loading || !latitude || !longitude)
     return (
-      <div className="h-screen bg-slate-50 flex justify-center items-center">
+      <PageContainer>
         <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
-      </div>
+      </PageContainer>
     );
   return (
     <MapContainer
