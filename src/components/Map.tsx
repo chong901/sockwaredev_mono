@@ -1,11 +1,20 @@
+import useGeolocation from "@/hooks/useGeoLocation";
 import { divIcon } from "leaflet";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 
 export default function Map() {
+  const { loading, latitude, longitude, error } = useGeolocation();
+
+  if (loading || !latitude || !longitude)
+    return (
+      <div className="h-screen bg-slate-50 flex justify-center items-center">
+        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+      </div>
+    );
   return (
     <MapContainer
-      center={[1.275807695459636, 103.80688665819828]}
-      zoom={13}
+      center={[latitude, longitude]}
+      zoom={20}
       scrollWheelZoom={false}
       className="flex h-screen w-full "
     >
@@ -14,7 +23,7 @@ export default function Map() {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <Marker
-        position={[1.275807695459636, 103.80688665819828]}
+        position={[latitude, longitude]}
         icon={divIcon({ className: "w-10 h-10 bg-red-600" })}
       >
         <Popup>
