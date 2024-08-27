@@ -1,6 +1,6 @@
 import { db } from "@/db/db";
 import { BusStopModal } from "@/db/schema/BusStop";
-import { QueryResolvers } from "@/graphql/types";
+import { QueryResolvers } from "@/graphql-codegen/backend/types";
 import { and, gte, lte } from "drizzle-orm";
 
 export const getBusStops: QueryResolvers["getBusStops"] = async (

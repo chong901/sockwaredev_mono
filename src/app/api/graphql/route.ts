@@ -1,5 +1,5 @@
+import { Resolvers } from "@/graphql-codegen/backend/types";
 import { getBusStops } from "@/graphql/resolvers/BusStopResolvers";
-import { Resolvers } from "@/graphql/types";
 import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import gql from "graphql-tag";

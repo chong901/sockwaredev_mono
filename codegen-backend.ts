@@ -5,7 +5,7 @@ const config: CodegenConfig = {
   documents: ["src/**/*.ts"],
   ignoreNoDocuments: true,
   generates: {
-    "./src/graphql/types.ts": {
+    "./src/graphql-codegen/backend/types.ts": {
       plugins: ["typescript", "typescript-resolvers"],
       config: {
         useIndexSignature: true,

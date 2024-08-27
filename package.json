@@ -9,7 +9,9 @@
     "lint": "next lint",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "graphql:codegen": "graphql-codegen"
+    "graphql:codegen:be": "graphql-codegen --config codegen-backend.ts",
+    "graphql:codegen:fe": "graphql-codegen --config codegen-frontend.ts",
+    "graphql:codegen": "yarn graphql:codegen:be && yarn graphql:codegen:fe"
   },
   "dependencies": {
     "@apollo/client": "^3.11.4",
