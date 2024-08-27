@@ -1,16 +1,25 @@
+import { getBusStops } from "@/graphql/resolvers/BusStopResolvers";
+import { Resolvers } from "@/graphql/types";
 import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import gql from "graphql-tag";
 
 const typeDefs = gql`
+  type BusStop {
+    code: ID!
+    description: String!
+    latitude: Float!
+    longitude: Float!
+    roadName: String!
+  }
   type Query {
-    hello: String
+    getBusStops(lat: Float!, long: Float!): [BusStop]
   }
 `;
 
-const resolvers = {
+const resolvers: Resolvers = {
   Query: {
-    hello: () => "Hello world!",
+    getBusStops,
   },
 };
 
