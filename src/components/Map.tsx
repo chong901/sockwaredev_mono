@@ -3,13 +3,16 @@ import { PageContainer } from "@/components/containers/PageContainer";
 import {
   GetBusStopsQuery,
   GetBusStopsQueryVariables,
+  GetNearestBusStopQuery,
+  GetNearestBusStopQueryVariables,
 } from "@/graphql-codegen/frontend/graphql";
 import useGeolocation from "@/hooks/useGeoLocation";
 import { gql, useQuery } from "@apollo/client";
 import { icon } from "leaflet";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
-const query = gql`
+
+const getBusStopsQuery = gql`
   query GetBusStops($lat: Float!, $long: Float!) {
     getBusStops(lat: $lat, long: $long) {
       code
@@ -20,20 +23,58 @@ const query = gql`
     }
   }
 `;
+
+const getNearestBusStopQuery = gql`
+  query GetNearestBusStop($lat: Float!, $long: Float!) {
+    getNearestBusStops(lat: $lat, long: $long) {
+      code
+      description
+      latitude
+      longitude
+      roadName
+    }
+  }
+`;
+
 type MapBodyProps = {
-  latitude: number;
-  longitude: number;
+  currentUserLat: number;
+  currentUserLong: number;
 };
 
 const busStopIcon = icon({ iconUrl: "/bus-stop.svg", iconSize: [40, 40] });
+const selectedBusStopIcon = icon({
+  iconUrl: "/bus-stop-selected.svg",
+  iconSize: [60, 60],
+});
 
-const MapBody = ({ latitude, longitude }: MapBodyProps) => {
+const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
   const [getBusStopsVariables, setGetBusStopsVariables] =
-    useState<GetBusStopsQueryVariables>({ lat: latitude, long: longitude });
+    useState<GetBusStopsQueryVariables>({
+      lat: currentUserLat,
+      long: currentUserLong,
+    });
   const { data, loading } = useQuery<
     GetBusStopsQuery,
     GetBusStopsQueryVariables
-  >(query, { variables: getBusStopsVariables });
+  >(getBusStopsQuery, { variables: getBusStopsVariables });
+
+  const [selectedBusStopCode, setSelectedBusStop] = useState<string | null>(
+    null
+  );
+
+  const { data: nearestBusStop } = useQuery<
+    GetNearestBusStopQuery,
+    GetNearestBusStopQueryVariables
+  >(getNearestBusStopQuery, {
+    variables: { lat: currentUserLat, long: currentUserLong },
+    skip: selectedBusStopCode !== null,
+  });
+
+  useEffect(() => {
+    if (nearestBusStop) {
+      setSelectedBusStop(nearestBusStop.getNearestBusStops.code);
+    }
+  }, [nearestBusStop]);
 
   useMapEvents({
     moveend: (event) => {
@@ -53,9 +94,20 @@ const MapBody = ({ latitude, longitude }: MapBodyProps) => {
         <Marker
           key={stop.code}
           position={[stop.latitude, stop.longitude]}
-          icon={busStopIcon}
+          icon={
+            stop.code === selectedBusStopCode
+              ? selectedBusStopIcon
+              : busStopIcon
+          }
+          eventHandlers={{
+            click: () => setSelectedBusStop(stop.code),
+          }}
         />
       ))}
+
+      <div className="absolute right-8 w-3/12 top-20 bg-slate-200 h-10 z-[1000] rounded-md">
+        Test
+      </div>
     </>
   );
 };
@@ -75,7 +127,7 @@ export default function Map() {
       scrollWheelZoom={false}
       className="flex h-screen w-full"
     >
-      <MapBody latitude={latitude} longitude={longitude} />
+      <MapBody currentUserLat={latitude} currentUserLong={longitude} />
     </MapContainer>
   );
 }
