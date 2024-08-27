@@ -15,6 +15,20 @@
       "when": 1724678310343,
       "tag": "0001_watery_blue_blade",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1724728649652,
+      "tag": "0002_strange_norrin_radd",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1724729824757,
+      "tag": "0003_parched_grim_reaper",
+      "breakpoints": true
     }
   ]
 }

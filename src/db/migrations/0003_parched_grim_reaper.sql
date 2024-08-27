@@ -1,0 +1,1 @@
+ALTER TABLE "bus_stop" RENAME COLUMN "bus_stop_code" TO "code";
