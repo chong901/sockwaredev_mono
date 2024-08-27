@@ -27,7 +27,7 @@ export type BusStop = {
 
 export type Query = {
   __typename?: 'Query';
-  getBusStops?: Maybe<Array<Maybe<BusStop>>>;
+  getBusStops: Array<BusStop>;
 };
 
 
@@ -42,7 +42,7 @@ export type GetBusStopsQueryVariables = Exact<{
 }>;
 
 
-export type GetBusStopsQuery = { __typename?: 'Query', getBusStops?: Array<{ __typename?: 'BusStop', code: string, description: string, latitude: number, longitude: number, roadName: string } | null> | null };
+export type GetBusStopsQuery = { __typename?: 'Query', getBusStops: Array<{ __typename?: 'BusStop', code: string, description: string, latitude: number, longitude: number, roadName: string }> };
 
 
 export const GetBusStopsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetBusStops"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"lat"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"long"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getBusStops"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"lat"},"value":{"kind":"Variable","name":{"kind":"Name","value":"lat"}}},{"kind":"Argument","name":{"kind":"Name","value":"long"},"value":{"kind":"Variable","name":{"kind":"Name","value":"long"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"code"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"latitude"}},{"kind":"Field","name":{"kind":"Name","value":"longitude"}},{"kind":"Field","name":{"kind":"Name","value":"roadName"}}]}}]}}]} as unknown as DocumentNode<GetBusStopsQuery, GetBusStopsQueryVariables>;

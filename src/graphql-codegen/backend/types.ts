@@ -27,7 +27,7 @@ export type BusStop = {
 
 export type Query = {
   __typename?: 'Query';
-  getBusStops?: Maybe<Array<Maybe<BusStop>>>;
+  getBusStops: Array<BusStop>;
 };
 
 
@@ -136,7 +136,7 @@ export type BusStopResolvers<ContextType = any, ParentType extends ResolversPare
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  getBusStops?: Resolver<Maybe<Array<Maybe<ResolversTypes['BusStop']>>>, ParentType, ContextType, RequireFields<QueryGetBusStopsArgs, 'lat' | 'long'>>;
+  getBusStops?: Resolver<Array<ResolversTypes['BusStop']>, ParentType, ContextType, RequireFields<QueryGetBusStopsArgs, 'lat' | 'long'>>;
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{

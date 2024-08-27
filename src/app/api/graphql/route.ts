@@ -13,7 +13,7 @@ const typeDefs = gql`
     roadName: String!
   }
   type Query {
-    getBusStops(lat: Float!, long: Float!): [BusStop]
+    getBusStops(lat: Float!, long: Float!): [BusStop!]!
   }
 `;
 
