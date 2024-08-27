@@ -48,6 +48,7 @@ export type Query = {
   __typename?: 'Query';
   getBusArrival: BusArrivalData;
   getBusStops: Array<BusStop>;
+  getNearestBusStops: BusStop;
 };
 
 
@@ -57,6 +58,12 @@ export type QueryGetBusArrivalArgs = {
 
 
 export type QueryGetBusStopsArgs = {
+  lat: Scalars['Float']['input'];
+  long: Scalars['Float']['input'];
+};
+
+
+export type QueryGetNearestBusStopsArgs = {
   lat: Scalars['Float']['input'];
   long: Scalars['Float']['input'];
 };

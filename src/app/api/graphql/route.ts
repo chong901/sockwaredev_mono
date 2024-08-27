@@ -2,6 +2,7 @@ import { Resolvers } from "@/graphql-codegen/backend/types";
 import {
   getBusArrival,
   getBusStops,
+  getNearestBusStops,
 } from "@/graphql/resolvers/BusStopResolvers";
 import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
@@ -44,6 +45,7 @@ const typeDefs = gql`
   type Query {
     getBusStops(lat: Float!, long: Float!): [BusStop!]!
     getBusArrival(code: String!): BusArrivalData!
+    getNearestBusStops(lat: Float!, long: Float!): BusStop!
   }
 `;
 
@@ -51,6 +53,7 @@ const resolvers: Resolvers = {
   Query: {
     getBusStops,
     getBusArrival: getBusArrival,
+    getNearestBusStops: getNearestBusStops,
   },
 };
 

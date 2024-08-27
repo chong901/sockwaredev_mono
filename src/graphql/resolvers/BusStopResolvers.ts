@@ -3,9 +3,10 @@ import { db } from "@/db/db";
 import { BusStopModal } from "@/db/schema/BusStop";
 import {
   BusArrivalData,
+  BusStop,
   QueryResolvers,
 } from "@/graphql-codegen/backend/types";
-import { and, gte, lte } from "drizzle-orm";
+import { and, gte, lte, sql } from "drizzle-orm";
 
 export const getBusStops: QueryResolvers["getBusStops"] = async (
   _,
@@ -34,4 +35,27 @@ export const getBusArrival: QueryResolvers["getBusArrival"] = async (
     `https://datamall2.mytransport.sg/ltaodataservice/BusArrivalv2?BusStopCode=${code}`
   );
   return result;
+};
+
+export const getNearestBusStops: QueryResolvers["getNearestBusStops"] = async (
+  _,
+  { lat, long }
+) => {
+  const query = sql`
+  SELECT
+    *,
+    (
+      6371 * acos(
+        cos(radians(${lat})) * cos(radians(latitude)) *
+        cos(radians(longitude) - radians(${long})) +
+        sin(radians(${lat})) * sin(radians(latitude))
+      )
+    ) AS distance
+  FROM bus_stop
+  ORDER BY distance asc
+  LIMIT 1;
+`;
+
+  const result = await db.execute(query);
+  return result[0] as BusStop;
 };
