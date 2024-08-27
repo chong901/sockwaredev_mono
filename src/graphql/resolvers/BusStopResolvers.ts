@@ -3,10 +3,9 @@ import { db } from "@/db/db";
 import { BusStopModal } from "@/db/schema/BusStop";
 import {
   BusArrivalData,
-  BusStop,
   QueryResolvers,
 } from "@/graphql-codegen/backend/types";
-import { and, gte, lte, sql } from "drizzle-orm";
+import { and, getTableColumns, gte, lte, sql } from "drizzle-orm";
 
 export const getBusStops: QueryResolvers["getBusStops"] = async (
   _,
@@ -41,9 +40,10 @@ export const getNearestBusStops: QueryResolvers["getNearestBusStops"] = async (
   _,
   { lat, long }
 ) => {
-  const query = sql`
-  SELECT
-    *,
+  const result = await db
+    .select({
+      ...getTableColumns(BusStopModal),
+      distance: sql`
     (
       6371 * acos(
         cos(radians(${lat})) * cos(radians(latitude)) *
@@ -51,11 +51,10 @@ export const getNearestBusStops: QueryResolvers["getNearestBusStops"] = async (
         sin(radians(${lat})) * sin(radians(latitude))
       )
     ) AS distance
-  FROM bus_stop
-  ORDER BY distance asc
-  LIMIT 1;
-`;
-
-  const result = await db.execute(query);
-  return result[0] as BusStop;
+    `,
+    })
+    .from(BusStopModal)
+    .orderBy(sql`distance`)
+    .limit(1);
+  return result[0];
 };
