@@ -16,6 +16,25 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type BusArrival = {
+  __typename?: 'BusArrival';
+  DestinationCode: Scalars['String']['output'];
+  EstimatedArrival: Scalars['String']['output'];
+  Feature: Scalars['String']['output'];
+  Latitude: Scalars['String']['output'];
+  Load: Scalars['String']['output'];
+  Longitude: Scalars['String']['output'];
+  OriginCode: Scalars['String']['output'];
+  Type: Scalars['String']['output'];
+  VisitNumber: Scalars['String']['output'];
+};
+
+export type BusArrivalData = {
+  __typename?: 'BusArrivalData';
+  BusStopCode: Scalars['String']['output'];
+  Services: Array<Service>;
+};
+
 export type BusStop = {
   __typename?: 'BusStop';
   code: Scalars['ID']['output'];
@@ -27,13 +46,28 @@ export type BusStop = {
 
 export type Query = {
   __typename?: 'Query';
+  getBusArrival: BusArrivalData;
   getBusStops: Array<BusStop>;
+};
+
+
+export type QueryGetBusArrivalArgs = {
+  code: Scalars['String']['input'];
 };
 
 
 export type QueryGetBusStopsArgs = {
   lat: Scalars['Float']['input'];
   long: Scalars['Float']['input'];
+};
+
+export type Service = {
+  __typename?: 'Service';
+  NextBus?: Maybe<BusArrival>;
+  NextBus2?: Maybe<BusArrival>;
+  NextBus3?: Maybe<BusArrival>;
+  Operator: Scalars['String']['output'];
+  ServiceNo: Scalars['String']['output'];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -109,21 +143,46 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  BusArrival: ResolverTypeWrapper<BusArrival>;
+  BusArrivalData: ResolverTypeWrapper<BusArrivalData>;
   BusStop: ResolverTypeWrapper<BusStop>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Query: ResolverTypeWrapper<{}>;
+  Service: ResolverTypeWrapper<Service>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean']['output'];
+  BusArrival: BusArrival;
+  BusArrivalData: BusArrivalData;
   BusStop: BusStop;
   Float: Scalars['Float']['output'];
   ID: Scalars['ID']['output'];
   Query: {};
+  Service: Service;
   String: Scalars['String']['output'];
+}>;
+
+export type BusArrivalResolvers<ContextType = any, ParentType extends ResolversParentTypes['BusArrival'] = ResolversParentTypes['BusArrival']> = ResolversObject<{
+  DestinationCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  EstimatedArrival?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  Feature?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  Latitude?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  Load?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  Longitude?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  OriginCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  Type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  VisitNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type BusArrivalDataResolvers<ContextType = any, ParentType extends ResolversParentTypes['BusArrivalData'] = ResolversParentTypes['BusArrivalData']> = ResolversObject<{
+  BusStopCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  Services?: Resolver<Array<ResolversTypes['Service']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type BusStopResolvers<ContextType = any, ParentType extends ResolversParentTypes['BusStop'] = ResolversParentTypes['BusStop']> = ResolversObject<{
@@ -136,11 +195,24 @@ export type BusStopResolvers<ContextType = any, ParentType extends ResolversPare
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  getBusArrival?: Resolver<ResolversTypes['BusArrivalData'], ParentType, ContextType, RequireFields<QueryGetBusArrivalArgs, 'code'>>;
   getBusStops?: Resolver<Array<ResolversTypes['BusStop']>, ParentType, ContextType, RequireFields<QueryGetBusStopsArgs, 'lat' | 'long'>>;
 }>;
 
+export type ServiceResolvers<ContextType = any, ParentType extends ResolversParentTypes['Service'] = ResolversParentTypes['Service']> = ResolversObject<{
+  NextBus?: Resolver<Maybe<ResolversTypes['BusArrival']>, ParentType, ContextType>;
+  NextBus2?: Resolver<Maybe<ResolversTypes['BusArrival']>, ParentType, ContextType>;
+  NextBus3?: Resolver<Maybe<ResolversTypes['BusArrival']>, ParentType, ContextType>;
+  Operator?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  ServiceNo?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type Resolvers<ContextType = any> = ResolversObject<{
+  BusArrival?: BusArrivalResolvers<ContextType>;
+  BusArrivalData?: BusArrivalDataResolvers<ContextType>;
   BusStop?: BusStopResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Service?: ServiceResolvers<ContextType>;
 }>;
 

@@ -1,6 +1,10 @@
+import { callLTAApi } from "@/app/api/(utils)/ltaUtil";
 import { db } from "@/db/db";
 import { BusStopModal } from "@/db/schema/BusStop";
-import { QueryResolvers } from "@/graphql-codegen/backend/types";
+import {
+  BusArrivalData,
+  QueryResolvers,
+} from "@/graphql-codegen/backend/types";
 import { and, gte, lte } from "drizzle-orm";
 
 export const getBusStops: QueryResolvers["getBusStops"] = async (
@@ -19,5 +23,15 @@ export const getBusStops: QueryResolvers["getBusStops"] = async (
         lte(BusStopModal.longitude, long + nearByLatLngDelta)
       )
     );
+  return result;
+};
+
+export const getBusArrival: QueryResolvers["getBusArrival"] = async (
+  _,
+  { code }
+) => {
+  const result = await callLTAApi<BusArrivalData>(
+    `https://datamall2.mytransport.sg/ltaodataservice/BusArrivalv2?BusStopCode=${code}`
+  );
   return result;
 };

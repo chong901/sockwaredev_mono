@@ -16,6 +16,25 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type BusArrival = {
+  __typename?: 'BusArrival';
+  DestinationCode: Scalars['String']['output'];
+  EstimatedArrival: Scalars['String']['output'];
+  Feature: Scalars['String']['output'];
+  Latitude: Scalars['String']['output'];
+  Load: Scalars['String']['output'];
+  Longitude: Scalars['String']['output'];
+  OriginCode: Scalars['String']['output'];
+  Type: Scalars['String']['output'];
+  VisitNumber: Scalars['String']['output'];
+};
+
+export type BusArrivalData = {
+  __typename?: 'BusArrivalData';
+  BusStopCode: Scalars['String']['output'];
+  Services: Array<Service>;
+};
+
 export type BusStop = {
   __typename?: 'BusStop';
   code: Scalars['ID']['output'];
@@ -27,13 +46,28 @@ export type BusStop = {
 
 export type Query = {
   __typename?: 'Query';
+  getBusArrival: BusArrivalData;
   getBusStops: Array<BusStop>;
+};
+
+
+export type QueryGetBusArrivalArgs = {
+  code: Scalars['String']['input'];
 };
 
 
 export type QueryGetBusStopsArgs = {
   lat: Scalars['Float']['input'];
   long: Scalars['Float']['input'];
+};
+
+export type Service = {
+  __typename?: 'Service';
+  NextBus?: Maybe<BusArrival>;
+  NextBus2?: Maybe<BusArrival>;
+  NextBus3?: Maybe<BusArrival>;
+  Operator: Scalars['String']['output'];
+  ServiceNo: Scalars['String']['output'];
 };
 
 export type GetBusStopsQueryVariables = Exact<{
