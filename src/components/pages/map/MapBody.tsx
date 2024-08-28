@@ -122,7 +122,7 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
         {showSearchResult &&
           searchBusStopsResult &&
           searchBusStopsResult.searchBusStops.length > 0 && (
-            <div className="mt-2 flex max-h-[600px] flex-col overflow-y-scroll rounded-md bg-gradient-to-r from-blue-200 via-blue-100 to-blue-50 shadow-md">
+            <div className="mt-2 flex max-h-[300px] flex-col overflow-y-scroll rounded-md bg-gradient-to-r from-blue-200 via-blue-100 to-blue-50 shadow-md lg:max-h-[600px]">
               {searchBusStopsResult.searchBusStops.map((stop, index) => (
                 <>
                   <div
