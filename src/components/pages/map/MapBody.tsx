@@ -17,7 +17,7 @@ import {
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { icon } from "leaflet";
 import { useEffect, useRef, useState } from "react";
-import { Marker, TileLayer, useMapEvents } from "react-leaflet";
+import { Marker, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import { useClickAway, useDebounce } from "react-use";
 
 type MapBodyProps = {
@@ -77,6 +77,7 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
       setGetBusStopsVariables({ lat: newLat, long: newLong });
     },
   });
+  const map = useMap();
 
   useDebounce(
     () => {
@@ -120,10 +121,18 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
         {showSearchResult &&
           searchBusStopsResult &&
           searchBusStopsResult.searchBusStops.length > 0 && (
-            <div className=" bg-gradient-to-r from-blue-200 via-blue-100 to-blue-50 rounded-md mt-2 py-4 flex flex-col gap-2 shadow-md max-h-[600px] overflow-y-scroll">
+            <div className="bg-gradient-to-r from-blue-200 via-blue-100 to-blue-50 rounded-md mt-2 flex flex-col shadow-md max-h-[600px] overflow-y-scroll">
               {searchBusStopsResult.searchBusStops.map((stop, index) => (
                 <>
-                  <div key={stop.code} className=" flex gap-4 text-2xl px-4">
+                  <div
+                    key={stop.code}
+                    className="flex gap-4 text-2xl px-4 py-2 hover:font-bold hover:cursor-pointer"
+                    onClick={() => {
+                      setSelectedBusStop(stop);
+                      setShowSearchResult(false);
+                      map.panTo([stop.latitude, stop.longitude]);
+                    }}
+                  >
                     <div>{stop.code}</div>
                     <div>{stop.description}</div>
                   </div>
