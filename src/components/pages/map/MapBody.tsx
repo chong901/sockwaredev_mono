@@ -97,6 +97,7 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+      <Marker position={[currentUserLat, currentUserLong]} />
       {(data || previousData)?.getBusStops.map((stop) => (
         <Marker
           key={stop.code}
