@@ -5,7 +5,10 @@ import useGeolocation from "@/hooks/useGeoLocation";
 import { MapContainer } from "react-leaflet";
 
 export default function MapPage() {
-  const { loading, latitude, longitude } = useGeolocation();
+  const { loading, latitude, longitude } = useGeolocation({
+    enableHighAccuracy: false,
+    maximumAge: Infinity,
+  });
   if (loading || !latitude || !longitude)
     return (
       <PageContainer>

@@ -66,7 +66,7 @@ const useGeolocation = (options?: PositionOptions): GeoLocationSensorState => {
     return () => {
       navigator.geolocation.clearWatch(watcher);
     };
-  }, [options]);
+  }, []);
 
   return state;
 };
