@@ -1,21 +1,18 @@
 import { LoadingSpinner } from "@/components/atoms/LoadingSpinner";
 import { PageContainer } from "@/components/containers/PageContainer";
+import { BusArrivalInfo } from "@/components/pages/map/BusArrivalInfo";
 import {
   getBusStopsQuery,
   getNearestBusStopQuery,
-  getBusArrivalQuery,
 } from "@/components/pages/map/graphql";
 import {
   BusStop,
-  GetBusArrivalQuery,
-  GetBusArrivalQueryVariables,
   GetBusStopsQuery,
   GetBusStopsQueryVariables,
   GetNearestBusStopQuery,
   GetNearestBusStopQueryVariables,
 } from "@/graphql-codegen/frontend/graphql";
 import useGeolocation from "@/hooks/useGeoLocation";
-import { getTimeUntilArrival } from "@/utils/timeUtil";
 import { useQuery } from "@apollo/client";
 import { icon } from "leaflet";
 import { useEffect, useState } from "react";
@@ -55,16 +52,6 @@ const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
     variables: { lat: currentUserLat, long: currentUserLong },
     skip: selectedBusStop !== null,
   });
-
-  const { data: busArrivalData } = useQuery<
-    GetBusArrivalQuery,
-    GetBusArrivalQueryVariables
-  >(getBusArrivalQuery, {
-    variables: { code: selectedBusStop?.code! },
-    skip: !selectedBusStop,
-    fetchPolicy: "no-cache",
-  });
-
   useEffect(() => {
     if (nearestBusStop) {
       setSelectedBusStop(nearestBusStop.getNearestBusStops);
@@ -100,37 +87,7 @@ const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
           }}
         />
       ))}
-
-      <div className="absolute right-8 w-2/12 top-20 bg-slate-200 z-[1000] rounded-md">
-        <div className="text-3xl text-slate-700 p-4">
-          {selectedBusStop?.code}
-        </div>
-        {busArrivalData?.getBusArrival.Services.map((service) => {
-          const nextBuses = [
-            service.NextBus,
-            service.NextBus2,
-            service.NextBus3,
-          ].filter((bus) => bus);
-
-          return (
-            <div key={service.ServiceNo} className="flex p-4">
-              <div className="text-2xl text-slate-700">{service.ServiceNo}</div>
-              <div className="ml-auto flex gap-2 items-end">
-                {nextBuses.map((bus, index) => (
-                  <div
-                    className={`text-slate-700 ${
-                      index === 0 ? "text-2xl" : "text-base"
-                    }`}
-                    key={`${service.ServiceNo}-${index}`}
-                  >
-                    {getTimeUntilArrival(bus!.EstimatedArrival)}
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      {selectedBusStop && <BusArrivalInfo busCode={selectedBusStop.code} />}
     </>
   );
 };
