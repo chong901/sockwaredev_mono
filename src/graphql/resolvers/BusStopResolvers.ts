@@ -58,3 +58,20 @@ export const getNearestBusStops: QueryResolvers["getNearestBusStops"] = async (
     .limit(1);
   return result[0];
 };
+
+export const searchBusStops: QueryResolvers["searchBusStops"] = async (
+  _,
+  { search, offset }
+) => {
+  const searchKeyword = `%${search.toLowerCase()}%`;
+  const result = await db
+    .select()
+    .from(BusStopModal)
+    .where(
+      sql`lower(description) LIKE ${searchKeyword} or lower(code) LIKE ${searchKeyword}`
+    )
+    .orderBy(BusStopModal.code)
+    .limit(100)
+    .offset(offset ?? 0);
+  return result;
+};

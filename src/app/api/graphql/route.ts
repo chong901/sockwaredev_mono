@@ -3,6 +3,7 @@ import {
   getBusArrival,
   getBusStops,
   getNearestBusStops,
+  searchBusStops,
 } from "@/graphql/resolvers/BusStopResolvers";
 import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
@@ -46,6 +47,7 @@ const typeDefs = gql`
     getBusStops(lat: Float!, long: Float!): [BusStop!]!
     getBusArrival(code: String!): BusArrivalData!
     getNearestBusStops(lat: Float!, long: Float!): BusStop!
+    searchBusStops(search: String!, offset: Int): [BusStop!]!
   }
 `;
 
@@ -54,6 +56,7 @@ const resolvers: Resolvers = {
     getBusStops,
     getBusArrival: getBusArrival,
     getNearestBusStops: getNearestBusStops,
+    searchBusStops: searchBusStops,
   },
 };
 
