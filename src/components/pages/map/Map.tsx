@@ -1,6 +1,11 @@
 import { LoadingSpinner } from "@/components/atoms/LoadingSpinner";
 import { PageContainer } from "@/components/containers/PageContainer";
 import {
+  getBusStopsQuery,
+  getNearestBusStopQuery,
+  getBusArrivalQuery,
+} from "@/components/pages/map/graphql";
+import {
   BusStop,
   GetBusArrivalQuery,
   GetBusArrivalQueryVariables,
@@ -11,61 +16,10 @@ import {
 } from "@/graphql-codegen/frontend/graphql";
 import useGeolocation from "@/hooks/useGeoLocation";
 import { getTimeUntilArrival } from "@/utils/timeUtil";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { icon } from "leaflet";
 import { useEffect, useState } from "react";
 import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
-
-const getBusStopsQuery = gql`
-  query GetBusStops($lat: Float!, $long: Float!) {
-    getBusStops(lat: $lat, long: $long) {
-      code
-      description
-      latitude
-      longitude
-      roadName
-    }
-  }
-`;
-
-const getNearestBusStopQuery = gql`
-  query GetNearestBusStop($lat: Float!, $long: Float!) {
-    getNearestBusStops(lat: $lat, long: $long) {
-      code
-      description
-      latitude
-      longitude
-      roadName
-    }
-  }
-`;
-
-const getBusArrivalQuery = gql`
-  query GetBusArrival($code: String!) {
-    getBusArrival(code: $code) {
-      Services {
-        ServiceNo
-        NextBus {
-          ...BusArrivalData
-        }
-
-        NextBus2 {
-          ...BusArrivalData
-        }
-        NextBus3 {
-          ...BusArrivalData
-        }
-      }
-    }
-  }
-
-  fragment BusArrivalData on BusArrival {
-    EstimatedArrival
-    Latitude
-    Longitude
-    Load
-  }
-`;
 
 type MapBodyProps = {
   currentUserLat: number;
