@@ -4,7 +4,7 @@ import { MapBody } from "@/components/pages/map/MapBody";
 import useGeolocation from "@/hooks/useGeoLocation";
 import { MapContainer } from "react-leaflet";
 
-export default function Map() {
+export default function MapPage() {
   const { loading, latitude, longitude } = useGeolocation();
   if (loading || !latitude || !longitude)
     return (
