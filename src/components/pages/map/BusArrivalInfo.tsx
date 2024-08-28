@@ -21,7 +21,7 @@ export const BusArrivalInfo = ({ busCode }: BusArrivalInfoProps) => {
 
   useInterval(() => {
     refetch();
-  }, 3000);
+  }, parseInt(process.env.NEXT_PUBLIC_BUS_ARRIVAL_REFRESH_INTERVAL ?? "15000"));
 
   return (
     <div className="absolute right-8 w-2/12 top-20 bg-slate-200 z-[1000] rounded-md">
