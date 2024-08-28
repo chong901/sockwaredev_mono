@@ -20,7 +20,7 @@ export default function MapPage() {
       center={[latitude, longitude]}
       zoom={20}
       scrollWheelZoom={false}
-      className="flex h-screen w-full"
+      className="flex h-svh w-full"
     >
       <MapBody currentUserLat={latitude} currentUserLong={longitude} />
     </MapContainer>

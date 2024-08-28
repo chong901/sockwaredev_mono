@@ -4,9 +4,10 @@ import {
   GetBusArrivalQuery,
   GetBusArrivalQueryVariables,
 } from "@/graphql-codegen/frontend/graphql";
+import { useAvoidMapScroll } from "@/hooks/useAvoidMapScroll";
 import { getTimeUntilArrival } from "@/utils/timeUtil";
 import { useQuery } from "@apollo/client";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 type BusArrivalInfoProps = {
   busStop: BusStop;
@@ -27,6 +28,8 @@ export const BusArrivalInfo = ({ busStop }: BusArrivalInfoProps) => {
     variables: { code: busStop.code },
     fetchPolicy: "no-cache",
   });
+
+  const listContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -52,6 +55,8 @@ export const BusArrivalInfo = ({ busStop }: BusArrivalInfoProps) => {
     };
   }, [refetch]);
 
+  useAvoidMapScroll(listContainerRef);
+
   return (
     <div className="absolute bottom-0 left-1/2 z-[1000] flex h-1/3 w-full -translate-x-1/2 flex-col rounded-lg bg-gradient-to-l from-blue-50 via-blue-100 to-blue-200 shadow-md lg:bottom-[unset] lg:left-[unset] lg:right-8 lg:top-20 lg:h-[unset] lg:min-w-[320px] lg:max-w-[400px] lg:translate-x-[unset]">
       <div className="flex flex-wrap gap-2 p-4">
@@ -59,7 +64,10 @@ export const BusArrivalInfo = ({ busStop }: BusArrivalInfoProps) => {
         <div className="text-3xl font-bold">{busStop.description}</div>
       </div>
       <hr className="border-t-2 border-gray-200" />
-      <div className="flex flex-1 flex-col gap-2 overflow-scroll p-4">
+      <div
+        className="flex flex-1 flex-col gap-2 overflow-scroll p-4"
+        ref={listContainerRef}
+      >
         <div className="flex w-full">
           <div className="text-sm">Bus No</div>
           <div className="ml-auto text-sm">Arriving in (mins)</div>

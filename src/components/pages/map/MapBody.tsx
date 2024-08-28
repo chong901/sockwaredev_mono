@@ -14,6 +14,7 @@ import {
   SearchBusStopsQuery,
   SearchBusStopsQueryVariables,
 } from "@/graphql-codegen/frontend/graphql";
+import { useAvoidMapScroll } from "@/hooks/useAvoidMapScroll";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { icon } from "leaflet";
 import { useEffect, useRef, useState } from "react";
@@ -90,6 +91,8 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
   useClickAway(searchAreaRef, () => {
     setShowSearchResult(false);
   });
+
+  useAvoidMapScroll(searchAreaRef);
 
   return (
     <>
