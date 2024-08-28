@@ -120,12 +120,17 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
         {showSearchResult &&
           searchBusStopsResult &&
           searchBusStopsResult.searchBusStops.length > 0 && (
-            <div className="bg-gradient-to-r from-blue-200 via-blue-100 to-blue-50 rounded-md mt-2 p-4 flex flex-col gap-2 shadow-md max-h-[600px] overflow-y-scroll">
-              {searchBusStopsResult?.searchBusStops.map((stop) => (
-                <div key={stop.code} className=" flex gap-4 text-2xl">
-                  <div>{stop.code}</div>
-                  <div>{stop.description}</div>
-                </div>
+            <div className=" bg-gradient-to-r from-blue-200 via-blue-100 to-blue-50 rounded-md mt-2 py-4 flex flex-col gap-2 shadow-md max-h-[600px] overflow-y-scroll">
+              {searchBusStopsResult.searchBusStops.map((stop, index) => (
+                <>
+                  <div key={stop.code} className=" flex gap-4 text-2xl px-4">
+                    <div>{stop.code}</div>
+                    <div>{stop.description}</div>
+                  </div>
+                  {index < searchBusStopsResult.searchBusStops.length - 1 && (
+                    <hr className="border-t border-slate-300" />
+                  )}
+                </>
               ))}
             </div>
           )}

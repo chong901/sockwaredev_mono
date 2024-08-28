@@ -16,7 +16,7 @@ const SearchInput = forwardRef<HTMLDivElement, SearchInputProps>(
   ) {
     return (
       <div
-        className="absolute w-4/12 mx-auto left-1/2 transform -translate-x-1/2 top-4 z-[1000]"
+        className="absolute w-4/12 mx-auto left-1/2 transform -translate-x-1/2 top-6 z-[1000]"
         ref={ref}
       >
         <input
@@ -65,7 +65,7 @@ const SearchInput = forwardRef<HTMLDivElement, SearchInputProps>(
           </button>
         )}
         {children && (
-          <div className="absolute top-[52px] w-full">{children}</div>
+          <div className="absolute top-[56px] w-full">{children}</div>
         )}
       </div>
     );
