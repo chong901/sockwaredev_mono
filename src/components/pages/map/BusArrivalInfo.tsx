@@ -19,9 +19,24 @@ export const BusArrivalInfo = ({ busCode }: BusArrivalInfoProps) => {
     fetchPolicy: "no-cache",
   });
 
-  useInterval(() => {
-    refetch();
-  }, parseInt(process.env.NEXT_PUBLIC_BUS_ARRIVAL_REFRESH_INTERVAL ?? "15000"));
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        interval = setInterval(() => {
+          refetch();
+        }, parseInt(process.env.NEXT_PUBLIC_BUS_ARRIVAL_REFRESH_INTERVAL ?? "15000"));
+      } else {
+        clearInterval(interval);
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      if (interval) clearInterval(interval);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [refetch]);
 
   return (
     <div className="absolute right-8 w-2/12 top-20 bg-slate-200 z-[1000] rounded-md">
