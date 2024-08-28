@@ -1,7 +1,9 @@
+import SearchInput from "@/components/molecules/SearchInput";
 import { BusArrivalInfo } from "@/components/pages/map/BusArrivalInfo";
 import {
   getBusStopsQuery,
   getNearestBusStopQuery,
+  searchBusStopsQuery,
 } from "@/components/pages/map/graphql";
 import { BusStop } from "@/graphql-codegen/backend/types";
 import {
@@ -9,11 +11,14 @@ import {
   GetBusStopsQueryVariables,
   GetNearestBusStopQuery,
   GetNearestBusStopQueryVariables,
+  SearchBusStopsQuery,
+  SearchBusStopsQueryVariables,
 } from "@/graphql-codegen/frontend/graphql";
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import { icon } from "leaflet";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Marker, TileLayer, useMapEvents } from "react-leaflet";
+import { useClickAway, useDebounce } from "react-use";
 
 type MapBodyProps = {
   currentUserLat: number;
@@ -27,6 +32,8 @@ const selectedBusStopIcon = icon({
 });
 
 export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
+  const [showSearchResult, setShowSearchResult] = useState<boolean>(false);
+  const searchAreaRef = useRef<HTMLDivElement>(null);
   const [getBusStopsVariables, setGetBusStopsVariables] =
     useState<GetBusStopsQueryVariables>({
       lat: currentUserLat,
@@ -39,6 +46,13 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
     variables: getBusStopsVariables,
     fetchPolicy: "cache-and-network",
   });
+
+  const [searchBusStop, setSearchBusStop] = useState<string>("");
+
+  const [search, { data: searchBusStopsResult }] = useLazyQuery<
+    SearchBusStopsQuery,
+    SearchBusStopsQueryVariables
+  >(searchBusStopsQuery);
 
   const [selectedBusStop, setSelectedBusStop] = useState<BusStop | null>(null);
 
@@ -64,6 +78,18 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
     },
   });
 
+  useDebounce(
+    () => {
+      search({ variables: { search: searchBusStop } });
+    },
+    500,
+    [searchBusStop]
+  );
+
+  useClickAway(searchAreaRef, () => {
+    setShowSearchResult(false);
+  });
+
   return (
     <>
       <TileLayer
@@ -84,6 +110,26 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
           }}
         />
       ))}
+      <SearchInput
+        value={searchBusStop}
+        onChange={(e) => setSearchBusStop(e.target.value)}
+        onClear={() => setSearchBusStop("")}
+        onFocus={() => setShowSearchResult(true)}
+        ref={searchAreaRef}
+      >
+        {showSearchResult &&
+          searchBusStopsResult &&
+          searchBusStopsResult.searchBusStops.length > 0 && (
+            <div className="bg-gradient-to-r from-blue-200 via-blue-100 to-blue-50 rounded-md mt-2 p-4 flex flex-col gap-2 shadow-md max-h-[600px] overflow-y-scroll">
+              {searchBusStopsResult?.searchBusStops.map((stop) => (
+                <div key={stop.code} className=" flex gap-4 text-2xl">
+                  <div>{stop.code}</div>
+                  <div>{stop.description}</div>
+                </div>
+              ))}
+            </div>
+          )}
+      </SearchInput>
       {selectedBusStop && <BusArrivalInfo busStop={selectedBusStop} />}
     </>
   );

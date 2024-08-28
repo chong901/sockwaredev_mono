@@ -50,3 +50,15 @@ export const getBusArrivalQuery = gql`
     Load
   }
 `;
+
+export const searchBusStopsQuery = gql`
+  query SearchBusStops($search: String!) {
+    searchBusStops(search: $search) {
+      code
+      description
+      latitude
+      longitude
+      roadName
+    }
+  }
+`;
