@@ -12,11 +12,11 @@ type SearchInputProps = {
 const SearchInput = forwardRef<HTMLDivElement, SearchInputProps>(
   function SearchInput(
     { placeholder = "Search...", value, onChange, onClear, children, onFocus },
-    ref
+    ref,
   ) {
     return (
       <div
-        className="absolute w-4/12 mx-auto left-1/2 transform -translate-x-1/2 top-6 z-[1000]"
+        className="absolute left-1/2 top-6 z-[1000] mx-auto w-4/12 -translate-x-1/2 transform"
         ref={ref}
       >
         <input
@@ -25,9 +25,9 @@ const SearchInput = forwardRef<HTMLDivElement, SearchInputProps>(
           value={value}
           onChange={onChange}
           onFocus={onFocus}
-          className="w-full px-12 py-2 border text-3xl border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full rounded-lg border border-gray-300 px-12 py-2 text-3xl shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
-        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
           <svg
             className={`h-8 w-8 text-gray-400`}
             fill="none"
@@ -69,7 +69,7 @@ const SearchInput = forwardRef<HTMLDivElement, SearchInputProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 export default SearchInput;

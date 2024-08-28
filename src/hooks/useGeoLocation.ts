@@ -60,7 +60,7 @@ const useGeolocation = (options?: PositionOptions): GeoLocationSensorState => {
     const watcher = navigator.geolocation.watchPosition(
       onEvent,
       onEventError,
-      options
+      options,
     );
 
     return () => {

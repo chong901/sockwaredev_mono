@@ -84,7 +84,7 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
       search({ variables: { search: searchBusStop } });
     },
     500,
-    [searchBusStop]
+    [searchBusStop],
   );
 
   useClickAway(searchAreaRef, () => {
@@ -122,12 +122,12 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
         {showSearchResult &&
           searchBusStopsResult &&
           searchBusStopsResult.searchBusStops.length > 0 && (
-            <div className="bg-gradient-to-r from-blue-200 via-blue-100 to-blue-50 rounded-md mt-2 flex flex-col shadow-md max-h-[600px] overflow-y-scroll">
+            <div className="mt-2 flex max-h-[600px] flex-col overflow-y-scroll rounded-md bg-gradient-to-r from-blue-200 via-blue-100 to-blue-50 shadow-md">
               {searchBusStopsResult.searchBusStops.map((stop, index) => (
                 <>
                   <div
                     key={stop.code}
-                    className="flex gap-4 text-2xl px-4 py-2 hover:font-bold hover:cursor-pointer"
+                    className="flex gap-4 px-4 py-2 text-2xl hover:cursor-pointer hover:font-bold"
                     onClick={() => {
                       setSelectedBusStop(stop);
                       setShowSearchResult(false);

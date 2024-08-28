@@ -5,7 +5,7 @@ export const PageContainer = ({
   ...rest
 }: ComponentProps<"div">) => (
   <div
-    className={`h-screen bg-slate-50 flex justify-center items-center ${className}`}
+    className={`flex h-screen items-center justify-center bg-slate-50 ${className}`}
     {...rest}
   />
 );

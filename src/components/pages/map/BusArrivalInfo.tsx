@@ -32,9 +32,14 @@ export const BusArrivalInfo = ({ busStop }: BusArrivalInfoProps) => {
     let interval: NodeJS.Timeout;
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
-        interval = setInterval(() => {
-          refetch();
-        }, parseInt(process.env.NEXT_PUBLIC_BUS_ARRIVAL_REFRESH_INTERVAL ?? "15000"));
+        interval = setInterval(
+          () => {
+            refetch();
+          },
+          parseInt(
+            process.env.NEXT_PUBLIC_BUS_ARRIVAL_REFRESH_INTERVAL ?? "15000",
+          ),
+        );
       } else {
         clearInterval(interval);
       }
@@ -48,8 +53,8 @@ export const BusArrivalInfo = ({ busStop }: BusArrivalInfoProps) => {
   }, [refetch]);
 
   return (
-    <div className="bg-gradient-to-l from-blue-50 via-blue-100 to-blue-200 absolute right-8 min-w-[320px] max-w-[400px] top-20 z-[1000] rounded-lg shadow-md">
-      <div className="flex p-4 gap-2 flex-wrap">
+    <div className="absolute right-8 top-20 z-[1000] min-w-[320px] max-w-[400px] rounded-lg bg-gradient-to-l from-blue-50 via-blue-100 to-blue-200 shadow-md">
+      <div className="flex flex-wrap gap-2 p-4">
         <div className="text-3xl font-bold">{busStop.code}</div>
         <div className="text-3xl font-bold">{busStop.description}</div>
       </div>
@@ -69,7 +74,7 @@ export const BusArrivalInfo = ({ busStop }: BusArrivalInfoProps) => {
           return (
             <div key={service.ServiceNo} className="flex">
               <div className="text-2xl">{service.ServiceNo}</div>
-              <div className="ml-auto flex gap-2 items-end">
+              <div className="ml-auto flex items-end gap-2">
                 {nextBuses.map((bus, index) => (
                   <div
                     className={`text-right ${
@@ -77,7 +82,7 @@ export const BusArrivalInfo = ({ busStop }: BusArrivalInfoProps) => {
                         ? `text-2xl ${
                             comingBusArrivingColor[bus?.Load ?? "default"]
                           }`
-                        : "text-base w-4"
+                        : "w-4 text-base"
                     }`}
                     key={`${service.ServiceNo}-${index}`}
                   >

@@ -33,7 +33,7 @@ export async function GET(req: Request, res: Response) {
         latitude: stop.Latitude,
         longitude: stop.Longitude,
         roadName: stop.RoadName,
-      }))
+      })),
     );
 
     return Response.json({ message: "done" });
