@@ -84,7 +84,7 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
           }}
         />
       ))}
-      {selectedBusStop && <BusArrivalInfo busCode={selectedBusStop.code} />}
+      {selectedBusStop && <BusArrivalInfo busStop={selectedBusStop} />}
     </>
   );
 };
