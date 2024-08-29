@@ -1,6 +1,7 @@
 import { Resolvers } from "@/graphql-codegen/backend/types";
 import {
   getBusArrival,
+  getBusRoutes,
   getBusStops,
   getNearestBusStops,
   searchBusStops,
@@ -43,11 +44,27 @@ const typeDefs = gql`
     Type: String!
   }
 
+  type BusRoute {
+    ServiceNo: String!
+    Operator: String!
+    Direction: Int!
+    StopSequence: Int!
+    BusStopCode: String!
+    Distance: Float!
+    WD_FirstBus: String!
+    WD_LastBus: String!
+    SAT_FirstBus: String!
+    SAT_LastBus: String!
+    SUN_FirstBus: String!
+    SUN_LastBus: String!
+  }
+
   type Query {
     getBusStops(lat: Float!, long: Float!): [BusStop!]!
     getBusArrival(code: String!): BusArrivalData!
     getNearestBusStops(lat: Float!, long: Float!): BusStop!
     searchBusStops(search: String!, offset: Int): [BusStop!]!
+    getBusRoutes(serviceNo: String!, originalBusStopCode: String!): [BusRoute!]!
   }
 `;
 
@@ -57,6 +74,7 @@ const resolvers: Resolvers = {
     getBusArrival: getBusArrival,
     getNearestBusStops: getNearestBusStops,
     searchBusStops: searchBusStops,
+    getBusRoutes: getBusRoutes,
   },
 };
 

@@ -1,11 +1,12 @@
 import { callLTAApi } from "@/app/api/(utils)/ltaUtil";
 import { db } from "@/db/db";
+import { BusRouteModel } from "@/db/schema/BusRoute";
 import { BusStopModal } from "@/db/schema/BusStop";
 import {
   BusArrivalData,
   QueryResolvers,
 } from "@/graphql-codegen/backend/types";
-import { and, getTableColumns, gte, lte, sql } from "drizzle-orm";
+import { and, eq, getTableColumns, gte, lte, sql } from "drizzle-orm";
 
 export const getBusStops: QueryResolvers["getBusStops"] = async (
   _,
@@ -73,5 +74,32 @@ export const searchBusStops: QueryResolvers["searchBusStops"] = async (
     .orderBy(BusStopModal.code)
     .limit(100)
     .offset(offset ?? 0);
+  return result;
+};
+
+export const getBusRoutes: QueryResolvers["getBusRoutes"] = async (
+  _,
+  { serviceNo, originalBusStopCode },
+) => {
+  const [firstStop] = await db
+    .select()
+    .from(BusRouteModel)
+    .where(
+      and(
+        eq(BusRouteModel.ServiceNo, serviceNo),
+        eq(BusRouteModel.BusStopCode, originalBusStopCode),
+        eq(BusRouteModel.StopSequence, 1),
+      ),
+    );
+  const result = await db
+    .select()
+    .from(BusRouteModel)
+    .where(
+      and(
+        eq(BusRouteModel.ServiceNo, serviceNo),
+        eq(BusRouteModel.Direction, firstStop.Direction),
+      ),
+    )
+    .orderBy(BusRouteModel.StopSequence);
   return result;
 };

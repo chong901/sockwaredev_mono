@@ -45,6 +45,7 @@ export const getBusArrivalQuery = gql`
 
   fragment BusArrivalData on BusArrival {
     EstimatedArrival
+    OriginCode
     Latitude
     Longitude
     Load
