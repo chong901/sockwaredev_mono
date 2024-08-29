@@ -21,6 +21,7 @@ import {
 import { useAvoidMapScroll } from "@/hooks/useAvoidMapScroll";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { icon } from "leaflet";
+import Image from "next/image";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { Marker, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import { useClickAway, useDebounce } from "react-use";
@@ -183,7 +184,12 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
         onClick={onCurrentLocationClick}
         className="absolute bottom-[calc(33.3%+12px)] right-[12px] z-[1000] flex h-10 w-10 cursor-pointer justify-center rounded-full bg-white p-2 lg:bottom-8 lg:right-8 lg:h-12 lg:w-12"
       >
-        <img src="marker-icon.png" alt="go back to current location" />
+        <Image
+          src="/marker-icon.png"
+          width={20}
+          height={20}
+          alt="go back to current location"
+        />
       </div>
     </>
   );
