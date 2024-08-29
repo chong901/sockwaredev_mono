@@ -1,6 +1,6 @@
 import { LoadingSpinner } from "@/components/atoms/LoadingSpinner";
 import { SearchBusStopsQuery } from "@/graphql-codegen/frontend/graphql";
-import React, { ComponentProps } from "react";
+import React, { ComponentProps, Fragment } from "react";
 
 type SearchResultsProps = {
   showSearchResult: boolean;
@@ -36,17 +36,18 @@ const BusStopSearchResult: React.FC<SearchResultsProps> = ({
   return (
     <Container>
       {busStops.map((stop, index) => (
-        <div
-          key={stop.code}
-          className="flex gap-4 px-4 py-2 text-2xl hover:cursor-pointer hover:font-bold"
-          onClick={() => onItemClick(stop)}
-        >
-          <div>{stop.code}</div>
-          <div>{stop.description}</div>
+        <Fragment key={stop.code}>
+          <div
+            className="flex gap-4 px-4 py-2 text-2xl hover:cursor-pointer hover:font-bold"
+            onClick={() => onItemClick(stop)}
+          >
+            <div>{stop.code}</div>
+            <div>{stop.description}</div>
+          </div>
           {index < busStops.length - 1 && (
-            <hr className="border-t border-slate-300" />
+            <hr className="w-full border-t border-slate-300" />
           )}
-        </div>
+        </Fragment>
       ))}
     </Container>
   );
