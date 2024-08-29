@@ -1,5 +1,6 @@
 import SearchInput from "@/components/molecules/SearchInput";
 import { BusArrivalInfo } from "@/components/pages/map/BusArrivalInfo";
+import { BusMarker } from "@/components/pages/map/BusMarker";
 import BusStopSearchResult from "@/components/pages/map/BusStopSearchResult";
 import {
   getBusStopsQuery,
@@ -19,7 +20,7 @@ import {
 import { useAvoidMapScroll } from "@/hooks/useAvoidMapScroll";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { icon } from "leaflet";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Marker, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import { useClickAway, useDebounce } from "react-use";
 
@@ -111,6 +112,17 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+      {busArrivalData?.getBusArrival.Services.map(
+        ({ ServiceNo, NextBus2, NextBus3, NextBus }) => {
+          return (
+            <Fragment key={ServiceNo}>
+              {NextBus && <BusMarker bus={NextBus} serviceNo={ServiceNo} />}
+              {NextBus2 && <BusMarker bus={NextBus2} serviceNo={ServiceNo} />}
+              {NextBus3 && <BusMarker bus={NextBus3} serviceNo={ServiceNo} />}
+            </Fragment>
+          );
+        },
+      )}
       <Marker position={[currentUserLat, currentUserLong]} />
       {(data || previousData)?.getBusStops.map((stop) => (
         <Marker
