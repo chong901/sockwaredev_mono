@@ -14,5 +14,12 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  return <Map />;
+  return (
+    <>
+      <h1 className="absolute">
+        Find Singapore Bus Arrival Timings in Real-Time
+      </h1>
+      <Map />
+    </>
+  );
 }
