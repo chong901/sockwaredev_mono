@@ -15,6 +15,7 @@ export const BusMarker = ({
       position={[parseFloat(bus.Latitude), parseFloat(bus.Longitude)]}
       icon={divIcon({
         html: `<div class="bg-slate-500 rounded-full w-fit p-2 text-xl text-slate-200">${serviceNo}</div>`,
+        className: "bg-transparent",
       })}
     />
   );
