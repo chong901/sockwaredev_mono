@@ -1,0 +1,1 @@
+ALTER TABLE "bus_route" ALTER COLUMN "distance" SET DATA TYPE double precision;
