@@ -95,6 +95,10 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
 
   useAvoidMapScroll(searchAreaRef);
 
+  const onCurrentLocationClick = () => {
+    map.panTo([currentUserLat, currentUserLong]);
+  };
+
   return (
     <>
       <TileLayer
@@ -133,6 +137,12 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
           }}
         />
       </SearchInput>
+      <div
+        onClick={onCurrentLocationClick}
+        className="absolute bottom-[calc(33.3%+12px)] right-[12px] z-[1000] flex h-10 w-10 cursor-pointer justify-center rounded-full bg-white p-2 lg:bottom-8 lg:right-8 lg:h-12 lg:w-12"
+      >
+        <img src="marker-icon.png" alt="go back to current location" />
+      </div>
       {selectedBusStop && <BusArrivalInfo busStop={selectedBusStop} />}
     </>
   );
