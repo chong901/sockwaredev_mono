@@ -109,7 +109,7 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
   useAvoidMapScroll(searchAreaRef);
 
   const onCurrentLocationClick = () => {
-    map.panTo([currentUserLat, currentUserLong]);
+    map.flyTo([currentUserLat, currentUserLong]);
   };
 
   const displayBusServices = useMemo(() => {
@@ -121,6 +121,18 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
       ) ?? []
     );
   }, [busArrivalData?.getBusArrival.Services, selectedBusService]);
+
+  useEffect(() => {
+    if (!selectedBusService) return;
+    const firstBus = selectedBusService.NextBus;
+    if (!firstBus) return;
+    if (!firstBus.Latitude || !firstBus.Longitude) return;
+
+    const lat = parseFloat(firstBus.Latitude);
+    const long = parseFloat(firstBus.Longitude);
+    if (lat === 0 && long === 0) return;
+    map.flyTo([parseFloat(firstBus.Latitude), parseFloat(firstBus.Longitude)]);
+  }, [map, selectedBusService]);
 
   return (
     <>
@@ -169,7 +181,7 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
           onItemClick={(stop) => {
             setSelectedBusStop(stop);
             setShowSearchResult(false);
-            map.panTo([stop.latitude, stop.longitude]);
+            map.flyTo([stop.latitude, stop.longitude]);
           }}
         />
       </SearchInput>
