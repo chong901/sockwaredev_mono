@@ -156,6 +156,7 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
         />
       ))}
       <SearchInput
+        placeholder="Bus stop code or name"
         value={searchBusStop}
         onChange={(e) => setSearchBusStop(e.target.value)}
         onClear={() => setSearchBusStop("")}
