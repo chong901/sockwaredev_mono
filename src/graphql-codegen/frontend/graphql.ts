@@ -37,6 +37,7 @@ export type BusArrivalData = {
 
 export type BusRoute = {
   __typename?: 'BusRoute';
+  BusStop: BusStop;
   BusStopCode: Scalars['String']['output'];
   Direction: Scalars['Int']['output'];
   Distance: Scalars['Float']['output'];

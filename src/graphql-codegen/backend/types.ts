@@ -37,6 +37,7 @@ export type BusArrivalData = {
 
 export type BusRoute = {
   __typename?: 'BusRoute';
+  BusStop: BusStop;
   BusStopCode: Scalars['String']['output'];
   Direction: Scalars['Int']['output'];
   Distance: Scalars['Float']['output'];
@@ -227,6 +228,7 @@ export type BusArrivalDataResolvers<ContextType = any, ParentType extends Resolv
 }>;
 
 export type BusRouteResolvers<ContextType = any, ParentType extends ResolversParentTypes['BusRoute'] = ResolversParentTypes['BusRoute']> = ResolversObject<{
+  BusStop?: Resolver<ResolversTypes['BusStop'], ParentType, ContextType>;
   BusStopCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   Direction?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   Distance?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;

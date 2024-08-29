@@ -1,7 +1,10 @@
 import { Resolvers } from "@/graphql-codegen/backend/types";
 import {
-  getBusArrival,
+  busStopFieldResolver,
   getBusRoutes,
+} from "@/graphql/resolvers/BusRouteResolvers";
+import {
+  getBusArrival,
   getBusStops,
   getNearestBusStops,
   searchBusStops,
@@ -57,6 +60,7 @@ const typeDefs = gql`
     SAT_LastBus: String!
     SUN_FirstBus: String!
     SUN_LastBus: String!
+    BusStop: BusStop!
   }
 
   type Query {
@@ -75,6 +79,9 @@ const resolvers: Resolvers = {
     getNearestBusStops: getNearestBusStops,
     searchBusStops: searchBusStops,
     getBusRoutes: getBusRoutes,
+  },
+  BusRoute: {
+    BusStop: busStopFieldResolver,
   },
 };
 
