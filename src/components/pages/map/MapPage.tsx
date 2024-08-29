@@ -1,3 +1,4 @@
+"use client";
 import { LoadingSpinner } from "@/components/atoms/LoadingSpinner";
 import { PageContainer } from "@/components/containers/PageContainer";
 import { MapBody } from "@/components/pages/map/MapBody";
