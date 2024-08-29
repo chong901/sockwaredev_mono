@@ -10,6 +10,7 @@ import {
 import { useFetchBusArrival } from "@/components/pages/map/hooks/useFetchBusArrival";
 import { BusStop } from "@/graphql-codegen/backend/types";
 import {
+  GetBusArrivalQuery,
   GetBusStopsQuery,
   GetBusStopsQueryVariables,
   GetNearestBusStopQuery,
@@ -20,7 +21,7 @@ import {
 import { useAvoidMapScroll } from "@/hooks/useAvoidMapScroll";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { icon } from "leaflet";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { Marker, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import { useClickAway, useDebounce } from "react-use";
 
@@ -47,6 +48,10 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
   const [searchBusStop, setSearchBusStop] = useState<string>("");
 
   const [selectedBusStop, setSelectedBusStop] = useState<BusStop | null>(null);
+
+  const [selectedBusService, setSelectedBusService] = useState<
+    GetBusArrivalQuery["getBusArrival"]["Services"][number] | undefined
+  >(undefined);
 
   const { data, previousData } = useQuery<
     GetBusStopsQuery,
@@ -106,23 +111,31 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
     map.panTo([currentUserLat, currentUserLong]);
   };
 
+  const displayBusServices = useMemo(() => {
+    if (!selectedBusService)
+      return busArrivalData?.getBusArrival.Services ?? [];
+    return (
+      busArrivalData?.getBusArrival.Services.filter(
+        (service) => service.ServiceNo === selectedBusService.ServiceNo,
+      ) ?? []
+    );
+  }, [busArrivalData?.getBusArrival.Services, selectedBusService]);
+
   return (
     <>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {busArrivalData?.getBusArrival.Services.map(
-        ({ ServiceNo, NextBus2, NextBus3, NextBus }) => {
-          return (
-            <Fragment key={ServiceNo}>
-              {NextBus && <BusMarker bus={NextBus} serviceNo={ServiceNo} />}
-              {NextBus2 && <BusMarker bus={NextBus2} serviceNo={ServiceNo} />}
-              {NextBus3 && <BusMarker bus={NextBus3} serviceNo={ServiceNo} />}
-            </Fragment>
-          );
-        },
-      )}
+      {displayBusServices.map(({ ServiceNo, NextBus2, NextBus3, NextBus }) => {
+        return (
+          <Fragment key={ServiceNo}>
+            {NextBus && <BusMarker bus={NextBus} text={ServiceNo} />}
+            {NextBus2 && <BusMarker bus={NextBus2} text={ServiceNo} />}
+            {NextBus3 && <BusMarker bus={NextBus3} text={ServiceNo} />}
+          </Fragment>
+        );
+      })}
       <Marker position={[currentUserLat, currentUserLong]} />
       {(data || previousData)?.getBusStops.map((stop) => (
         <Marker
@@ -134,7 +147,10 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
               : busStopIcon
           }
           eventHandlers={{
-            click: () => setSelectedBusStop(stop),
+            click: () => {
+              setSelectedBusStop(stop);
+              setSelectedBusService(undefined);
+            },
           }}
         />
       ))}
@@ -159,6 +175,8 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
         <BusArrivalInfo
           busStop={selectedBusStop}
           busArrivalData={busArrivalData?.getBusArrival}
+          onServiceClick={setSelectedBusService}
+          selectedService={selectedBusService}
         />
       )}
       <div

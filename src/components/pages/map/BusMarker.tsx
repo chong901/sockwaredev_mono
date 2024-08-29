@@ -4,9 +4,9 @@ import { Marker } from "react-leaflet";
 
 export const BusMarker = ({
   bus,
-  serviceNo,
+  text,
 }: {
-  serviceNo: string;
+  text: string;
   bus: BusArrivalDataFragment;
 }) => {
   if (!bus.Latitude || !bus.Longitude) return null;
@@ -14,8 +14,9 @@ export const BusMarker = ({
     <Marker
       position={[parseFloat(bus.Latitude), parseFloat(bus.Longitude)]}
       icon={divIcon({
-        html: `<div class="bg-slate-500 rounded-full w-fit p-2 text-xl text-slate-200">${serviceNo}</div>`,
-        className: "bg-transparent",
+        html: text,
+        className:
+          "!bg-slate-500 hover:!bg-slate-600 !rounded-full !w-12 !h-12 !flex !justify-center !items-center !text-xl !text-slate-200 hover:!z-[9999]",
       })}
     />
   );

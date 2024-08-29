@@ -4,11 +4,15 @@ import {
 } from "@/graphql-codegen/frontend/graphql";
 import { useAvoidMapScroll } from "@/hooks/useAvoidMapScroll";
 import { getTimeUntilArrival } from "@/utils/timeUtil";
-import { useRef } from "react";
+import { Fragment, useRef } from "react";
 
 type BusArrivalInfoProps = {
   busStop: BusStop;
   busArrivalData?: GetBusArrivalQuery["getBusArrival"];
+  selectedService?: GetBusArrivalQuery["getBusArrival"]["Services"][number];
+  onServiceClick?: (
+    service: GetBusArrivalQuery["getBusArrival"]["Services"][number],
+  ) => void;
 };
 
 const comingBusArrivingColor: Record<string, string> = {
@@ -21,6 +25,8 @@ const comingBusArrivingColor: Record<string, string> = {
 export const BusArrivalInfo = ({
   busStop,
   busArrivalData,
+  onServiceClick,
+  selectedService,
 }: BusArrivalInfoProps) => {
   const listContainerRef = useRef<HTMLDivElement>(null);
 
@@ -34,14 +40,14 @@ export const BusArrivalInfo = ({
       </div>
       <hr className="border-t-2 border-gray-200" />
       <div
-        className="flex flex-1 flex-col gap-2 overflow-scroll p-4"
+        className="flex flex-1 flex-col gap-2 overflow-scroll py-4"
         ref={listContainerRef}
       >
-        <div className="flex w-full">
+        <div className="flex w-full px-4">
           <div className="text-sm">Bus No</div>
           <div className="ml-auto text-sm">Arriving in (mins)</div>
         </div>
-        {busArrivalData?.Services.map((service) => {
+        {busArrivalData?.Services.map((service, index, arr) => {
           const nextBuses = [
             service.NextBus,
             service.NextBus2,
@@ -49,25 +55,33 @@ export const BusArrivalInfo = ({
           ];
 
           return (
-            <div key={service.ServiceNo} className="flex">
-              <div className="text-2xl">{service.ServiceNo}</div>
-              <div className="ml-auto flex items-baseline gap-2">
-                {nextBuses.map((bus, index) => (
-                  <div
-                    className={`text-right ${
-                      index === 0
-                        ? `text-2xl ${
-                            comingBusArrivingColor[bus?.Load ?? "default"]
-                          }`
-                        : "w-4 text-base"
-                    }`}
-                    key={`${service.ServiceNo}-${index}`}
-                  >
-                    {bus ? getTimeUntilArrival(bus.EstimatedArrival) : ""}
-                  </div>
-                ))}
+            <Fragment key={service.ServiceNo}>
+              <div
+                className={`flex cursor-pointer px-4 hover:font-bold ${selectedService?.ServiceNo === service.ServiceNo ? "font-bold" : ""}`}
+                onClick={() => onServiceClick?.(service)}
+              >
+                <div className="text-2xl">{service.ServiceNo}</div>
+                <div className="ml-auto flex items-baseline gap-2">
+                  {nextBuses.map((bus, index) => (
+                    <div
+                      className={`text-right ${
+                        index === 0
+                          ? `text-2xl ${
+                              comingBusArrivingColor[bus?.Load ?? "default"]
+                            }`
+                          : "w-4 text-base"
+                      }`}
+                      key={`${service.ServiceNo}-${index}`}
+                    >
+                      {bus ? getTimeUntilArrival(bus.EstimatedArrival) : ""}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+              {index !== arr.length - 1 && (
+                <hr className="w-full border-t border-slate-300" />
+              )}
+            </Fragment>
           );
         })}
       </div>
