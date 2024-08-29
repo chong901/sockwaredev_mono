@@ -6,6 +6,7 @@ import {
   getNearestBusStopQuery,
   searchBusStopsQuery,
 } from "@/components/pages/map/graphql";
+import { useFetchBusArrival } from "@/components/pages/map/hooks/useFetchBusArrival";
 import { BusStop } from "@/graphql-codegen/backend/types";
 import {
   GetBusStopsQuery,
@@ -35,12 +36,17 @@ const selectedBusStopIcon = icon({
 
 export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
   const [showSearchResult, setShowSearchResult] = useState<boolean>(false);
-  const searchAreaRef = useRef<HTMLDivElement>(null);
+
   const [getBusStopsVariables, setGetBusStopsVariables] =
     useState<GetBusStopsQueryVariables>({
       lat: currentUserLat,
       long: currentUserLong,
     });
+
+  const [searchBusStop, setSearchBusStop] = useState<string>("");
+
+  const [selectedBusStop, setSelectedBusStop] = useState<BusStop | null>(null);
+
   const { data, previousData } = useQuery<
     GetBusStopsQuery,
     GetBusStopsQueryVariables
@@ -49,14 +55,10 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
     fetchPolicy: "cache-and-network",
   });
 
-  const [searchBusStop, setSearchBusStop] = useState<string>("");
-
   const [search, { data: searchBusStopsResult }] = useLazyQuery<
     SearchBusStopsQuery,
     SearchBusStopsQueryVariables
   >(searchBusStopsQuery);
-
-  const [selectedBusStop, setSelectedBusStop] = useState<BusStop | null>(null);
 
   const { data: nearestBusStop } = useQuery<
     GetNearestBusStopQuery,
@@ -81,6 +83,8 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
   });
   const map = useMap();
 
+  const { data: busArrivalData } = useFetchBusArrival(selectedBusStop?.code);
+
   useDebounce(
     () => {
       search({ variables: { search: searchBusStop } });
@@ -88,6 +92,8 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
     500,
     [searchBusStop],
   );
+
+  const searchAreaRef = useRef<HTMLDivElement>(null);
 
   useClickAway(searchAreaRef, () => {
     setShowSearchResult(false);
@@ -137,13 +143,18 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
           }}
         />
       </SearchInput>
+      {selectedBusStop && (
+        <BusArrivalInfo
+          busStop={selectedBusStop}
+          busArrivalData={busArrivalData?.getBusArrival}
+        />
+      )}
       <div
         onClick={onCurrentLocationClick}
         className="absolute bottom-[calc(33.3%+12px)] right-[12px] z-[1000] flex h-10 w-10 cursor-pointer justify-center rounded-full bg-white p-2 lg:bottom-8 lg:right-8 lg:h-12 lg:w-12"
       >
         <img src="marker-icon.png" alt="go back to current location" />
       </div>
-      {selectedBusStop && <BusArrivalInfo busStop={selectedBusStop} />}
     </>
   );
 };

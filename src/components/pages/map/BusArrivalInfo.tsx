@@ -1,16 +1,14 @@
-import { getBusArrivalQuery } from "@/components/pages/map/graphql";
 import {
   BusStop,
   GetBusArrivalQuery,
-  GetBusArrivalQueryVariables,
 } from "@/graphql-codegen/frontend/graphql";
 import { useAvoidMapScroll } from "@/hooks/useAvoidMapScroll";
 import { getTimeUntilArrival } from "@/utils/timeUtil";
-import { useQuery } from "@apollo/client";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
 type BusArrivalInfoProps = {
   busStop: BusStop;
+  busArrivalData?: GetBusArrivalQuery["getBusArrival"];
 };
 
 const comingBusArrivingColor: Record<string, string> = {
@@ -20,40 +18,11 @@ const comingBusArrivingColor: Record<string, string> = {
   default: "",
 };
 
-export const BusArrivalInfo = ({ busStop }: BusArrivalInfoProps) => {
-  const { data: busArrivalData, refetch } = useQuery<
-    GetBusArrivalQuery,
-    GetBusArrivalQueryVariables
-  >(getBusArrivalQuery, {
-    variables: { code: busStop.code },
-    fetchPolicy: "no-cache",
-  });
-
+export const BusArrivalInfo = ({
+  busStop,
+  busArrivalData,
+}: BusArrivalInfoProps) => {
   const listContainerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        interval = setInterval(
-          () => {
-            refetch();
-          },
-          parseInt(
-            process.env.NEXT_PUBLIC_BUS_ARRIVAL_REFRESH_INTERVAL ?? "15000",
-          ),
-        );
-      } else {
-        clearInterval(interval);
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => {
-      if (interval) clearInterval(interval);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, [refetch]);
 
   useAvoidMapScroll(listContainerRef);
 
@@ -72,7 +41,7 @@ export const BusArrivalInfo = ({ busStop }: BusArrivalInfoProps) => {
           <div className="text-sm">Bus No</div>
           <div className="ml-auto text-sm">Arriving in (mins)</div>
         </div>
-        {busArrivalData?.getBusArrival.Services.map((service) => {
+        {busArrivalData?.Services.map((service) => {
           const nextBuses = [
             service.NextBus,
             service.NextBus2,
@@ -82,7 +51,7 @@ export const BusArrivalInfo = ({ busStop }: BusArrivalInfoProps) => {
           return (
             <div key={service.ServiceNo} className="flex">
               <div className="text-2xl">{service.ServiceNo}</div>
-              <div className="ml-auto flex items-end gap-2">
+              <div className="ml-auto flex items-baseline gap-2">
                 {nextBuses.map((bus, index) => (
                   <div
                     className={`text-right ${
