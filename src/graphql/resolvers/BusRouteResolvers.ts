@@ -10,10 +10,11 @@ import DataLoader from "dataloader";
 import { and, eq, inArray } from "drizzle-orm";
 
 const busStopLoader = new DataLoader<string, BusStop>(async (codes) => {
-  return db
+  const result = await db
     .select()
     .from(BusStopModal)
     .where(inArray(BusStopModal.code, codes as string[]));
+  return codes.map((code) => result.find((r) => r.code === code)!);
 });
 
 export const busStopFieldResolver: BusRouteResolvers["BusStop"] = (parent) => {
