@@ -36,6 +36,13 @@
       "when": 1724917252905,
       "tag": "0004_certain_crystal",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1725003845808,
+      "tag": "0005_narrow_expediter",
+      "breakpoints": true
     }
   ]
 }

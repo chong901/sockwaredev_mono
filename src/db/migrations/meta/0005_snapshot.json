@@ -1,0 +1,174 @@
+{
+  "id": "1786e349-42c7-47a8-9b59-d6f25eec0bea",
+  "prevId": "4b32857b-a941-4f1d-b958-1de5f993e659",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.bus_route": {
+      "name": "bus_route",
+      "schema": "",
+      "columns": {
+        "service_no": {
+          "name": "service_no",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "operator": {
+          "name": "operator",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "direction": {
+          "name": "direction",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "stop_sequence": {
+          "name": "stop_sequence",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bus_stop_code": {
+          "name": "bus_stop_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "distance": {
+          "name": "distance",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "wd_first_bus": {
+          "name": "wd_first_bus",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "wd_last_bus": {
+          "name": "wd_last_bus",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sat_first_bus": {
+          "name": "sat_first_bus",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sat_last_bus": {
+          "name": "sat_last_bus",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sun_first_bus": {
+          "name": "sun_first_bus",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sun_last_bus": {
+          "name": "sun_last_bus",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.bus_route_polyline": {
+      "name": "bus_route_polyline",
+      "schema": "",
+      "columns": {
+        "service_no": {
+          "name": "service_no",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "origin_code": {
+          "name": "origin_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "encoded_polyline": {
+          "name": "encoded_polyline",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "bus_route_polyline_service_no_origin_code_pk": {
+          "name": "bus_route_polyline_service_no_origin_code_pk",
+          "columns": [
+            "service_no",
+            "origin_code"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "public.bus_stop": {
+      "name": "bus_stop",
+      "schema": "",
+      "columns": {
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "latitude": {
+          "name": "latitude",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "longitude": {
+          "name": "longitude",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "road_name": {
+          "name": "road_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
