@@ -43,6 +43,13 @@
       "when": 1725003845808,
       "tag": "0005_narrow_expediter",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1725004664250,
+      "tag": "0006_first_lethal_legion",
+      "breakpoints": true
     }
   ]
 }
