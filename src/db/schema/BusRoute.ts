@@ -1,3 +1,4 @@
+import { BusStopModal } from "@/db/schema/BusStop";
 import { doublePrecision, integer, pgTable, text } from "drizzle-orm/pg-core";
 
 export const BusRouteModel = pgTable("bus_route", {
@@ -5,7 +6,9 @@ export const BusRouteModel = pgTable("bus_route", {
   Operator: text("operator").notNull(),
   Direction: integer("direction").notNull(),
   StopSequence: integer("stop_sequence").notNull(),
-  BusStopCode: text("bus_stop_code").notNull(),
+  BusStopCode: text("bus_stop_code")
+    .notNull()
+    .references(() => BusStopModal.code),
   Distance: doublePrecision("distance").notNull(),
   WD_FirstBus: text("wd_first_bus").notNull(),
   WD_LastBus: text("wd_last_bus").notNull(),
