@@ -222,6 +222,9 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
           busArrivalData={busArrivalData?.getBusArrival}
           onServiceClick={setSelectedBusService}
           selectedService={selectedBusService}
+          onBusStopClick={(busStop) =>
+            map.flyTo([busStop.latitude, busStop.longitude])
+          }
         />
       )}
       <div
