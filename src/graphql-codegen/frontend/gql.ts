@@ -17,7 +17,7 @@ const documents = {
     "\n  query GetNearestBusStop($lat: Float!, $long: Float!) {\n    getNearestBusStops(lat: $lat, long: $long) {\n      code\n      description\n      latitude\n      longitude\n      roadName\n    }\n  }\n": types.GetNearestBusStopDocument,
     "\n  query GetBusArrival($code: String!) {\n    getBusArrival(code: $code) {\n      Services {\n        ServiceNo\n        NextBus {\n          ...BusArrivalData\n        }\n\n        NextBus2 {\n          ...BusArrivalData\n        }\n        NextBus3 {\n          ...BusArrivalData\n        }\n      }\n    }\n  }\n\n  fragment BusArrivalData on BusArrival {\n    EstimatedArrival\n    OriginCode\n    Latitude\n    Longitude\n    Load\n  }\n": types.GetBusArrivalDocument,
     "\n  query SearchBusStops($search: String!) {\n    searchBusStops(search: $search) {\n      code\n      description\n      latitude\n      longitude\n      roadName\n    }\n  }\n": types.SearchBusStopsDocument,
-    "\n  query GetBusRoutes($serviceNo: String!, $originalBusStopCode: String!) {\n    getBusRoutes(\n      serviceNo: $serviceNo\n      originalBusStopCode: $originalBusStopCode\n    ) {\n      StopSequence\n      BusStop {\n        code\n        latitude\n        longitude\n      }\n    }\n  }\n": types.GetBusRoutesDocument,
+    "\n  query GetBusRoutes($serviceNo: String!, $originBusStopCode: String!) {\n    getBusRoutes(serviceNo: $serviceNo, originBusStopCode: $originBusStopCode)\n  }\n": types.GetBusRoutesDocument,
 };
 
 /**
@@ -53,7 +53,7 @@ export function graphql(source: "\n  query SearchBusStops($search: String!) {\n 
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetBusRoutes($serviceNo: String!, $originalBusStopCode: String!) {\n    getBusRoutes(\n      serviceNo: $serviceNo\n      originalBusStopCode: $originalBusStopCode\n    ) {\n      StopSequence\n      BusStop {\n        code\n        latitude\n        longitude\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetBusRoutes($serviceNo: String!, $originalBusStopCode: String!) {\n    getBusRoutes(\n      serviceNo: $serviceNo\n      originalBusStopCode: $originalBusStopCode\n    ) {\n      StopSequence\n      BusStop {\n        code\n        latitude\n        longitude\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query GetBusRoutes($serviceNo: String!, $originBusStopCode: String!) {\n    getBusRoutes(serviceNo: $serviceNo, originBusStopCode: $originBusStopCode)\n  }\n"): (typeof documents)["\n  query GetBusRoutes($serviceNo: String!, $originBusStopCode: String!) {\n    getBusRoutes(serviceNo: $serviceNo, originBusStopCode: $originBusStopCode)\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

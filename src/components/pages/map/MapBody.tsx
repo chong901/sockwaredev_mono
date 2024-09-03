@@ -3,6 +3,7 @@ import { BusArrivalInfo } from "@/components/pages/map/BusArrivalInfo";
 import { BusMarker } from "@/components/pages/map/BusMarker";
 import BusStopSearchResult from "@/components/pages/map/BusStopSearchResult";
 import {
+  getBusRoutesQuery,
   getBusStopsQuery,
   getNearestBusStopQuery,
   searchBusStopsQuery,
@@ -11,6 +12,8 @@ import { useFetchBusArrival } from "@/components/pages/map/hooks/useFetchBusArri
 import { BusStop } from "@/graphql-codegen/backend/types";
 import {
   GetBusArrivalQuery,
+  GetBusRoutesQuery,
+  GetBusRoutesQueryVariables,
   GetBusStopsQuery,
   GetBusStopsQueryVariables,
   GetNearestBusStopQuery,
@@ -20,10 +23,16 @@ import {
 } from "@/graphql-codegen/frontend/graphql";
 import { useAvoidMapScroll } from "@/hooks/useAvoidMapScroll";
 import { useLazyQuery, useQuery } from "@apollo/client";
-import { icon } from "leaflet";
+import { icon, LatLngExpression } from "leaflet";
 import Image from "next/image";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import { Marker, TileLayer, useMap, useMapEvents } from "react-leaflet";
+import {
+  Marker,
+  Polyline,
+  TileLayer,
+  useMap,
+  useMapEvents,
+} from "react-leaflet";
 import { useClickAway, useDebounce } from "react-use";
 
 type MapBodyProps = {
@@ -74,6 +83,21 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
     variables: { lat: currentUserLat, long: currentUserLong },
     skip: selectedBusStop !== null,
   });
+
+  const { data: busRoutePolylines } = useQuery<
+    GetBusRoutesQuery,
+    GetBusRoutesQueryVariables
+  >(getBusRoutesQuery, {
+    variables: {
+      serviceNo: selectedBusService?.ServiceNo ?? "",
+      originBusStopCode: selectedBusService?.NextBus?.OriginCode ?? "",
+    },
+    skip:
+      !selectedBusService ||
+      !selectedBusService.ServiceNo ||
+      !selectedBusService.NextBus?.OriginCode,
+  });
+
   useEffect(() => {
     if (nearestBusStop) {
       setSelectedBusStop(nearestBusStop.getNearestBusStops);
@@ -125,8 +149,8 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
   useEffect(() => {
     if (!selectedBusService) return;
     const firstBus = selectedBusService.NextBus;
-    if (!firstBus) return;
-    if (!firstBus.Latitude || !firstBus.Longitude) return;
+    if (!firstBus || !firstBus.Latitude || !firstBus.Longitude) return;
+    selectedBusService.NextBus?.OriginCode;
 
     const lat = parseFloat(firstBus.Latitude);
     const long = parseFloat(firstBus.Longitude);
@@ -149,6 +173,13 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
           </Fragment>
         );
       })}
+      {busRoutePolylines?.getBusRoutes.map((polyline, index) => (
+        <Polyline
+          key={index}
+          positions={polyline as LatLngExpression[]}
+          pathOptions={{ color: "red" }}
+        />
+      ))}
       <Marker position={[currentUserLat, currentUserLong]} />
       {(data || previousData)?.getBusStops.map((stop) => (
         <Marker
