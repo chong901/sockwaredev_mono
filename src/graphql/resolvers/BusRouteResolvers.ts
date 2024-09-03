@@ -1,7 +1,7 @@
 import { db } from "@/db/db";
 import { BusRouteModel } from "@/db/schema/BusRoute";
 import { BusRoutePolylineModel } from "@/db/schema/BusRoutePolyline";
-import { BusStop, BusStopModal } from "@/db/schema/BusStop";
+import { BusStop, BusStopModel } from "@/db/schema/BusStop";
 import {
   BusRouteResolvers,
   QueryResolvers,
@@ -12,8 +12,8 @@ import { and, eq, inArray } from "drizzle-orm";
 const busStopLoader = new DataLoader<string, BusStop>(async (codes) => {
   const result = await db
     .select()
-    .from(BusStopModal)
-    .where(inArray(BusStopModal.code, codes as string[]));
+    .from(BusStopModel)
+    .where(inArray(BusStopModel.code, codes as string[]));
   return codes.map((code) => result.find((r) => r.code === code)!);
 });
 

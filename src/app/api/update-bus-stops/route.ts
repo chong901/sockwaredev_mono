@@ -1,6 +1,6 @@
 import { callLTAApi } from "@/app/api/(utils)/ltaUtil";
 import { db } from "@/db/db";
-import { BusStopModal } from "@/db/schema/BusStop";
+import { BusStopModel } from "@/db/schema/BusStop";
 
 export const dynamic = "force-dynamic";
 
@@ -25,8 +25,8 @@ export async function GET(req: Request, res: Response) {
         await callLTAApi<{ value: BusStopResponse[] }>(`${url}?$skip=${skip}`)
       ).value;
     }
-    await db.delete(BusStopModal);
-    await db.insert(BusStopModal).values(
+    await db.delete(BusStopModel);
+    await db.insert(BusStopModel).values(
       stops.map((stop) => ({
         code: stop.BusStopCode,
         description: stop.Description,

@@ -3,7 +3,7 @@ import "./env-loader";
 
 import { callLTAApi } from "@/app/api/(utils)/ltaUtil";
 import { db } from "@/db/db";
-import { BusStop, BusStopModal } from "@/db/schema/BusStop";
+import { BusStop, BusStopModel } from "@/db/schema/BusStop";
 import { eq } from "drizzle-orm";
 
 interface OverpassElement {
@@ -85,8 +85,8 @@ const main = async () => {
         )
       ).value;
     }
-    await tx.delete(BusStopModal);
-    await tx.insert(BusStopModal).values(
+    await tx.delete(BusStopModel);
+    await tx.insert(BusStopModel).values(
       stops.map((stop) => ({
         code: stop.BusStopCode,
         description: stop.Description,
@@ -105,9 +105,9 @@ const main = async () => {
     }));
     for (const busStop of mappedOsmBusStops) {
       await tx
-        .update(BusStopModal)
+        .update(BusStopModel)
         .set({ latitude: busStop.latitude, longitude: busStop.longitude })
-        .where(eq(BusStopModal.code, busStop.code));
+        .where(eq(BusStopModel.code, busStop.code));
     }
   });
   console.log("Bus stops updated");

@@ -7,7 +7,7 @@ import {
   BusRoutePolyline,
   BusRoutePolylineModel,
 } from "@/db/schema/BusRoutePolyline";
-import { BusStop, BusStopModal } from "@/db/schema/BusStop";
+import { BusStop, BusStopModel } from "@/db/schema/BusStop";
 import polyline from "@mapbox/polyline";
 import { and, eq, ExtractTablesWithRelations, sql } from "drizzle-orm";
 import { PgTransaction } from "drizzle-orm/pg-core";
@@ -290,8 +290,8 @@ const fetchMissingRoutePositions = async (
         .select()
         .from(BusRouteModel)
         .leftJoin(
-          BusStopModal,
-          eq(BusRouteModel.BusStopCode, BusStopModal.code),
+          BusStopModel,
+          eq(BusRouteModel.BusStopCode, BusStopModel.code),
         )
         .where(
           and(

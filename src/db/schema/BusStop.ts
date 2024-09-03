@@ -1,6 +1,6 @@
 import { doublePrecision, pgTable, text } from "drizzle-orm/pg-core";
 
-export const BusStopModal = pgTable("bus_stop", {
+export const BusStopModel = pgTable("bus_stop", {
   code: text("code").primaryKey(),
   description: text("description").notNull(),
   latitude: doublePrecision("latitude").notNull(),
@@ -8,4 +8,4 @@ export const BusStopModal = pgTable("bus_stop", {
   roadName: text("road_name").notNull(),
 });
 
-export type BusStop = typeof BusStopModal.$inferSelect;
+export type BusStop = typeof BusStopModel.$inferSelect;

@@ -1,6 +1,6 @@
 import { callLTAApi } from "@/app/api/(utils)/ltaUtil";
 import { db } from "@/db/db";
-import { BusStopModal } from "@/db/schema/BusStop";
+import { BusStopModel } from "@/db/schema/BusStop";
 import {
   BusArrivalData,
   QueryResolvers,
@@ -14,13 +14,13 @@ export const getBusStops: QueryResolvers["getBusStops"] = async (
   const nearByLatLngDelta = 0.01;
   const result = await db
     .select()
-    .from(BusStopModal)
+    .from(BusStopModel)
     .where(
       and(
-        gte(BusStopModal.latitude, lat - nearByLatLngDelta),
-        lte(BusStopModal.latitude, lat + nearByLatLngDelta),
-        gte(BusStopModal.longitude, long - nearByLatLngDelta),
-        lte(BusStopModal.longitude, long + nearByLatLngDelta),
+        gte(BusStopModel.latitude, lat - nearByLatLngDelta),
+        lte(BusStopModel.latitude, lat + nearByLatLngDelta),
+        gte(BusStopModel.longitude, long - nearByLatLngDelta),
+        lte(BusStopModel.longitude, long + nearByLatLngDelta),
       ),
     );
   return result;
@@ -42,7 +42,7 @@ export const getNearestBusStops: QueryResolvers["getNearestBusStops"] = async (
 ) => {
   const result = await db
     .select({
-      ...getTableColumns(BusStopModal),
+      ...getTableColumns(BusStopModel),
       distance: sql`
     (
       6371 * acos(
@@ -53,7 +53,7 @@ export const getNearestBusStops: QueryResolvers["getNearestBusStops"] = async (
     ) AS distance
     `,
     })
-    .from(BusStopModal)
+    .from(BusStopModel)
     .orderBy(sql`distance`)
     .limit(1);
   return result[0];
@@ -66,11 +66,11 @@ export const searchBusStops: QueryResolvers["searchBusStops"] = async (
   const searchKeyword = `%${search.toLowerCase()}%`;
   const result = await db
     .select()
-    .from(BusStopModal)
+    .from(BusStopModel)
     .where(
       sql`lower(description) LIKE ${searchKeyword} or lower(code) LIKE ${searchKeyword}`,
     )
-    .orderBy(BusStopModal.code)
+    .orderBy(BusStopModel.code)
     .limit(100)
     .offset(offset ?? 0);
   return result;
