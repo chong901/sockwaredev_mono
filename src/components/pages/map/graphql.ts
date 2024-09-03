@@ -63,3 +63,9 @@ export const searchBusStopsQuery = gql`
     }
   }
 `;
+
+export const getBusRoutesQuery = gql`
+  query GetBusRoutes($serviceNo: String!, $originBusStopCode: String!) {
+    getBusRoutes(serviceNo: $serviceNo, originBusStopCode: $originBusStopCode)
+  }
+`;

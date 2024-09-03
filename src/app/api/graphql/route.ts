@@ -68,7 +68,7 @@ const typeDefs = gql`
     getBusArrival(code: String!): BusArrivalData!
     getNearestBusStops(lat: Float!, long: Float!): BusStop!
     searchBusStops(search: String!, offset: Int): [BusStop!]!
-    getBusRoutes(serviceNo: String!, originalBusStopCode: String!): [BusRoute!]!
+    getBusRoutes(serviceNo: String!, originBusStopCode: String!): [[[Float!]!]]!
   }
 `;
 

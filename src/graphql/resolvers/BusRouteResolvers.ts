@@ -1,8 +1,8 @@
 import { db } from "@/db/db";
 import { BusRouteModel } from "@/db/schema/BusRoute";
+import { BusRoutePolylineModel } from "@/db/schema/BusRoutePolyline";
 import { BusStop, BusStopModal } from "@/db/schema/BusStop";
 import {
-  BusRoute,
   BusRouteResolvers,
   QueryResolvers,
 } from "@/graphql-codegen/backend/types";
@@ -23,7 +23,7 @@ export const busStopFieldResolver: BusRouteResolvers["BusStop"] = (parent) => {
 
 export const getBusRoutes: QueryResolvers["getBusRoutes"] = async (
   _,
-  { serviceNo, originalBusStopCode },
+  { serviceNo, originBusStopCode },
 ) => {
   const [firstStop] = await db
     .select()
@@ -31,20 +31,19 @@ export const getBusRoutes: QueryResolvers["getBusRoutes"] = async (
     .where(
       and(
         eq(BusRouteModel.ServiceNo, serviceNo),
-        eq(BusRouteModel.BusStopCode, originalBusStopCode),
+        eq(BusRouteModel.BusStopCode, originBusStopCode),
         eq(BusRouteModel.StopSequence, 1),
       ),
     );
   const result = await db
     .select()
-    .from(BusRouteModel)
+    .from(BusRoutePolylineModel)
     .where(
       and(
-        eq(BusRouteModel.ServiceNo, serviceNo),
-        eq(BusRouteModel.Direction, firstStop.Direction),
+        eq(BusRoutePolylineModel.serviceNo, serviceNo),
+        eq(BusRoutePolylineModel.direction, firstStop.Direction),
       ),
     )
-    .orderBy(BusRouteModel.StopSequence);
-  // missing fields are in field resolver
-  return result as BusRoute[];
+    .limit(1);
+  return result[0].polylines as number[][][];
 };

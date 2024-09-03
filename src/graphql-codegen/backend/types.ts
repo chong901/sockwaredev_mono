@@ -64,7 +64,7 @@ export type BusStop = {
 export type Query = {
   __typename?: 'Query';
   getBusArrival: BusArrivalData;
-  getBusRoutes: Array<BusRoute>;
+  getBusRoutes: Array<Maybe<Array<Array<Scalars['Float']['output']>>>>;
   getBusStops: Array<BusStop>;
   getNearestBusStops: BusStop;
   searchBusStops: Array<BusStop>;
@@ -77,7 +77,7 @@ export type QueryGetBusArrivalArgs = {
 
 
 export type QueryGetBusRoutesArgs = {
-  originalBusStopCode: Scalars['String']['input'];
+  originBusStopCode: Scalars['String']['input'];
   serviceNo: Scalars['String']['input'];
 };
 
@@ -255,7 +255,7 @@ export type BusStopResolvers<ContextType = any, ParentType extends ResolversPare
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   getBusArrival?: Resolver<ResolversTypes['BusArrivalData'], ParentType, ContextType, RequireFields<QueryGetBusArrivalArgs, 'code'>>;
-  getBusRoutes?: Resolver<Array<ResolversTypes['BusRoute']>, ParentType, ContextType, RequireFields<QueryGetBusRoutesArgs, 'originalBusStopCode' | 'serviceNo'>>;
+  getBusRoutes?: Resolver<Array<Maybe<Array<Array<ResolversTypes['Float']>>>>, ParentType, ContextType, RequireFields<QueryGetBusRoutesArgs, 'originBusStopCode' | 'serviceNo'>>;
   getBusStops?: Resolver<Array<ResolversTypes['BusStop']>, ParentType, ContextType, RequireFields<QueryGetBusStopsArgs, 'lat' | 'long'>>;
   getNearestBusStops?: Resolver<ResolversTypes['BusStop'], ParentType, ContextType, RequireFields<QueryGetNearestBusStopsArgs, 'lat' | 'long'>>;
   searchBusStops?: Resolver<Array<ResolversTypes['BusStop']>, ParentType, ContextType, RequireFields<QuerySearchBusStopsArgs, 'search'>>;
