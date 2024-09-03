@@ -1,12 +1,17 @@
+import { BusRouteModel } from "@/db/schema/BusRoute";
 import "./env-loader";
 // import env loader first
 
 import { db } from "@/db/db";
-import { BusRouteModel } from "@/db/schema/BusRoute";
 import {
   BusRoutePolyline,
   BusRoutePolylineModel,
 } from "@/db/schema/BusRoutePolyline";
+import { BusStop, BusStopModal } from "@/db/schema/BusStop";
+import polyline from "@mapbox/polyline";
+import { and, eq, ExtractTablesWithRelations, sql } from "drizzle-orm";
+import { PgTransaction } from "drizzle-orm/pg-core";
+import { PostgresJsQueryResultHKT } from "drizzle-orm/postgres-js";
 import { readFileSync, writeFileSync } from "fs";
 import path from "path";
 
@@ -20,6 +25,8 @@ const main = async () => {
       serviceNumbers.map((x) => x.serviceNo),
     );
     await tx.insert(BusRoutePolylineModel).values(busRoutePolylines);
+    const missingBusRoutePolylines = await fetchMissingRoutePositions(tx);
+    await tx.insert(BusRoutePolylineModel).values(missingBusRoutePolylines);
   });
 
   console.log("Bus route polyline updated");
@@ -44,7 +51,7 @@ type OSMElementWay = {
 type OSMRelation = {
   type: "relation";
   id: number;
-  tags?: {
+  tags: {
     [key: string]: string;
   };
   ref?: number;
@@ -83,7 +90,6 @@ async function processBusRoutes(
         break;
     }
   });
-  const count: Record<string, number> = {};
 
   osmData.elements.forEach((ele) => {
     if (
@@ -93,8 +99,6 @@ async function processBusRoutes(
     ) {
       const updatedRelation = updateRelation(ele);
       busRoutes.push(processRelation(updatedRelation, ways, nodes));
-      const key = `${updatedRelation.tags?.["ref"]}-${updatedRelation.tags?.["direction"]}`;
-      count[key] = (count[key] || 0) + 1;
     }
   });
 
@@ -145,6 +149,22 @@ const readCachedData = () => {
   }
 };
 
+// it's used when the direction is undefined
+const missingOverpassBusDirection: Record<string, string> = {
+  "992": "2",
+  "2B": "1",
+  "5A": "1",
+  "5B": "1",
+  "856B": "1",
+  "102A": "1",
+  "410G": "1",
+  "163B": "1",
+  "230": "1",
+  "102B": "1",
+  "18": "2",
+  "856A": "1",
+};
+
 const updateRelation = (relation: OSMRelation) => {
   if (relation.tags?.ref === "870") {
     const from = relation.tags?.from;
@@ -155,6 +175,15 @@ const updateRelation = (relation: OSMRelation) => {
         direction: from === "Tengah Interchange" ? "2" : "1",
       },
     };
+  }
+  if (relation.tags && !relation.tags?.direction) {
+    relation.tags.direction =
+      missingOverpassBusDirection[relation.tags?.ref!] ?? "-1";
+  }
+
+  // it's used when the direction value is wrong
+  if (["410G", "84W", "86B", "168A"].includes(relation.tags?.ref!)) {
+    relation.tags.direction = "1";
   }
   return relation;
 };
@@ -180,4 +209,153 @@ const processRelation = (
     direction,
     polylines,
   };
+};
+
+const overwriteBusStops: Record<
+  string,
+  Pick<BusStop, "latitude" | "longitude">
+> = {
+  // to fix 102A that bus stops are not in the correct position cause the polyline to be wrong
+  "67389": {
+    latitude: 1.3943077,
+    longitude: 103.8887821,
+  },
+  "67549": {
+    latitude: 1.3946449,
+    longitude: 103.8864269,
+  },
+
+  // to fix 84A that bus stops are not in the correct position cause the polyline to be wrong
+  "65009": {
+    latitude: 1.4035212,
+    longitude: 103.9030817,
+  },
+  "65221": {
+    latitude: 1.4039774,
+    longitude: 103.9048174,
+  },
+
+  "91079": {
+    latitude: 1.3013564,
+    longitude: 103.8952756,
+  },
+  "80219": {
+    latitude: 1.3068379,
+    longitude: 103.8755128,
+  },
+
+  // to fix 871 that polyline route is wrong
+  "43801": {
+    latitude: 1.354316,
+    longitude: 103.7517342,
+  },
+};
+
+const fetchMissingRoutePositions = async (
+  tx: PgTransaction<
+    PostgresJsQueryResultHKT,
+    Record<string, never>,
+    ExtractTablesWithRelations<Record<string, never>>
+  >,
+) => {
+  const missingRoutes = await tx.execute<{
+    service_no: string;
+    direction: number;
+  }>(sql`
+    select
+      bus_route.service_no,
+      bus_route.direction
+    from bus_route
+    left join bus_route_polyline on bus_route_polyline.service_no = bus_route.service_no and bus_route_polyline.direction = bus_route.direction
+    where bus_route_polyline.service_no is null
+    group by bus_route.service_no, bus_route.direction
+    `);
+
+  console.log("missingRoutes:", missingRoutes);
+
+  const busRoutePolylines: BusRoutePolyline[] = await Promise.all(
+    missingRoutes.map(async (missingRoute) => {
+      const overridePolylines = getOverrideBusRoutes(
+        missingRoute.service_no,
+        missingRoute.direction,
+      );
+      if (overridePolylines) {
+        return {
+          direction: missingRoute.direction,
+          serviceNo: missingRoute.service_no,
+          polylines: overridePolylines,
+        };
+      }
+      const data = await tx
+        .select()
+        .from(BusRouteModel)
+        .leftJoin(
+          BusStopModal,
+          eq(BusRouteModel.BusStopCode, BusStopModal.code),
+        )
+        .where(
+          and(
+            eq(BusRouteModel.ServiceNo, missingRoute.service_no),
+            eq(BusRouteModel.Direction, missingRoute.direction),
+          ),
+        )
+        .orderBy(BusRouteModel.StopSequence);
+      const updatedData = data.map((ele) => {
+        const busStopCode = ele.bus_stop?.code;
+        const overwriteBusStopData = overwriteBusStops[busStopCode!];
+        if (overwriteBusStopData) {
+          return {
+            ...ele,
+            bus_stop: {
+              ...ele.bus_stop,
+              ...overwriteBusStopData,
+            },
+          };
+        }
+        return ele;
+      });
+      const polylinePosition = await fetchPolylinePositionsFromORS(
+        updatedData.map((ele) => ele.bus_stop as BusStop),
+      );
+      return {
+        serviceNo: missingRoute.service_no,
+        direction: missingRoute.direction,
+        polylines: [polylinePosition],
+      };
+    }),
+  );
+  return busRoutePolylines;
+};
+
+const fetchPolylinePositionsFromORS = async (busStops: BusStop[]) => {
+  const orsUrl = "http://localhost:8080/ors/v2/directions/driving-hgv";
+  const data = await fetch(orsUrl, {
+    method: "POST",
+    body: JSON.stringify({
+      coordinates: busStops.map((ele) => [ele.longitude, ele.latitude]),
+      instructions: false,
+    }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const json = (await data.json()) as { routes: { geometry: string }[] };
+  return polyline.decode(json.routes[0].geometry);
+};
+
+const getOverrideBusRoutes = (serviceNo: string, direction: number) => {
+  try {
+    const data = readFileSync(
+      path.join(
+        __dirname,
+        "override_bus_routes",
+        `${serviceNo}-${direction}.json`,
+      ),
+      "utf-8",
+    );
+    if (!data) return null;
+    return JSON.parse(data);
+  } catch (error) {
+    return null;
+  }
 };
