@@ -29,7 +29,7 @@ export const BusArrivalInfo = ({
   useAvoidMapScroll(listContainerRef);
 
   return (
-    <div className="absolute bottom-0 left-1/2 z-[1000] flex h-1/3 w-full -translate-x-1/2 flex-col rounded-lg bg-gradient-to-l from-blue-50 via-blue-100 to-blue-200 shadow-md lg:bottom-[unset] lg:left-[unset] lg:right-8 lg:top-20 lg:h-[unset] lg:min-w-[320px] lg:max-w-[400px] lg:translate-x-[unset]">
+    <div className="absolute bottom-0 left-1/2 z-[1000] flex h-1/3 w-full -translate-x-1/2 flex-col rounded-lg bg-gradient-to-l from-blue-50 via-blue-100 to-blue-200 shadow-md lg:bottom-[unset] lg:left-[unset] lg:right-8 lg:top-20 lg:h-[unset] lg:max-h-[67%] lg:min-w-[320px] lg:max-w-[400px] lg:translate-x-[unset]">
       <div
         className="flex flex-wrap items-end gap-2 p-4"
         onClick={() => onBusStopClick?.(busStop)}
