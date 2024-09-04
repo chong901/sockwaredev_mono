@@ -121,7 +121,8 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
   });
   const map = useMap();
 
-  const { data: busArrivalData } = useFetchBusArrival(selectedBusStop?.code);
+  const { data: busArrivalData, loading: busArrivalLoading } =
+    useFetchBusArrival(selectedBusStop?.code);
 
   useDebounce(
     () => {
@@ -228,6 +229,7 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
       </SearchInput>
       {selectedBusStop && (
         <BusArrivalInfo
+          key={selectedBusStop.code}
           busStop={selectedBusStop}
           busArrivalData={busArrivalData?.getBusArrival}
           onServiceClick={setSelectedBusService}
@@ -235,6 +237,7 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
           onBusStopClick={(busStop) =>
             map.flyTo([busStop.latitude, busStop.longitude])
           }
+          isLoading={busArrivalLoading}
         />
       )}
       {hasCurrentUserLocation && (

@@ -14,6 +14,7 @@ export const useFetchBusArrival = (busCode: string | undefined) => {
     variables: { code: busCode! },
     fetchPolicy: "no-cache",
     skip: !busCode,
+    notifyOnNetworkStatusChange: true,
   });
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const interval = parseInt(

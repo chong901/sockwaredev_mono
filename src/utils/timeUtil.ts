@@ -1,4 +1,4 @@
-export const getTimeUntilArrival = (estimatedArrival: string) => {
+export const getTimeUntilArrival = (estimatedArrival?: string) => {
   if (!estimatedArrival) return "";
   const arrivalDate = new Date(estimatedArrival);
   const currentDate = new Date();

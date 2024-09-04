@@ -1,3 +1,4 @@
+import { LoadingSpinner } from "@/components/atoms/LoadingSpinner";
 import { comingBusArrivingColor } from "@/components/pages/map/const";
 import {
   BusStop,
@@ -5,7 +6,7 @@ import {
 } from "@/graphql-codegen/frontend/graphql";
 import { useAvoidMapScroll } from "@/hooks/useAvoidMapScroll";
 import { getTimeUntilArrival } from "@/utils/timeUtil";
-import { Fragment, useRef } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 type BusArrivalInfoProps = {
   busStop: BusStop;
@@ -15,6 +16,7 @@ type BusArrivalInfoProps = {
     service: GetBusArrivalQuery["getBusArrival"]["Services"][number],
   ) => void;
   onBusStopClick?: (busStop: BusStop) => void;
+  isLoading: boolean;
 };
 
 export const BusArrivalInfo = ({
@@ -23,8 +25,21 @@ export const BusArrivalInfo = ({
   onServiceClick,
   onBusStopClick,
   selectedService,
+  isLoading,
 }: BusArrivalInfoProps) => {
   const listContainerRef = useRef<HTMLDivElement>(null);
+
+  // This state is used to prevent the component from re-rendering when the bus stop is the same
+  //  with interval refetching, the component will re-render every time the interval is triggered
+  //  to avoid the loading spinner for the list to be shown every time, we will set this state to false
+  const [isSameBusStop, setIsSameBusStop] = useState(true);
+
+  useEffect(() => {
+    if (!isSameBusStop) return;
+    if (!isLoading && isSameBusStop) {
+      setIsSameBusStop(false);
+    }
+  }, [isSameBusStop, isLoading]);
 
   useAvoidMapScroll(listContainerRef);
 
@@ -38,48 +53,61 @@ export const BusArrivalInfo = ({
         <div className="text-xl font-bold">{busStop.description}</div>
       </div>
       <hr className="border-t-2 border-gray-200" />
-      <div
-        className="flex flex-1 flex-col gap-2 overflow-scroll py-4"
-        ref={listContainerRef}
-      >
-        <div className="flex w-full px-4">
-          <div className="text-sm">Bus No</div>
-          <div className="ml-auto text-sm">Arriving in (mins)</div>
+      {isLoading && isSameBusStop ? (
+        <div className="flex w-full justify-center p-4">
+          <LoadingSpinner />
         </div>
-        {busArrivalData?.Services.map((service, index, arr) => {
-          const nextBuses = [
-            service.NextBus,
-            service.NextBus2,
-            service.NextBus3,
-          ];
+      ) : (
+        <div
+          className="flex flex-1 flex-col gap-2 overflow-scroll py-4"
+          ref={listContainerRef}
+        >
+          <div className="flex w-full px-4">
+            <div className="text-sm">Bus No</div>
+            <div className="ml-auto text-sm">Arriving in (mins)</div>
+          </div>
+          {busArrivalData?.Services.map((service, index, arr) => {
+            const nextBuses = [
+              service.NextBus,
+              service.NextBus2,
+              service.NextBus3,
+            ];
 
-          return (
-            <Fragment key={service.ServiceNo}>
-              <div
-                className={`flex cursor-pointer px-4 hover:font-bold ${selectedService?.ServiceNo === service.ServiceNo ? "font-bold" : ""}`}
-                onClick={() => onServiceClick?.(service)}
-              >
-                <div className="text-2xl">{service.ServiceNo}</div>
-                <div className="ml-auto flex items-baseline gap-2">
-                  {nextBuses.map((bus, index) => (
-                    <div
-                      className={`text-right ${comingBusArrivingColor[bus?.Load ?? "default"]} ${
-                        index === 0 ? `text-2xl` : "w-4 text-base"
-                      }`}
-                      key={`${service.ServiceNo}-${index}`}
-                    >
-                      {bus ? getTimeUntilArrival(bus.EstimatedArrival) : ""}
-                    </div>
-                  ))}
+            return (
+              <Fragment key={service.ServiceNo}>
+                <div
+                  className={`flex cursor-pointer px-4 hover:font-bold ${selectedService?.ServiceNo === service.ServiceNo ? "font-bold" : ""}`}
+                  onClick={() => onServiceClick?.(service)}
+                >
+                  <div className="text-2xl">{service.ServiceNo}</div>
+                  <div className="ml-auto flex items-baseline gap-2">
+                    {/* 
+                      used when the bus stop is the same and the interval fetching is triggered
+                    */}
+                    {isLoading ? (
+                      <LoadingSpinner className="h-8 w-8" />
+                    ) : (
+                      nextBuses.map((bus, index) => (
+                        <div
+                          className={`text-right ${comingBusArrivingColor[bus?.Load ?? "default"]} ${
+                            index === 0 ? `text-2xl` : "w-4 text-base"
+                          }`}
+                          key={`${service.ServiceNo}-${index}`}
+                        >
+                          {getTimeUntilArrival(bus?.EstimatedArrival)}
+                        </div>
+                      ))
+                    )}
+                  </div>
                 </div>
-              </div>
-              {index !== arr.length - 1 && (
-                <hr className="w-full border-t border-slate-300" />
-              )}
-            </Fragment>
-          );
-        })}
-      </div>
+                {index !== arr.length - 1 && (
+                  <hr className="w-full border-t border-slate-300" />
+                )}
+              </Fragment>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
