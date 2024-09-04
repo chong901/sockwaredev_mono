@@ -18,13 +18,15 @@ export const BusMarker = ({
     <Marker
       position={[parseFloat(bus.Latitude), parseFloat(bus.Longitude)]}
       icon={divIcon({
-        html: `<div class="!bg-slate-500 hover:!bg-slate-600 !rounded-full !w-12 !h-12 !flex !justify-center !items-center !text-xl text-slate-200 hover:!z-[9999] flex-col">
-        <div class="${color}">
-          ${arrivalTime}
-        </div>
-        <div class="text-xs">
-          ${text}
-        </div>
+        html: `
+        <div class="group !bg-slate-500 hover:!bg-slate-600 !rounded-full !w-12 !h-12 !flex !justify-center !items-center !text-xl text-slate-200 hover:!z-[9999] flex-col border-red-white border-2">
+          <div class="${color}">
+            ${arrivalTime}
+          </div>
+          <div class="text-xs">
+            ${text}
+          </div>
+          <div class="absolute -bottom-1 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-8 border-t-slate-500 group-hover:border-t-slate-600"/>
         </div>`,
         className:
           "!bg-slate-500 hover:!bg-slate-600 !rounded-full !w-12 !h-12 !flex !justify-center !items-center !text-xl text-slate-200 hover:!z-[9999]",
