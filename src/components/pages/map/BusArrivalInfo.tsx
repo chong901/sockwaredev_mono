@@ -1,3 +1,4 @@
+import { comingBusArrivingColor } from "@/components/pages/map/const";
 import {
   BusStop,
   GetBusArrivalQuery,
@@ -14,13 +15,6 @@ type BusArrivalInfoProps = {
     service: GetBusArrivalQuery["getBusArrival"]["Services"][number],
   ) => void;
   onBusStopClick?: (busStop: BusStop) => void;
-};
-
-const comingBusArrivingColor: Record<string, string> = {
-  SEA: "text-green-500",
-  SDA: "text-yellow-500",
-  LSD: "text-red-500",
-  default: "",
 };
 
 export const BusArrivalInfo = ({
@@ -69,12 +63,8 @@ export const BusArrivalInfo = ({
                 <div className="ml-auto flex items-baseline gap-2">
                   {nextBuses.map((bus, index) => (
                     <div
-                      className={`text-right ${
-                        index === 0
-                          ? `text-2xl ${
-                              comingBusArrivingColor[bus?.Load ?? "default"]
-                            }`
-                          : "w-4 text-base"
+                      className={`text-right ${comingBusArrivingColor[bus?.Load ?? "default"]} ${
+                        index === 0 ? `text-2xl` : "w-4 text-base"
                       }`}
                       key={`${service.ServiceNo}-${index}`}
                     >
