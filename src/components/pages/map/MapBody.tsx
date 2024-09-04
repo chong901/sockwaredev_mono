@@ -61,6 +61,8 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
 
   const [selectedBusStop, setSelectedBusStop] = useState<BusStop | null>(null);
 
+  const hasCurrentUserLocation = currentUserLat && currentUserLong;
+
   const [selectedBusService, setSelectedBusService] = useState<
     GetBusArrivalQuery["getBusArrival"]["Services"][number] | undefined
   >(undefined);
@@ -186,7 +188,7 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
           pathOptions={{ color: "red" }}
         />
       ))}
-      {currentUserLat && currentUserLong && (
+      {hasCurrentUserLocation && (
         <Marker position={[currentUserLat, currentUserLong]} />
       )}
       {(data || previousData)?.getBusStops.map((stop) => (
@@ -235,17 +237,19 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
           }
         />
       )}
-      <div
-        onClick={onCurrentLocationClick}
-        className="absolute bottom-[calc(33.3%+12px)] right-[12px] z-[1000] flex h-10 w-10 cursor-pointer justify-center rounded-full bg-white p-2 lg:bottom-8 lg:right-8 lg:h-12 lg:w-12"
-      >
-        <Image
-          src="/marker-icon.png"
-          width={20}
-          height={20}
-          alt="go back to current location"
-        />
-      </div>
+      {hasCurrentUserLocation && (
+        <div
+          onClick={onCurrentLocationClick}
+          className="absolute bottom-[calc(33.3%+12px)] right-[12px] z-[1000] flex h-10 w-10 cursor-pointer justify-center rounded-full bg-white p-2 lg:bottom-8 lg:right-8 lg:h-12 lg:w-12"
+        >
+          <Image
+            src="/marker-icon.png"
+            width={20}
+            height={20}
+            alt="go back to current location"
+          />
+        </div>
+      )}
     </>
   );
 };
