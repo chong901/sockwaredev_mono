@@ -70,47 +70,53 @@ type BusStopResponseFromLTA = {
 };
 
 const main = async () => {
-  await db.transaction(async (tx) => {
-    const url = "https://datamall2.mytransport.sg/ltaodataservice/BusStops";
-    const stops: BusStopResponseFromLTA[] = [];
-    let skip = 0;
-    let result = (await callLTAApi<{ value: BusStopResponseFromLTA[] }>(url))
-      .value;
-    while (result.length > 0) {
-      stops.push(...result);
-      skip += result.length;
-      result = (
-        await callLTAApi<{ value: BusStopResponseFromLTA[] }>(
-          `${url}?$skip=${skip}`,
-        )
-      ).value;
-    }
-    await tx.delete(BusStopModel);
-    await tx.insert(BusStopModel).values(
-      stops.map((stop) => ({
-        code: stop.BusStopCode,
-        description: stop.Description,
-        latitude: stop.Latitude,
-        longitude: stop.Longitude,
-        roadName: stop.RoadName,
-      })),
-    );
-    const overpassBusStops = await fetchBusStops();
-    const mappedOsmBusStops = overpassBusStops.map<
-      Pick<BusStop, "code" | "latitude" | "longitude">
-    >((busStop) => ({
-      code: busStop.tags.ref,
-      latitude: busStop.lat,
-      longitude: busStop.lon,
-    }));
-    for (const busStop of mappedOsmBusStops) {
-      await tx
-        .update(BusStopModel)
-        .set({ latitude: busStop.latitude, longitude: busStop.longitude })
-        .where(eq(BusStopModel.code, busStop.code));
-    }
-  });
-  console.log("Bus stops updated");
+  try {
+    await db.transaction(async (tx) => {
+      const url = "https://datamall2.mytransport.sg/ltaodataservice/BusStops";
+      const stops: BusStopResponseFromLTA[] = [];
+      let skip = 0;
+      let result = (await callLTAApi<{ value: BusStopResponseFromLTA[] }>(url))
+        .value;
+      while (result.length > 0) {
+        stops.push(...result);
+        skip += result.length;
+        result = (
+          await callLTAApi<{ value: BusStopResponseFromLTA[] }>(
+            `${url}?$skip=${skip}`,
+          )
+        ).value;
+      }
+      await tx.delete(BusStopModel);
+      await tx.insert(BusStopModel).values(
+        stops.map((stop) => ({
+          code: stop.BusStopCode,
+          description: stop.Description,
+          latitude: stop.Latitude,
+          longitude: stop.Longitude,
+          roadName: stop.RoadName,
+        })),
+      );
+      const overpassBusStops = await fetchBusStops();
+      const mappedOsmBusStops = overpassBusStops.map<
+        Pick<BusStop, "code" | "latitude" | "longitude">
+      >((busStop) => ({
+        code: busStop.tags.ref,
+        latitude: busStop.lat,
+        longitude: busStop.lon,
+      }));
+      await Promise.all(
+        mappedOsmBusStops.map((busStop) =>
+          tx
+            .update(BusStopModel)
+            .set({ latitude: busStop.latitude, longitude: busStop.longitude })
+            .where(eq(BusStopModel.code, busStop.code)),
+        ),
+      );
+    });
+    console.log("Bus stops updated");
+  } catch (error) {
+    console.error("Error updating bus stops:", error);
+  }
   process.exit(0);
 };
 
