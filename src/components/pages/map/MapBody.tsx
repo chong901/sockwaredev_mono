@@ -2,6 +2,7 @@ import SearchInput from "@/components/molecules/SearchInput";
 import { BusArrivalInfo } from "@/components/pages/map/BusArrivalInfo";
 import { BusMarker } from "@/components/pages/map/BusMarker";
 import BusStopSearchResult from "@/components/pages/map/BusStopSearchResult";
+import { defaultLat, defaultLng } from "@/components/pages/map/const";
 import {
   getBusRoutesQuery,
   getBusStopsQuery,
@@ -36,8 +37,8 @@ import {
 import { useClickAway, useDebounce } from "react-use";
 
 type MapBodyProps = {
-  currentUserLat: number;
-  currentUserLong: number;
+  currentUserLat?: number;
+  currentUserLong?: number;
 };
 
 const busStopIcon = icon({ iconUrl: "/bus-stop.svg", iconSize: [40, 40] });
@@ -52,8 +53,8 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
 
   const [getBusStopsVariables, setGetBusStopsVariables] =
     useState<GetBusStopsQueryVariables>({
-      lat: currentUserLat,
-      long: currentUserLong,
+      lat: currentUserLat ?? defaultLat,
+      long: currentUserLong ?? defaultLng,
     });
 
   const [searchBusStop, setSearchBusStop] = useState<string>("");
@@ -81,7 +82,10 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
     GetNearestBusStopQuery,
     GetNearestBusStopQueryVariables
   >(getNearestBusStopQuery, {
-    variables: { lat: currentUserLat, long: currentUserLong },
+    variables: {
+      lat: currentUserLat ?? defaultLat,
+      long: currentUserLong ?? defaultLng,
+    },
     skip: selectedBusStop !== null,
   });
 
@@ -134,6 +138,7 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
   useAvoidMapScroll(searchAreaRef);
 
   const onCurrentLocationClick = () => {
+    if (!currentUserLat || !currentUserLong) return;
     map.flyTo([currentUserLat, currentUserLong]);
   };
 
@@ -181,7 +186,9 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
           pathOptions={{ color: "red" }}
         />
       ))}
-      <Marker position={[currentUserLat, currentUserLong]} />
+      {currentUserLat && currentUserLong && (
+        <Marker position={[currentUserLat, currentUserLong]} />
+      )}
       {(data || previousData)?.getBusStops.map((stop) => (
         <Marker
           key={stop.code}

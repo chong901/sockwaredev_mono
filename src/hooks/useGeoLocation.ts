@@ -15,27 +15,22 @@ export interface IGeolocationPositionError {
 
 export interface GeoLocationSensorState {
   loading: boolean;
-  accuracy: number | null;
-  altitude: number | null;
-  altitudeAccuracy: number | null;
-  heading: number | null;
-  latitude: number | null;
-  longitude: number | null;
-  speed: number | null;
-  timestamp: number | null;
+  accuracy?: number;
+  altitude?: number;
+  altitudeAccuracy?: number;
+  heading?: number;
+  latitude?: number;
+  longitude?: number;
+  speed?: number;
+  timestamp?: number;
   error?: Error | IGeolocationPositionError;
 }
 
 const useGeolocation = (options?: PositionOptions): GeoLocationSensorState => {
   const [state, setState] = useState<GeoLocationSensorState>({
     loading: true,
-    accuracy: null,
-    altitude: null,
-    altitudeAccuracy: null,
-    heading: null,
-    latitude: null,
-    longitude: null,
-    speed: null,
+    latitude: undefined,
+    longitude: undefined,
     timestamp: Date.now(),
   });
 

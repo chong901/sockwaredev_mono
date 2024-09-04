@@ -1,6 +1,7 @@
 "use client";
 import { LoadingSpinner } from "@/components/atoms/LoadingSpinner";
 import { PageContainer } from "@/components/containers/PageContainer";
+import { defaultLat, defaultLng } from "@/components/pages/map/const";
 import { MapBody } from "@/components/pages/map/MapBody";
 import useGeolocation from "@/hooks/useGeoLocation";
 import { MapContainer } from "react-leaflet";
@@ -10,7 +11,7 @@ export default function MapPage() {
     enableHighAccuracy: false,
     maximumAge: Infinity,
   });
-  if (loading || !latitude || !longitude)
+  if (loading)
     return (
       <PageContainer>
         <LoadingSpinner />
@@ -18,7 +19,9 @@ export default function MapPage() {
     );
   return (
     <MapContainer
-      center={[latitude, longitude]}
+      center={
+        latitude && longitude ? [latitude, longitude] : [defaultLat, defaultLng]
+      }
       zoom={20}
       scrollWheelZoom={false}
       className="flex h-svh w-full"
