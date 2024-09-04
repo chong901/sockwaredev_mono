@@ -42,6 +42,7 @@ type MapBodyProps = {
 
 const busStopIcon = icon({ iconUrl: "/bus-stop.svg", iconSize: [40, 40] });
 const selectedBusStopIcon = icon({
+  className: "border-2 border-[#542400] rounded-full",
   iconUrl: "/bus-stop-selected.svg",
   iconSize: [60, 60],
 });
