@@ -58,9 +58,9 @@ const PwaInstallPrompt: React.FC = ({
       {...rest}
     >
       {isSafari ? (
-        <SafariInstallModalBody onDismiss={handleClose} />
+        <IosInstallModalBody onDismiss={handleClose} />
       ) : (
-        <NonSafariInstallModalBody
+        <NonIosInstallModalBody
           onClose={handleClose}
           onInstallClick={handleInstallClick}
         />
@@ -74,7 +74,7 @@ type NonSafariInstallModalBodyProps = {
   onClose: () => void;
 };
 
-const NonSafariInstallModalBody = ({
+const NonIosInstallModalBody = ({
   onClose,
   onInstallClick,
 }: NonSafariInstallModalBodyProps) => (
@@ -112,7 +112,8 @@ const NonSafariInstallModalBody = ({
 type SafariInstallModalBodyProps = {
   onDismiss: () => void;
 };
-const SafariInstallModalBody = ({ onDismiss }: SafariInstallModalBodyProps) => (
+
+const IosInstallModalBody = ({ onDismiss }: SafariInstallModalBodyProps) => (
   <div className="w-80 rounded-lg bg-blue-500 p-6 text-center text-white shadow-lg">
     <h2 className="text-2xl font-semibold">Install App</h2>
     <div className="my-4">
@@ -120,7 +121,8 @@ const SafariInstallModalBody = ({ onDismiss }: SafariInstallModalBodyProps) => (
         Get quick access to this app by installing it on your home screen:
       </p>
       <p className="text-sm">
-        tap <strong>Share</strong> and then <strong>Add to Home Screen</strong>.
+        Open Safari, tap <strong>Share</strong> and then{" "}
+        <strong>Add to Home Screen</strong>.
       </p>
     </div>
     <button
