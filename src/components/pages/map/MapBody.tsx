@@ -252,6 +252,7 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
             width={20}
             height={20}
             alt="go back to current location"
+            className="w-4 lg:w-5"
           />
         </div>
       )}
