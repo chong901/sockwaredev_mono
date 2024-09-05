@@ -1,4 +1,5 @@
 import { ApolloWrapper } from "@/app/ApolloWrapper";
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -19,6 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <ApolloWrapper>{children}</ApolloWrapper>
+        <Analytics />
       </body>
     </html>
   );
