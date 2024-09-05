@@ -10,6 +10,7 @@ import {
   getNearestBusStopQuery,
   searchBusStopsQuery,
 } from "@/components/pages/map/graphql";
+import { useAvoidMapScroll } from "@/components/pages/map/hooks/useAvoidMapScroll";
 import { useFetchBusArrival } from "@/components/pages/map/hooks/useFetchBusArrival";
 import { BusStop } from "@/graphql-codegen/backend/types";
 import {
@@ -23,7 +24,6 @@ import {
   SearchBusStopsQuery,
   SearchBusStopsQueryVariables,
 } from "@/graphql-codegen/frontend/graphql";
-import { useAvoidMapScroll } from "@/hooks/useAvoidMapScroll";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { icon, LatLngExpression } from "leaflet";
 import Image from "next/image";

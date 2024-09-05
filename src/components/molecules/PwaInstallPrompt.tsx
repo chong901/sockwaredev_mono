@@ -1,4 +1,4 @@
-import { useDisableMapInteraction } from "@/hooks/useDisableMapInteraction";
+import { useDisableMapInteraction } from "@/components/pages/map/hooks/useDisableMapInteraction";
 import { useIsSafari } from "@/hooks/useIsSafari";
 import { useIsStandalone } from "@/hooks/useIsStandalone";
 import Image from "next/image";

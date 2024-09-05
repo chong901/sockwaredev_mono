@@ -1,10 +1,10 @@
 import { LoadingSpinner } from "@/components/atoms/LoadingSpinner";
 import { comingBusArrivingColor } from "@/components/pages/map/const";
+import { useAvoidMapScroll } from "@/components/pages/map/hooks/useAvoidMapScroll";
 import {
   BusStop,
   GetBusArrivalQuery,
 } from "@/graphql-codegen/frontend/graphql";
-import { useAvoidMapScroll } from "@/hooks/useAvoidMapScroll";
 import { getTimeUntilArrival } from "@/utils/timeUtil";
 import { Fragment, useEffect, useRef, useState } from "react";
 
