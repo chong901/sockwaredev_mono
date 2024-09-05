@@ -45,7 +45,7 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-      <h1 className="absolute">
+      <h1 className="absolute text-transparent">
         Find Singapore Bus Arrival Timings in Real-Time
       </h1>
       <Map />
