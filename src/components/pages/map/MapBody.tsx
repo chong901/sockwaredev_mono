@@ -1,3 +1,4 @@
+import PwaInstallPrompt from "@/components/molecules/PwaInstallPrompt";
 import SearchInput from "@/components/molecules/SearchInput";
 import { BusArrivalInfo } from "@/components/pages/map/BusArrivalInfo";
 import { BusMarker } from "@/components/pages/map/BusMarker";
@@ -173,6 +174,7 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+      <PwaInstallPrompt />
       {displayBusServices.map(({ ServiceNo, NextBus2, NextBus3, NextBus }) => {
         return (
           <Fragment key={ServiceNo}>
