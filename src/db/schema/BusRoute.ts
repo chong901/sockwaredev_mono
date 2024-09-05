@@ -9,10 +9,10 @@ export const BusRouteModel = pgTable("bus_route", {
   Distance: doublePrecision("distance").notNull(),
   WD_FirstBus: text("wd_first_bus").notNull(),
   WD_LastBus: text("wd_last_bus").notNull(),
-  SAT_FirstBus: text("sat_first_bus").notNull(),
-  SAT_LastBus: text("sat_last_bus").notNull(),
-  SUN_FirstBus: text("sun_first_bus").notNull(),
-  SUN_LastBus: text("sun_last_bus").notNull(),
+  SAT_FirstBus: text("sat_first_bus"),
+  SAT_LastBus: text("sat_last_bus"),
+  SUN_FirstBus: text("sun_first_bus"),
+  SUN_LastBus: text("sun_last_bus"),
 });
 
 export type BusRoute = typeof BusRouteModel.$inferSelect;
