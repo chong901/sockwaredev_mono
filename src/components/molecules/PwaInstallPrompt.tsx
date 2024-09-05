@@ -1,3 +1,4 @@
+import { useDisableMapInteraction } from "@/hooks/useDisableMapInteraction";
 import { useIsSafari } from "@/hooks/useIsSafari";
 import { useIsStandalone } from "@/hooks/useIsStandalone";
 import Image from "next/image";
@@ -8,6 +9,7 @@ const PwaInstallPrompt: React.FC = ({
   ...rest
 }: ComponentProps<"div">) => {
   const deferredPromptRef = useRef<BeforeInstallPromptEvent | null>(null);
+  const modalRef = useRef<HTMLDivElement | null>(null);
   const [isBeforeInstallPromptTriggered, setIsBeforeInstallPromptTriggered] =
     useState(false);
   const isSafari = useIsSafari();
@@ -36,6 +38,8 @@ const PwaInstallPrompt: React.FC = ({
     };
   }, []);
 
+  useDisableMapInteraction(showModal);
+
   const handleInstallClick = async () => {
     if (deferredPromptRef.current) {
       deferredPromptRef.current.prompt();
@@ -55,6 +59,7 @@ const PwaInstallPrompt: React.FC = ({
   return (
     <div
       className={`fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-50 ${className ?? ""}`}
+      ref={modalRef}
       {...rest}
     >
       {isSafari ? (
