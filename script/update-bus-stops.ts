@@ -21,6 +21,16 @@ interface OverpassResponse {
   elements: OverpassElement[];
 }
 
+const missingBusStops: BusStop[] = [
+  {
+    code: "02099",
+    description: "Marina Ctr Ter",
+    latitude: 1.2916983371559003,
+    longitude: 103.86143844913873,
+    roadName: "Raffles Blvd",
+  },
+];
+
 // Function to fetch bus stops from Overpass API using fetch
 async function fetchBusStops(): Promise<Required<OverpassElement>[]> {
   const overpassUrl = "https://overpass-api.de/api/interpreter";
@@ -96,6 +106,7 @@ const main = async () => {
           roadName: stop.RoadName,
         })),
       );
+      await tx.insert(BusStopModel).values(missingBusStops);
       const overpassBusStops = await fetchBusStops();
       const mappedOsmBusStops = overpassBusStops.map<
         Pick<BusStop, "code" | "latitude" | "longitude">
