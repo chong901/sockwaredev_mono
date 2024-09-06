@@ -14,6 +14,7 @@ import {
   useState,
 } from "react";
 import { useMap } from "react-leaflet";
+import { useMedia } from "react-use";
 
 type BusArrivalInfoProps = {
   busStop: BusStop;
@@ -36,6 +37,8 @@ export const BusArrivalInfo = ({
 }: BusArrivalInfoProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const isMobile = useMedia("(max-width: 767px)");
+
   const map = useMap();
 
   // This state is used to prevent the component from re-rendering when the bus stop is the same
@@ -92,14 +95,18 @@ export const BusArrivalInfo = ({
     <div
       className="absolute bottom-0 left-1/2 z-[1000] flex h-1/3 w-full -translate-x-1/2 flex-col rounded-lg bg-gradient-to-l from-blue-50 via-blue-100 to-blue-200 shadow-md lg:bottom-[unset] lg:left-[unset] lg:right-8 lg:top-20 lg:h-[unset] lg:max-h-[67%] lg:min-w-[320px] lg:max-w-[400px] lg:translate-x-[unset]"
       ref={containerRef}
-      style={{ height: containerHeight || undefined, maxHeight: "100svh" }}
+      style={
+        isMobile
+          ? { height: containerHeight || undefined, maxHeight: "100svh" }
+          : undefined
+      }
     >
       <div
         className="flex flex-wrap items-end gap-2 p-4"
         onClick={() => onBusStopClick?.(busStop)}
-        onTouchStart={handleHeaderTouchStart}
-        onTouchEnd={handleHeaderTouchEnd}
-        onTouchMove={handleHeaderTouchMove}
+        onTouchStart={isMobile ? handleHeaderTouchStart : undefined}
+        onTouchEnd={isMobile ? handleHeaderTouchEnd : undefined}
+        onTouchMove={isMobile ? handleHeaderTouchMove : undefined}
       >
         <div className="text-3xl font-bold">{busStop.code}</div>
         <div className="text-xl font-bold">{busStop.description}</div>
