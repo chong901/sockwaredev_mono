@@ -6,7 +6,14 @@ import {
   GetBusArrivalQuery,
 } from "@/graphql-codegen/frontend/graphql";
 import { getTimeUntilArrival } from "@/utils/timeUtil";
-import { Fragment, useEffect, useRef, useState } from "react";
+import {
+  Fragment,
+  TouchEventHandler,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { useMap } from "react-leaflet";
 
 type BusArrivalInfoProps = {
   busStop: BusStop;
@@ -27,12 +34,30 @@ export const BusArrivalInfo = ({
   selectedService,
   isLoading,
 }: BusArrivalInfoProps) => {
-  const listContainerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const map = useMap();
 
   // This state is used to prevent the component from re-rendering when the bus stop is the same
   //  with interval refetching, the component will re-render every time the interval is triggered
   //  to avoid the loading spinner for the list to be shown every time, we will set this state to false
   const [isSameBusStop, setIsSameBusStop] = useState(true);
+
+  const containerOriginYRef = useRef<number | null>(null);
+  const containerOriginalHeightRef = useRef<number | null>(null);
+  const containerHeightOffsetRef = useRef<number | null>(null);
+
+  const [containerHeight, setContainerHeight] = useState<number | undefined>(
+    undefined,
+  );
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerOriginYRef.current =
+        containerRef.current.getBoundingClientRect().y;
+      containerOriginalHeightRef.current = containerRef.current.clientHeight;
+    }
+  }, []);
 
   useEffect(() => {
     if (!isSameBusStop) return;
@@ -41,48 +66,80 @@ export const BusArrivalInfo = ({
     }
   }, [isSameBusStop, isLoading]);
 
-  useAvoidMapScroll(listContainerRef);
+  useAvoidMapScroll(listRef);
+
+  const handleHeaderTouchStart: TouchEventHandler = (e) => {
+    map.dragging.disable();
+    containerHeightOffsetRef.current =
+      e.touches[0].clientY - containerRef.current!.getBoundingClientRect().y;
+  };
+  const handleHeaderTouchEnd: TouchEventHandler = () => {
+    map.dragging.enable();
+  };
+  const handleHeaderTouchMove: TouchEventHandler = (e) => {
+    setContainerHeight(
+      Math.max(
+        containerOriginalHeightRef.current!,
+        containerOriginYRef.current! +
+          containerOriginalHeightRef.current! -
+          e.touches[0].clientY +
+          containerHeightOffsetRef.current!,
+      ),
+    );
+  };
 
   return (
     <div
       className="absolute bottom-0 left-1/2 z-[1000] flex h-1/3 w-full -translate-x-1/2 flex-col rounded-lg bg-gradient-to-l from-blue-50 via-blue-100 to-blue-200 shadow-md lg:bottom-[unset] lg:left-[unset] lg:right-8 lg:top-20 lg:h-[unset] lg:max-h-[67%] lg:min-w-[320px] lg:max-w-[400px] lg:translate-x-[unset]"
-      ref={listContainerRef}
+      ref={containerRef}
+      style={{ height: containerHeight || undefined, maxHeight: "100svh" }}
     >
       <div
         className="flex flex-wrap items-end gap-2 p-4"
         onClick={() => onBusStopClick?.(busStop)}
+        onTouchStart={handleHeaderTouchStart}
+        onTouchEnd={handleHeaderTouchEnd}
+        onTouchMove={handleHeaderTouchMove}
       >
         <div className="text-3xl font-bold">{busStop.code}</div>
         <div className="text-xl font-bold">{busStop.description}</div>
       </div>
       <hr className="border-t-2 border-gray-200" />
-      {isLoading && isSameBusStop ? (
-        <div className="flex w-full justify-center p-4">
-          <LoadingSpinner />
-        </div>
-      ) : (
-        <div className="flex flex-1 flex-col gap-2 overflow-scroll py-4">
-          <div className="flex w-full px-4">
-            <div className="text-sm">Bus No</div>
-            <div className="ml-auto text-sm">Arriving in (mins)</div>
+
+      <div
+        className="flex flex-1 flex-col gap-2 overflow-scroll py-4"
+        ref={listRef}
+      >
+        {isLoading && isSameBusStop ? (
+          <div className="flex w-full justify-center p-4">
+            <LoadingSpinner />
           </div>
-          {busArrivalData?.Services.map((service, index, arr) => {
-            return (
-              <Fragment key={service.ServiceNo}>
-                <BusServiceDetail
-                  service={service}
-                  onServiceClick={onServiceClick}
-                  isSelected={selectedService?.ServiceNo === service.ServiceNo}
-                  isLoading={isLoading}
-                />
-                {index !== arr.length - 1 && (
-                  <hr className="w-full border-t border-slate-300" />
-                )}
-              </Fragment>
-            );
-          })}
-        </div>
-      )}
+        ) : (
+          <>
+            <div className="flex w-full px-4">
+              <div className="text-sm">Bus No</div>
+              <div className="ml-auto text-sm">Arriving in (mins)</div>
+            </div>
+            {busArrivalData?.Services.map((service, index, arr) => {
+              return (
+                <Fragment key={service.ServiceNo}>
+                  <BusServiceDetail
+                    service={service}
+                    onServiceClick={onServiceClick}
+                    isSelected={
+                      selectedService?.ServiceNo === service.ServiceNo
+                    }
+                    isLoading={isLoading}
+                  />
+                  {index !== arr.length - 1 && (
+                    <hr className="w-full border-t border-slate-300" />
+                  )}
+                </Fragment>
+              );
+            })}
+          </>
+        )}
+      </div>
     </div>
   );
 };
