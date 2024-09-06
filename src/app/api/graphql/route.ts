@@ -1,5 +1,9 @@
 import { Resolvers } from "@/graphql-codegen/backend/types";
 import {
+  busArrivalDestinationBusStopFieldResolver,
+  busArrivalOriginBusStopFieldResolver,
+} from "@/graphql/resolvers/BusArrivalResolvers";
+import {
   busStopFieldResolver,
   getBusRoutes,
 } from "@/graphql/resolvers/BusRouteResolvers";
@@ -45,6 +49,9 @@ const typeDefs = gql`
     Load: String!
     Feature: String!
     Type: String!
+
+    originBusStop: BusStop
+    destinationBusStop: BusStop
   }
 
   type BusRoute {
@@ -82,6 +89,10 @@ const resolvers: Resolvers = {
   },
   BusRoute: {
     BusStop: busStopFieldResolver,
+  },
+  BusArrival: {
+    originBusStop: busArrivalOriginBusStopFieldResolver,
+    destinationBusStop: busArrivalDestinationBusStopFieldResolver,
   },
 };
 

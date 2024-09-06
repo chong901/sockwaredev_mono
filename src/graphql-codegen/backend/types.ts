@@ -27,6 +27,8 @@ export type BusArrival = {
   OriginCode: Scalars['String']['output'];
   Type: Scalars['String']['output'];
   VisitNumber: Scalars['String']['output'];
+  destinationBusStop?: Maybe<BusStop>;
+  originBusStop?: Maybe<BusStop>;
 };
 
 export type BusArrivalData = {
@@ -218,6 +220,8 @@ export type BusArrivalResolvers<ContextType = any, ParentType extends ResolversP
   OriginCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   Type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   VisitNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  destinationBusStop?: Resolver<Maybe<ResolversTypes['BusStop']>, ParentType, ContextType>;
+  originBusStop?: Resolver<Maybe<ResolversTypes['BusStop']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
