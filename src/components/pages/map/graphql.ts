@@ -49,6 +49,12 @@ export const getBusArrivalQuery = gql`
     Latitude
     Longitude
     Load
+    destinationBusStop {
+      description
+    }
+    originBusStop {
+      description
+    }
   }
 `;
 
