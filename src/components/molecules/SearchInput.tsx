@@ -16,7 +16,7 @@ const SearchInput = forwardRef<HTMLDivElement, SearchInputProps>(
   ) {
     return (
       <div
-        className="absolute left-1/2 top-[10px] z-[1000] w-3/4 -translate-x-1/2 transform lg:top-6 lg:w-4/12"
+        className="absolute left-1/2 top-[10px] z-[1000] w-3/4 -translate-x-1/2 transform md:top-6 md:w-4/12"
         ref={ref}
       >
         <input

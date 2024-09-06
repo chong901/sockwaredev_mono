@@ -245,14 +245,14 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
       {hasCurrentUserLocation && (
         <div
           onClick={onCurrentLocationClick}
-          className="absolute bottom-[calc(33.3%+12px)] right-[12px] z-[1000] flex h-10 w-10 cursor-pointer justify-center rounded-full bg-white p-2 lg:bottom-8 lg:right-8 lg:h-12 lg:w-12"
+          className="absolute bottom-[calc(33.3%+12px)] right-[12px] z-[1000] flex h-10 w-10 cursor-pointer justify-center rounded-full bg-white p-2 md:bottom-8 md:right-8 md:h-12 md:w-12"
         >
           <Image
             src="/marker-icon.png"
             width={20}
             height={20}
             alt="go back to current location"
-            className="w-4 lg:w-5"
+            className="w-4 md:w-5"
           />
         </div>
       )}

@@ -10,7 +10,7 @@ type SearchResultsProps = {
 
 const Container = ({ className, ...rest }: ComponentProps<"div">) => (
   <div
-    className={`mt-2 flex max-h-[300px] flex-col overflow-y-scroll rounded-md bg-gradient-to-r from-blue-200 via-blue-100 to-blue-50 shadow-md lg:max-h-[600px] ${className ?? ""}`}
+    className={`mt-2 flex max-h-[300px] flex-col overflow-y-scroll rounded-md bg-gradient-to-r from-blue-200 via-blue-100 to-blue-50 shadow-md md:max-h-[600px] ${className ?? ""}`}
     {...rest}
   />
 );
