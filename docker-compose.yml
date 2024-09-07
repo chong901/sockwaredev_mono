@@ -3,12 +3,25 @@
 version: "3.8"
 
 services:
+  # ----------------- PostgreSQL database ------------------- #
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5433:5432" # Expose PostgreSQL on port 5432
+    environment:
+      POSTGRES_USER: postgres # Set the username for the PostgreSQL database
+      POSTGRES_PASSWORD: 1234 # Set the password for the PostgreSQL database
+    volumes:
+      - postgres-data:/var/lib/postgresql/data # Mount the PostgreSQL data volume for persistence
+
   # ----------------- ORS application configuration ------------------- #
   ors-app:
     # Activate the following lines to build the container from the repository
     # You have to add --build to the docker compose command to do so
     build:
-      context: ./
+      context: ./openrouteservice
     container_name: ors-app
     ports:
       - "8080:8082" # Expose the ORS API on port 8080
@@ -18,7 +31,7 @@ services:
     # The user command is useful if you want easier bind mount access or better security.
     #user: "1000:1000" # Run "mkdir -p ors-docker/config ors-docker/elevation_cache ors-docker/files ors-docker/graphs ors-docker/logs && sudo chown -R 1000:1000 ors" before starting the container!
     volumes: # Mount relative directories. ONLY for local container runtime. To switch to docker managed volumes see 'Docker Volumes configuration' section below.
-      - ./ors-docker:/home/ors # Mount the ORS application directory (for logs, graphs, elevation_cache, etc.) into its own directory
+      - ./openrouteservice/ors-docker:/home/ors # Mount the ORS application directory (for logs, graphs, elevation_cache, etc.) into its own directory
       #- ./graphs:/home/ors/graphs  # Mount graphs directory individually
       #- ./elevation_cache:/home/ors/elevation_cache  # Mount elevation cache directory individually
       #- ./config:/home/ors/config  # Mount configuration directory individually
@@ -72,13 +85,15 @@ services:
     #  timeout: 2s
     #  retries: 3
     #  disable: false
-# ----------------- Docker Volumes configuration ------------------- #
-# Define the Docker managed volumes for the ORS application. For more info on Docker Volumes see https://docs.docker.com/compose/compose-file/07-volumes/
-# Volumes are used to persist the data and configuration of the ORS application.
-# If you want to use volumes, uncomment the following lines and remove the ./ prefix from the volume paths in 'services.ors-app.volumes'.
-#volumes:
-#    graphs:
-#    elevation_cache:
-#    config:
-#    logs:
-#    files:
+  # ----------------- Docker Volumes configuration ------------------- #
+  # Define the Docker managed volumes for the ORS application. For more info on Docker Volumes see https://docs.docker.com/compose/compose-file/07-volumes/
+  # Volumes are used to persist the data and configuration of the ORS application.
+  # If you want to use volumes, uncomment the following lines and remove the ./ prefix from the volume paths in 'services.ors-app.volumes'.
+  #volumes:
+  #    graphs:
+  #    elevation_cache:
+  #    config:
+  #    logs:
+  #    files:
+volumes:
+  postgres-data:
