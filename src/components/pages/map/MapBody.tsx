@@ -1,8 +1,8 @@
 import { InfoContainer } from "@/components/containers/InfoContainer";
 import PwaInstallPrompt from "@/components/molecules/PwaInstallPrompt";
 import SearchInput from "@/components/molecules/SearchInput";
+import { BusArrivalDetail } from "@/components/pages/map/BusArrivalDetail";
 import { BusArrivalHeader } from "@/components/pages/map/BusArrivalHeader";
-import { BusArrivalInfo } from "@/components/pages/map/BusArrivalInfo";
 import { BusMarker } from "@/components/pages/map/BusMarker";
 import BusStopSearchResult from "@/components/pages/map/BusStopSearchResult";
 import { defaultLat, defaultLng } from "@/components/pages/map/const";
@@ -179,7 +179,7 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
       case "home": {
         if (!selectedBusStop) return null;
         return (
-          <BusArrivalInfo
+          <BusArrivalDetail
             key={selectedBusStop.code}
             busStop={selectedBusStop}
             busArrivalData={busArrivalData?.getBusArrival}

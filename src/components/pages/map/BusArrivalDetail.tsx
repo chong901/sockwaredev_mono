@@ -19,7 +19,7 @@ type BusArrivalInfoProps = {
   isLoading: boolean;
 };
 
-export const BusArrivalInfo = ({
+export const BusArrivalDetail = ({
   busStop,
   busArrivalData,
   onServiceClick,
