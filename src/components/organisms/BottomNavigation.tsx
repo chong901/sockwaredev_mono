@@ -31,10 +31,8 @@ const BottomNavigation: React.FC = () => {
   const searchParam = useSearchParams();
   const tag = searchParam.get("tag") ?? navItems[0].tag;
   return (
-    <nav
-      className={`fixed bottom-0 left-0 right-0 z-[9999] border-t border-gray-200 shadow-lg ${backgroundGradient}`}
-    >
-      <div className="flex justify-around p-4">
+    <nav className={`shadow-lg ${backgroundGradient}`}>
+      <div className="flex justify-around p-2">
         {navItems.map((item) => (
           <Link
             key={item.name}

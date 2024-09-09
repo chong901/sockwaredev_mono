@@ -1,4 +1,3 @@
-import { FavIcon } from "@/components/atoms/FavIcon";
 import { LoadingSpinner } from "@/components/atoms/LoadingSpinner";
 import { comingBusArrivingColor } from "@/components/pages/map/const";
 import { useAvoidMapScroll } from "@/components/pages/map/hooks/useAvoidMapScroll";
@@ -6,18 +5,8 @@ import {
   BusStop,
   GetBusArrivalQuery,
 } from "@/graphql-codegen/frontend/graphql";
-import { backgroundGradient } from "@/styles/background";
 import { getTimeUntilArrival } from "@/utils/timeUtil";
-import {
-  Fragment,
-  MouseEventHandler,
-  TouchEventHandler,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { useMap } from "react-leaflet";
-import { useLocalStorage, useMedia } from "react-use";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 type BusArrivalInfoProps = {
   busStop: BusStop;
@@ -38,32 +27,12 @@ export const BusArrivalInfo = ({
   selectedService,
   isLoading,
 }: BusArrivalInfoProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
-  const isMobile = useMedia("(max-width: 767px)");
-
-  const map = useMap();
 
   // This state is used to prevent the component from re-rendering when the bus stop is the same
   //  with interval refetching, the component will re-render every time the interval is triggered
   //  to avoid the loading spinner for the list to be shown every time, we will set this state to false
   const [isSameBusStop, setIsSameBusStop] = useState(true);
-
-  const containerOriginYRef = useRef<number | null>(null);
-  const containerOriginalHeightRef = useRef<number | null>(null);
-  const containerHeightOffsetRef = useRef<number | null>(null);
-
-  const [containerHeight, setContainerHeight] = useState<number | undefined>(
-    undefined,
-  );
-
-  useEffect(() => {
-    if (containerRef.current) {
-      containerOriginYRef.current =
-        containerRef.current.getBoundingClientRect().y;
-      containerOriginalHeightRef.current = containerRef.current.clientHeight;
-    }
-  }, []);
 
   useEffect(() => {
     if (!isSameBusStop) return;
@@ -74,101 +43,38 @@ export const BusArrivalInfo = ({
 
   useAvoidMapScroll(listRef);
 
-  const [favoriteBusStops, setFavoriteBusStops] =
-    useLocalStorage<BusStop[]>("favoriteBusStops");
-
-  const handleHeaderTouchStart: TouchEventHandler = (e) => {
-    map.dragging.disable();
-    containerHeightOffsetRef.current =
-      e.touches[0].clientY - containerRef.current!.getBoundingClientRect().y;
-  };
-  const handleHeaderTouchEnd: TouchEventHandler = () => {
-    map.dragging.enable();
-  };
-  const handleHeaderTouchMove: TouchEventHandler = (e) => {
-    setContainerHeight(
-      Math.max(
-        containerOriginalHeightRef.current!,
-        containerOriginYRef.current! +
-          containerOriginalHeightRef.current! -
-          e.touches[0].clientY +
-          containerHeightOffsetRef.current!,
-      ),
-    );
-  };
-  const handleFavoriteClick: MouseEventHandler<SVGSVGElement> = (e) => {
-    e.stopPropagation();
-    if (favoriteBusStops?.map((ele) => ele.code).includes(busStop.code)) {
-      setFavoriteBusStops(
-        favoriteBusStops?.filter((ele) => ele.code !== busStop.code),
-      );
-    } else {
-      setFavoriteBusStops([...(favoriteBusStops ?? []), busStop]);
-    }
-  };
-
-  const favoriteBusStopCodes = favoriteBusStops?.map((ele) => ele.code) ?? [];
-
   return (
     <div
-      className={`absolute bottom-0 left-1/2 z-[1000] flex h-1/3 w-full -translate-x-1/2 flex-col rounded-lg ${backgroundGradient} shadow-md md:bottom-[unset] md:left-[unset] md:right-8 md:top-20 md:h-[unset] md:max-h-[67%] md:min-w-[320px] md:max-w-[400px] md:translate-x-[unset]`}
-      ref={containerRef}
-      style={
-        isMobile
-          ? { height: containerHeight || undefined, maxHeight: "100svh" }
-          : undefined
-      }
+      className="flex flex-1 flex-col gap-2 overflow-scroll py-4"
+      ref={listRef}
     >
-      <div
-        className="flex flex-wrap items-end gap-2 p-4"
-        onClick={() => onBusStopClick?.(busStop)}
-        onTouchStart={isMobile ? handleHeaderTouchStart : undefined}
-        onTouchEnd={isMobile ? handleHeaderTouchEnd : undefined}
-        onTouchMove={isMobile ? handleHeaderTouchMove : undefined}
-      >
-        <div className="text-3xl font-bold">{busStop.code}</div>
-        <div className="text-xl font-bold">{busStop.description}</div>
-        <FavIcon
-          onClick={handleFavoriteClick}
-          className={`ml-auto h-8 ${favoriteBusStopCodes.includes(busStop.code) ? "fill-current text-yellow-500" : ""}`}
-        />
-      </div>
-      <hr className="border-t-2 border-gray-200" />
-
-      <div
-        className="flex flex-1 flex-col gap-2 overflow-scroll py-4"
-        ref={listRef}
-      >
-        {isLoading && isSameBusStop ? (
-          <div className="flex w-full justify-center p-4">
-            <LoadingSpinner />
+      {isLoading && isSameBusStop ? (
+        <div className="flex w-full justify-center p-4">
+          <LoadingSpinner />
+        </div>
+      ) : (
+        <>
+          <div className="flex w-full px-4">
+            <div className="text-sm">Bus No</div>
+            <div className="ml-auto text-sm">Arriving in (mins)</div>
           </div>
-        ) : (
-          <>
-            <div className="flex w-full px-4">
-              <div className="text-sm">Bus No</div>
-              <div className="ml-auto text-sm">Arriving in (mins)</div>
-            </div>
-            {busArrivalData?.Services.map((service, index, arr) => {
-              return (
-                <Fragment key={service.ServiceNo}>
-                  <BusServiceDetail
-                    service={service}
-                    onServiceClick={onServiceClick}
-                    isSelected={
-                      selectedService?.ServiceNo === service.ServiceNo
-                    }
-                    isLoading={isLoading}
-                  />
-                  {index !== arr.length - 1 && (
-                    <hr className="w-full border-t border-slate-300" />
-                  )}
-                </Fragment>
-              );
-            })}
-          </>
-        )}
-      </div>
+          {busArrivalData?.Services.map((service, index, arr) => {
+            return (
+              <Fragment key={service.ServiceNo}>
+                <BusServiceDetail
+                  service={service}
+                  onServiceClick={onServiceClick}
+                  isSelected={selectedService?.ServiceNo === service.ServiceNo}
+                  isLoading={isLoading}
+                />
+                {index !== arr.length - 1 && (
+                  <hr className="w-full border-t border-slate-300" />
+                )}
+              </Fragment>
+            );
+          })}
+        </>
+      )}
     </div>
   );
 };

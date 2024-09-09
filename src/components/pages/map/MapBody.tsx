@@ -1,6 +1,7 @@
+import { InfoContainer } from "@/components/containers/InfoContainer";
 import PwaInstallPrompt from "@/components/molecules/PwaInstallPrompt";
 import SearchInput from "@/components/molecules/SearchInput";
-import BottomNavigation from "@/components/organisms/BottomNavigation";
+import { BusArrivalHeader } from "@/components/pages/map/BusArrivalHeader";
 import { BusArrivalInfo } from "@/components/pages/map/BusArrivalInfo";
 import { BusMarker } from "@/components/pages/map/BusMarker";
 import BusStopSearchResult from "@/components/pages/map/BusStopSearchResult";
@@ -230,20 +231,28 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
           }}
         />
       </SearchInput>
-      {selectedBusStop && (
-        <BusArrivalInfo
-          key={selectedBusStop.code}
-          busStop={selectedBusStop}
-          busArrivalData={busArrivalData?.getBusArrival}
-          onServiceClick={setSelectedBusService}
-          selectedService={selectedBusService}
-          onBusStopClick={(busStop) =>
-            map.flyTo([busStop.latitude, busStop.longitude])
-          }
-          isLoading={busArrivalLoading}
-        />
-      )}
-      <BottomNavigation />
+      <InfoContainer
+        header={
+          selectedBusStop && <BusArrivalHeader busStop={selectedBusStop} />
+        }
+        onHeaderClick={() =>
+          map.flyTo([selectedBusStop!.latitude, selectedBusStop!.longitude])
+        }
+      >
+        {selectedBusStop && (
+          <BusArrivalInfo
+            key={selectedBusStop.code}
+            busStop={selectedBusStop}
+            busArrivalData={busArrivalData?.getBusArrival}
+            onServiceClick={setSelectedBusService}
+            selectedService={selectedBusService}
+            onBusStopClick={(busStop) =>
+              map.flyTo([busStop.latitude, busStop.longitude])
+            }
+            isLoading={busArrivalLoading}
+          />
+        )}
+      </InfoContainer>
       {hasCurrentUserLocation && (
         <div
           onClick={onCurrentLocationClick}
