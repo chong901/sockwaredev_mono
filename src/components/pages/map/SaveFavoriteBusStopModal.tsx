@@ -31,7 +31,7 @@ export const SaveFavoriteBusStopModal = ({
           id="busStopName"
           value={busStopName}
           onChange={(e) => setBusStopName(e.target.value)}
-          className="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full rounded-md border border-gray-300 p-2 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="e.g., Home"
           autoFocus
           required
