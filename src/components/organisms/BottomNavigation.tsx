@@ -36,7 +36,7 @@ const BottomNavigation: React.FC = () => {
           <Link
             key={item.name}
             href={`?tag=${item.tag}`}
-            className={`flex flex-col items-center !text-slate-500 ${tag === item.tag ? "!text-blue-500" : ""}`}
+            className={`flex flex-col items-center ${tag === item.tag ? "!text-blue-500" : "!text-slate-500"}`}
           >
             {item.icon}
             <span className="mt-1 text-xs">{item.name}</span>
