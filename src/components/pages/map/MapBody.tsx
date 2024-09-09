@@ -1,12 +1,10 @@
-import { InfoContainer } from "@/components/containers/InfoContainer";
 import PwaInstallPrompt from "@/components/molecules/PwaInstallPrompt";
 import SearchInput from "@/components/molecules/SearchInput";
-import { BusArrivalDetail } from "@/components/pages/map/BusArrivalDetail";
-import { BusArrivalHeader } from "@/components/pages/map/BusArrivalHeader";
+import { BusArrivalInfo } from "@/components/pages/map/BusArrivalInfo";
 import { BusMarker } from "@/components/pages/map/BusMarker";
 import BusStopSearchResult from "@/components/pages/map/BusStopSearchResult";
 import { defaultLat, defaultLng } from "@/components/pages/map/const";
-import { FavoriteBusStopList } from "@/components/pages/map/FavoriteBusStopList";
+import { FavoriteBusStopInfo } from "@/components/pages/map/FavoriteBusStopInfo";
 import {
   getBusRoutesQuery,
   getBusStopsQuery,
@@ -174,26 +172,22 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
   }, [map, selectedBusService]);
   const tag = useSearchParamWithDefault("tag", "home") as "home" | "favorites";
 
-  const renderInfoBody = () => {
+  const renderInfo = () => {
     switch (tag) {
       case "home": {
         if (!selectedBusStop) return null;
         return (
-          <BusArrivalDetail
-            key={selectedBusStop.code}
+          <BusArrivalInfo
             busStop={selectedBusStop}
+            isLoading={busArrivalLoading}
             busArrivalData={busArrivalData?.getBusArrival}
             onServiceClick={setSelectedBusService}
             selectedService={selectedBusService}
-            onBusStopClick={(busStop) =>
-              map.flyTo([busStop.latitude, busStop.longitude])
-            }
-            isLoading={busArrivalLoading}
           />
         );
       }
       case "favorites": {
-        return <FavoriteBusStopList />;
+        return <FavoriteBusStopInfo />;
       }
     }
   };
@@ -259,16 +253,7 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
           }}
         />
       </SearchInput>
-      <InfoContainer
-        header={
-          selectedBusStop && <BusArrivalHeader busStop={selectedBusStop} />
-        }
-        onHeaderClick={() =>
-          map.flyTo([selectedBusStop!.latitude, selectedBusStop!.longitude])
-        }
-      >
-        {renderInfoBody()}
-      </InfoContainer>
+      {renderInfo()}
       {hasCurrentUserLocation && (
         <div
           onClick={onCurrentLocationClick}

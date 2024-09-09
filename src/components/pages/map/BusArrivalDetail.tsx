@@ -1,45 +1,37 @@
 import { LoadingSpinner } from "@/components/atoms/LoadingSpinner";
 import { comingBusArrivingColor } from "@/components/pages/map/const";
 import { useAvoidMapScroll } from "@/components/pages/map/hooks/useAvoidMapScroll";
-import {
-  BusStop,
-  GetBusArrivalQuery,
-} from "@/graphql-codegen/frontend/graphql";
+import { GetBusArrivalQuery } from "@/graphql-codegen/frontend/graphql";
 import { getTimeUntilArrival } from "@/utils/timeUtil";
 import { Fragment, useEffect, useRef, useState } from "react";
 
 type BusArrivalInfoProps = {
-  busStop: BusStop;
   busArrivalData?: GetBusArrivalQuery["getBusArrival"];
   selectedService?: GetBusArrivalQuery["getBusArrival"]["Services"][number];
   onServiceClick?: (
     service: GetBusArrivalQuery["getBusArrival"]["Services"][number],
   ) => void;
-  onBusStopClick?: (busStop: BusStop) => void;
   isLoading: boolean;
 };
 
 export const BusArrivalDetail = ({
-  busStop,
   busArrivalData,
   onServiceClick,
-  onBusStopClick,
   selectedService,
   isLoading,
 }: BusArrivalInfoProps) => {
   const listRef = useRef<HTMLDivElement>(null);
 
   // This state is used to prevent the component from re-rendering when the bus stop is the same
-  //  with interval refetching, the component will re-render every time the interval is triggered
-  //  to avoid the loading spinner for the list to be shown every time, we will set this state to false
-  const [isSameBusStop, setIsSameBusStop] = useState(true);
+  //  only show the full loading spinner when first mount, the api call triggered from interval fetching will only show the spinner in each bus service
+  const [isFirstMount, setIsFirstMount] = useState(true);
 
   useEffect(() => {
-    if (!isSameBusStop) return;
-    if (!isLoading && isSameBusStop) {
-      setIsSameBusStop(false);
+    if (!isFirstMount) return;
+    if (!isLoading && isFirstMount) {
+      setIsFirstMount(false);
     }
-  }, [isSameBusStop, isLoading]);
+  }, [isLoading, isFirstMount]);
 
   useAvoidMapScroll(listRef);
 
@@ -48,7 +40,7 @@ export const BusArrivalDetail = ({
       className="flex flex-1 flex-col gap-2 overflow-scroll py-4"
       ref={listRef}
     >
-      {isLoading && isSameBusStop ? (
+      {isLoading && isFirstMount ? (
         <div className="flex w-full justify-center p-4">
           <LoadingSpinner />
         </div>
