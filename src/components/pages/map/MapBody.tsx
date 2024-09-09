@@ -12,7 +12,9 @@ import {
   searchBusStopsQuery,
 } from "@/components/pages/map/graphql";
 import { useAvoidMapScroll } from "@/components/pages/map/hooks/useAvoidMapScroll";
+import { useFavoriteBusStops } from "@/components/pages/map/hooks/useFavoriteBusStops";
 import { useFetchBusArrival } from "@/components/pages/map/hooks/useFetchBusArrival";
+import { SaveFavoriteBusStopModal } from "@/components/pages/map/SaveFavoriteBusStopModal";
 import {
   GetBusArrivalQuery,
   GetBusRoutesQuery,
@@ -30,7 +32,14 @@ import { useLazyQuery, useQuery } from "@apollo/client";
 import { useAtom } from "jotai";
 import { icon, LatLngExpression } from "leaflet";
 import Image from "next/image";
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Fragment,
+  MouseEventHandler,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   Marker,
   Polyline,
@@ -38,7 +47,7 @@ import {
   useMap,
   useMapEvents,
 } from "react-leaflet";
-import { useClickAway, useDebounce } from "react-use";
+import { useClickAway, useDebounce, useToggle } from "react-use";
 
 type MapBodyProps = {
   currentUserLat?: number;
@@ -60,6 +69,8 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
       lat: currentUserLat ?? defaultLat,
       long: currentUserLong ?? defaultLng,
     });
+  const [showSaveFavoriteBusStopModal, toggleShowSaveFavoriteBusStopModal] =
+    useToggle(false);
 
   const [searchBusStop, setSearchBusStop] = useState<string>("");
 
@@ -171,6 +182,23 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
     map.flyTo([parseFloat(firstBus.Latitude), parseFloat(firstBus.Longitude)]);
   }, [map, selectedBusService]);
   const tag = useSearchParamWithDefault("tag", "home") as "home" | "favorites";
+  const { hasFavoriteBusStop, removeFavoriteBusStop, addFavoriteBusStop } =
+    useFavoriteBusStops();
+  const handleFavoriteClick: MouseEventHandler = (e) => {
+    e.stopPropagation();
+    if (!selectedBusStop) return;
+    if (hasFavoriteBusStop(selectedBusStop)) {
+      removeFavoriteBusStop(selectedBusStop);
+    } else {
+      toggleShowSaveFavoriteBusStopModal(true);
+    }
+  };
+
+  const handleSaveFavoriteBusStop = (name: string) => {
+    if (!selectedBusStop) return;
+    addFavoriteBusStop({ name, busStop: selectedBusStop });
+    toggleShowSaveFavoriteBusStopModal(false);
+  };
 
   const renderInfo = () => {
     switch (tag) {
@@ -183,6 +211,8 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
             busArrivalData={busArrivalData?.getBusArrival}
             onServiceClick={setSelectedBusService}
             selectedService={selectedBusService}
+            onFavoriteClick={handleFavoriteClick}
+            isFavorite={hasFavoriteBusStop(selectedBusStop)}
           />
         );
       }
@@ -199,6 +229,13 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <PwaInstallPrompt />
+      {selectedBusStop && showSaveFavoriteBusStopModal && (
+        <SaveFavoriteBusStopModal
+          busStop={selectedBusStop}
+          onClose={() => toggleShowSaveFavoriteBusStopModal(false)}
+          onSave={handleSaveFavoriteBusStop}
+        />
+      )}
       {displayBusServices.map(({ ServiceNo, NextBus2, NextBus3, NextBus }) => {
         return (
           <Fragment key={ServiceNo}>

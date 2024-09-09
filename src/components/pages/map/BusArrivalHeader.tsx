@@ -1,23 +1,18 @@
 import { FavIcon } from "@/components/atoms/FavIcon";
-import { useFavoriteBusStops } from "@/components/pages/map/hooks/useFavoriteBusStops";
 import { BusStop } from "@/graphql-codegen/frontend/graphql";
 import { MouseEventHandler } from "react";
 
 type BusArrivalHeaderProps = {
   busStop: BusStop;
+  onFavoriteClick?: MouseEventHandler;
+  isFavorite?: boolean;
 };
 
-export const BusArrivalHeader = ({ busStop }: BusArrivalHeaderProps) => {
-  const { addFavoriteBusStop, hasFavoriteBusStop, removeFavoriteBusStop } =
-    useFavoriteBusStops();
-  const handleFavoriteClick: MouseEventHandler = (e) => {
-    e.stopPropagation();
-    if (hasFavoriteBusStop(busStop)) {
-      removeFavoriteBusStop(busStop);
-    } else {
-      addFavoriteBusStop(busStop);
-    }
-  };
+export const BusArrivalHeader = ({
+  busStop,
+  onFavoriteClick,
+  isFavorite,
+}: BusArrivalHeaderProps) => {
   return (
     <>
       <div className="text-3xl font-bold">{busStop.code}</div>
@@ -25,8 +20,8 @@ export const BusArrivalHeader = ({ busStop }: BusArrivalHeaderProps) => {
         {busStop.description}
       </div>
       <FavIcon
-        onClick={handleFavoriteClick}
-        className={`ml-auto h-8 flex-shrink-0 ${hasFavoriteBusStop(busStop) ? "fill-current text-yellow-500" : ""}`}
+        onClick={onFavoriteClick}
+        className={`ml-auto h-8 flex-shrink-0 ${isFavorite ? "fill-current text-yellow-500" : ""}`}
       />
     </>
   );

@@ -20,7 +20,7 @@ export const FavoriteBusStopList = () => {
     >
       <ItemList
         data={favoriteBusStops ?? []}
-        renderItem={(busStop) => (
+        renderItem={(favoriteBusStop) => (
           <Link
             href={{
               query: {
@@ -28,16 +28,21 @@ export const FavoriteBusStopList = () => {
               },
             }}
             onClick={() => {
-              setSelectedBusStop(busStop);
-              map.flyTo([busStop.latitude, busStop.longitude]);
+              setSelectedBusStop(favoriteBusStop.busStop);
+              map.flyTo([
+                favoriteBusStop.busStop.latitude,
+                favoriteBusStop.busStop.longitude,
+              ]);
             }}
-            className="flex cursor-pointer items-center gap-2 px-4 hover:font-bold"
+            className="flex cursor-pointer items-end gap-2 px-4 hover:font-bold"
           >
-            <div className="text-2xl">{busStop.code}</div>
-            <div className="text-xs">{busStop.description}</div>
+            <div className="text-2xl">{favoriteBusStop.name}</div>
+            <div className="ml-auto text-xs">
+              {favoriteBusStop.busStop.code}
+            </div>
           </Link>
         )}
-        uniqIdentifier="code"
+        getKey={(favoriteBusStop) => favoriteBusStop.busStop.code}
       />
     </div>
   );

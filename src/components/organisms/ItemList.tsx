@@ -1,23 +1,23 @@
 import { Fragment, ReactNode } from "react";
 
-type ItemListProps<K extends string, T> = {
-  data: (T & { [key in K]: string | number })[];
+type ItemListProps<T> = {
+  data: T[];
   renderItem: (item: T, index: number, arr: T[]) => React.ReactNode;
-  uniqIdentifier: K;
+  getKey: (item: T) => string | number;
   separator?: ReactNode;
 };
 
-export const ItemList = <K extends string, T>({
+export const ItemList = <T,>({
   data,
   renderItem,
-  uniqIdentifier,
+  getKey,
   separator = <hr className="w-full border-t border-slate-300" />,
-}: ItemListProps<K, T>) => {
+}: ItemListProps<T>) => {
   return (
     <>
       {data.map((item, index, arr) => {
         return (
-          <Fragment key={item[uniqIdentifier]}>
+          <Fragment key={getKey(item)}>
             {renderItem(item, index, arr)}
             {index !== arr.length - 1 && separator}
           </Fragment>
