@@ -73,7 +73,7 @@ export const BusArrivalInfo = ({
   useAvoidMapScroll(listRef);
 
   const [favoriteBusStops, setFavoriteBusStops] =
-    useLocalStorage<string[]>("favoriteBusStops");
+    useLocalStorage<BusStop[]>("favoriteBusStops");
 
   const handleHeaderTouchStart: TouchEventHandler = (e) => {
     map.dragging.disable();
@@ -96,14 +96,16 @@ export const BusArrivalInfo = ({
   };
   const handleFavoriteClick: MouseEventHandler<SVGSVGElement> = (e) => {
     e.stopPropagation();
-    if (favoriteBusStops?.includes(busStop.code)) {
+    if (favoriteBusStops?.map((ele) => ele.code).includes(busStop.code)) {
       setFavoriteBusStops(
-        favoriteBusStops?.filter((code) => code !== busStop.code),
+        favoriteBusStops?.filter((ele) => ele.code !== busStop.code),
       );
     } else {
-      setFavoriteBusStops([...(favoriteBusStops ?? []), busStop.code]);
+      setFavoriteBusStops([...(favoriteBusStops ?? []), busStop]);
     }
   };
+
+  const favoriteBusStopCodes = favoriteBusStops?.map((ele) => ele.code) ?? [];
 
   return (
     <div
@@ -133,7 +135,7 @@ export const BusArrivalInfo = ({
           stroke-width="2"
           stroke-linecap="round"
           stroke-linejoin="round"
-          className={`ml-auto h-8 ${favoriteBusStops?.includes(busStop.code) ? "fill-current text-yellow-500" : ""}`}
+          className={`ml-auto h-8 ${favoriteBusStopCodes.includes(busStop.code) ? "fill-current text-yellow-500" : ""}`}
         >
           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
         </svg>
