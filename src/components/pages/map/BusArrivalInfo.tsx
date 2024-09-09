@@ -8,13 +8,14 @@ import {
 import { getTimeUntilArrival } from "@/utils/timeUtil";
 import {
   Fragment,
+  MouseEventHandler,
   TouchEventHandler,
   useEffect,
   useRef,
   useState,
 } from "react";
 import { useMap } from "react-leaflet";
-import { useMedia } from "react-use";
+import { useLocalStorage, useMedia } from "react-use";
 
 type BusArrivalInfoProps = {
   busStop: BusStop;
@@ -71,6 +72,9 @@ export const BusArrivalInfo = ({
 
   useAvoidMapScroll(listRef);
 
+  const [favoriteBusStops, setFavoriteBusStops] =
+    useLocalStorage<string[]>("favoriteBusStops");
+
   const handleHeaderTouchStart: TouchEventHandler = (e) => {
     map.dragging.disable();
     containerHeightOffsetRef.current =
@@ -89,6 +93,16 @@ export const BusArrivalInfo = ({
           containerHeightOffsetRef.current!,
       ),
     );
+  };
+  const handleFavoriteClick: MouseEventHandler<SVGSVGElement> = (e) => {
+    e.stopPropagation();
+    if (favoriteBusStops?.includes(busStop.code)) {
+      setFavoriteBusStops(
+        favoriteBusStops?.filter((code) => code !== busStop.code),
+      );
+    } else {
+      setFavoriteBusStops([...(favoriteBusStops ?? []), busStop.code]);
+    }
   };
 
   return (
@@ -110,6 +124,19 @@ export const BusArrivalInfo = ({
       >
         <div className="text-3xl font-bold">{busStop.code}</div>
         <div className="text-xl font-bold">{busStop.description}</div>
+        <svg
+          onClick={handleFavoriteClick}
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          className={`ml-auto h-8 ${favoriteBusStops?.includes(busStop.code) ? "fill-current text-yellow-500" : ""}`}
+        >
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        </svg>
       </div>
       <hr className="border-t-2 border-gray-200" />
 
