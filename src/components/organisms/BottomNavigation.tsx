@@ -1,8 +1,8 @@
 // components/BottomNavigation.tsx
 import { FavIcon } from "@/components/atoms/FavIcon";
 import { HomeIcon } from "@/components/atoms/HomeIcon";
+import { useSearchParamWithDefault } from "@/hooks/useSearchParamWithDefault";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import React from "react";
 
 // Define type for navigation items
@@ -27,8 +27,7 @@ const navItems: NavItem[] = [
 ];
 
 const BottomNavigation: React.FC = () => {
-  const searchParam = useSearchParams();
-  const tag = searchParam.get("tag") ?? navItems[0].tag;
+  const tag = useSearchParamWithDefault("tag", "home");
   return (
     <nav className={`shadow-lg`}>
       <div className="flex justify-around p-2">
