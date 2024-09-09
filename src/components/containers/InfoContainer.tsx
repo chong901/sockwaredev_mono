@@ -70,7 +70,7 @@ export const InfoContainer = ({
       }
     >
       <div
-        className="flex flex-wrap items-end gap-2 p-4"
+        className="flex items-end gap-2 p-4"
         onTouchStart={isMobile ? handleHeaderTouchStart : undefined}
         onTouchEnd={isMobile ? handleHeaderTouchEnd : undefined}
         onTouchMove={isMobile ? handleHeaderTouchMove : undefined}

@@ -26,10 +26,10 @@ export const BusArrivalHeader = ({ busStop }: BusArrivalHeaderProps) => {
   return (
     <>
       <div className="text-3xl font-bold">{busStop.code}</div>
-      <div className="text-xl font-bold">{busStop.description}</div>
+      <div className="text-lg font-bold">{busStop.description}</div>
       <FavIcon
         onClick={handleFavoriteClick}
-        className={`ml-auto h-8 ${favoriteBusStopCodes.includes(busStop.code) ? "fill-current text-yellow-500" : ""}`}
+        className={`ml-auto h-8 flex-shrink-0 ${favoriteBusStopCodes.includes(busStop.code) ? "fill-current text-yellow-500" : ""}`}
       />
     </>
   );
