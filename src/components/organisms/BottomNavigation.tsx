@@ -1,7 +1,6 @@
 // components/BottomNavigation.tsx
 import { FavIcon } from "@/components/atoms/FavIcon";
 import { HomeIcon } from "@/components/atoms/HomeIcon";
-import { backgroundGradient } from "@/styles/background";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import React from "react";
@@ -31,7 +30,7 @@ const BottomNavigation: React.FC = () => {
   const searchParam = useSearchParams();
   const tag = searchParam.get("tag") ?? navItems[0].tag;
   return (
-    <nav className={`shadow-lg ${backgroundGradient}`}>
+    <nav className={`shadow-lg`}>
       <div className="flex justify-around p-2">
         {navItems.map((item) => (
           <Link

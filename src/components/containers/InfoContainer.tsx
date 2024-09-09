@@ -1,5 +1,4 @@
 import BottomNavigation from "@/components/organisms/BottomNavigation";
-import { backgroundGradient } from "@/styles/background";
 import {
   MouseEventHandler,
   ReactNode,
@@ -61,7 +60,7 @@ export const InfoContainer = ({
 
   return (
     <div
-      className={`absolute bottom-0 left-1/2 z-[1000] flex h-1/3 w-full -translate-x-1/2 flex-col rounded-lg ${backgroundGradient} shadow-md md:bottom-[unset] md:left-[unset] md:right-8 md:top-20 md:h-[unset] md:max-h-[67%] md:min-w-[320px] md:max-w-[400px] md:translate-x-[unset]`}
+      className={`absolute bottom-0 left-1/2 z-[1000] flex h-1/3 w-full -translate-x-1/2 flex-col rounded-lg bg-gradient-to-l from-blue-50 via-blue-100 to-blue-200 shadow-md md:bottom-[unset] md:left-[unset] md:right-8 md:top-20 md:h-[unset] md:max-h-[67%] md:min-w-[320px] md:max-w-[400px] md:translate-x-[unset]`}
       ref={containerRef}
       style={
         isMobile
