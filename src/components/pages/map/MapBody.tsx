@@ -6,7 +6,7 @@ import { BusArrivalInfo } from "@/components/pages/map/BusArrivalInfo";
 import { BusMarker } from "@/components/pages/map/BusMarker";
 import BusStopSearchResult from "@/components/pages/map/BusStopSearchResult";
 import { defaultLat, defaultLng } from "@/components/pages/map/const";
-import { FavoriteList } from "@/components/pages/map/FavoriteList";
+import { FavoriteBusStopList } from "@/components/pages/map/FavoriteBusStopList";
 import {
   getBusRoutesQuery,
   getBusStopsQuery,
@@ -15,7 +15,6 @@ import {
 } from "@/components/pages/map/graphql";
 import { useAvoidMapScroll } from "@/components/pages/map/hooks/useAvoidMapScroll";
 import { useFetchBusArrival } from "@/components/pages/map/hooks/useFetchBusArrival";
-import { BusStop } from "@/graphql-codegen/backend/types";
 import {
   GetBusArrivalQuery,
   GetBusRoutesQuery,
@@ -28,7 +27,9 @@ import {
   SearchBusStopsQueryVariables,
 } from "@/graphql-codegen/frontend/graphql";
 import { useSearchParamWithDefault } from "@/hooks/useSearchParamWithDefault";
+import { selectedBusStopAtom } from "@/store/atoms/busStopAtoms";
 import { useLazyQuery, useQuery } from "@apollo/client";
+import { useAtom } from "jotai";
 import { icon, LatLngExpression } from "leaflet";
 import Image from "next/image";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
@@ -64,7 +65,7 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
 
   const [searchBusStop, setSearchBusStop] = useState<string>("");
 
-  const [selectedBusStop, setSelectedBusStop] = useState<BusStop | null>(null);
+  const [selectedBusStop, setSelectedBusStop] = useAtom(selectedBusStopAtom);
 
   const hasCurrentUserLocation = currentUserLat && currentUserLong;
 
@@ -114,7 +115,7 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
     if (nearestBusStop) {
       setSelectedBusStop(nearestBusStop.getNearestBusStops);
     }
-  }, [nearestBusStop]);
+  }, [nearestBusStop, setSelectedBusStop]);
 
   useMapEvents({
     moveend: (event) => {
@@ -192,7 +193,7 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
         );
       }
       case "favorites": {
-        return <FavoriteList />;
+        return <FavoriteBusStopList />;
       }
     }
   };

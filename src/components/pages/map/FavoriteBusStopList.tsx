@@ -1,12 +1,17 @@
 import { ItemList } from "@/components/organisms/ItemList";
 import { useAvoidMapScroll } from "@/components/pages/map/hooks/useAvoidMapScroll";
 import { useFavoriteBusStops } from "@/components/pages/map/hooks/useFavoriteBusStops";
+import { selectedBusStopAtom } from "@/store/atoms/busStopAtoms";
+import { useAtom } from "jotai";
+import Link from "next/link";
 import { useRef } from "react";
+import { useMap } from "react-leaflet";
 
-export const FavoriteList = () => {
+export const FavoriteBusStopList = () => {
   const listRef = useRef<HTMLDivElement>(null);
   const { favoriteBusStops } = useFavoriteBusStops();
-
+  const [_, setSelectedBusStop] = useAtom(selectedBusStopAtom);
+  const map = useMap();
   useAvoidMapScroll(listRef);
   return (
     <div
@@ -15,11 +20,22 @@ export const FavoriteList = () => {
     >
       <ItemList
         data={favoriteBusStops ?? []}
-        renderItem={(busStop, index, arr) => (
-          <div className="flex cursor-pointer items-center gap-2 px-4 hover:font-bold">
+        renderItem={(busStop) => (
+          <Link
+            href={{
+              query: {
+                tag: "home",
+              },
+            }}
+            onClick={() => {
+              setSelectedBusStop(busStop);
+              map.flyTo([busStop.latitude, busStop.longitude]);
+            }}
+            className="flex cursor-pointer items-center gap-2 px-4 hover:font-bold"
+          >
             <div className="text-2xl">{busStop.code}</div>
             <div className="text-xs">{busStop.description}</div>
-          </div>
+          </Link>
         )}
         uniqIdentifier="code"
       />

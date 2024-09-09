@@ -1,7 +1,7 @@
 import { Fragment, ReactNode } from "react";
 
 type ItemListProps<K extends string, T> = {
-  data: (T & { [key in K]: string })[];
+  data: (T & { [key in K]: string | number })[];
   renderItem: (item: T, index: number, arr: T[]) => React.ReactNode;
   uniqIdentifier: K;
   separator?: ReactNode;
