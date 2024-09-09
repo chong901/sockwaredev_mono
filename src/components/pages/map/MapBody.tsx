@@ -6,6 +6,7 @@ import { BusArrivalInfo } from "@/components/pages/map/BusArrivalInfo";
 import { BusMarker } from "@/components/pages/map/BusMarker";
 import BusStopSearchResult from "@/components/pages/map/BusStopSearchResult";
 import { defaultLat, defaultLng } from "@/components/pages/map/const";
+import { FavoriteList } from "@/components/pages/map/FavoriteList";
 import {
   getBusRoutesQuery,
   getBusStopsQuery,
@@ -26,6 +27,7 @@ import {
   SearchBusStopsQuery,
   SearchBusStopsQueryVariables,
 } from "@/graphql-codegen/frontend/graphql";
+import { useSearchParamWithDefault } from "@/hooks/useSearchParamWithDefault";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { icon, LatLngExpression } from "leaflet";
 import Image from "next/image";
@@ -169,6 +171,31 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
     if (lat === 0 && long === 0) return;
     map.flyTo([parseFloat(firstBus.Latitude), parseFloat(firstBus.Longitude)]);
   }, [map, selectedBusService]);
+  const tag = useSearchParamWithDefault("tag", "home") as "home" | "favorites";
+
+  const renderInfoBody = () => {
+    switch (tag) {
+      case "home": {
+        if (!selectedBusStop) return null;
+        return (
+          <BusArrivalInfo
+            key={selectedBusStop.code}
+            busStop={selectedBusStop}
+            busArrivalData={busArrivalData?.getBusArrival}
+            onServiceClick={setSelectedBusService}
+            selectedService={selectedBusService}
+            onBusStopClick={(busStop) =>
+              map.flyTo([busStop.latitude, busStop.longitude])
+            }
+            isLoading={busArrivalLoading}
+          />
+        );
+      }
+      case "favorites": {
+        return <FavoriteList />;
+      }
+    }
+  };
 
   return (
     <>
@@ -239,19 +266,7 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
           map.flyTo([selectedBusStop!.latitude, selectedBusStop!.longitude])
         }
       >
-        {selectedBusStop && (
-          <BusArrivalInfo
-            key={selectedBusStop.code}
-            busStop={selectedBusStop}
-            busArrivalData={busArrivalData?.getBusArrival}
-            onServiceClick={setSelectedBusService}
-            selectedService={selectedBusService}
-            onBusStopClick={(busStop) =>
-              map.flyTo([busStop.latitude, busStop.longitude])
-            }
-            isLoading={busArrivalLoading}
-          />
-        )}
+        {renderInfoBody()}
       </InfoContainer>
       {hasCurrentUserLocation && (
         <div
