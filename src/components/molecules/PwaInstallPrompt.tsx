@@ -1,13 +1,11 @@
+import { Modal } from "@/components/containers/Modal";
 import { useDisableMapInteraction } from "@/components/pages/map/hooks/useDisableMapInteraction";
 import { useIsSafari } from "@/hooks/useIsSafari";
 import { useIsStandalone } from "@/hooks/useIsStandalone";
 import Image from "next/image";
 import React, { ComponentProps, useEffect, useRef, useState } from "react";
 
-const PwaInstallPrompt: React.FC = ({
-  className,
-  ...rest
-}: ComponentProps<"div">) => {
+const PwaInstallPrompt: React.FC = ({ ...rest }: ComponentProps<"div">) => {
   const deferredPromptRef = useRef<BeforeInstallPromptEvent | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const [isBeforeInstallPromptTriggered, setIsBeforeInstallPromptTriggered] =
@@ -57,11 +55,7 @@ const PwaInstallPrompt: React.FC = ({
 
   if (!showModal) return null;
   return (
-    <div
-      className={`fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-50 ${className ?? ""}`}
-      ref={modalRef}
-      {...rest}
-    >
+    <Modal ref={modalRef} {...rest}>
       {isSafari ? (
         <IosInstallModalBody onDismiss={handleClose} />
       ) : (
@@ -70,7 +64,7 @@ const PwaInstallPrompt: React.FC = ({
           onInstallClick={handleInstallClick}
         />
       )}
-    </div>
+    </Modal>
   );
 };
 
