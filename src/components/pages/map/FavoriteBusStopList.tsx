@@ -34,7 +34,7 @@ export const FavoriteBusStopList = () => {
                 favoriteBusStop.busStop.longitude,
               ]);
             }}
-            className="flex cursor-pointer items-end gap-2 px-4 hover:font-bold"
+            className="flex cursor-pointer items-end gap-2 px-4 !text-slate-700 hover:font-bold"
           >
             <div className="text-2xl">{favoriteBusStop.name}</div>
             <div className="ml-auto text-xs">
