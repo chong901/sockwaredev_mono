@@ -32,6 +32,7 @@ import { useLazyQuery, useQuery } from "@apollo/client";
 import { useAtom } from "jotai";
 import { icon, LatLngExpression } from "leaflet";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   Fragment,
   MouseEventHandler,
@@ -200,6 +201,8 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
     toggleShowSaveFavoriteBusStopModal(false);
   };
 
+  const router = useRouter();
+
   const renderInfo = () => {
     switch (tag) {
       case "home": {
@@ -268,6 +271,7 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
             click: () => {
               setSelectedBusStop(stop);
               setSelectedBusService(undefined);
+              router.replace("?tag=home");
             },
           }}
         />
