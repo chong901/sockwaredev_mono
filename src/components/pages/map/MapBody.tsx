@@ -1,5 +1,6 @@
 import PwaInstallPrompt from "@/components/molecules/PwaInstallPrompt";
 import SearchInput from "@/components/molecules/SearchInput";
+import BottomNavigation from "@/components/organisms/BottomNavigation";
 import { BusArrivalInfo } from "@/components/pages/map/BusArrivalInfo";
 import { BusMarker } from "@/components/pages/map/BusMarker";
 import BusStopSearchResult from "@/components/pages/map/BusStopSearchResult";
@@ -242,6 +243,7 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
           isLoading={busArrivalLoading}
         />
       )}
+      <BottomNavigation />
       {hasCurrentUserLocation && (
         <div
           onClick={onCurrentLocationClick}

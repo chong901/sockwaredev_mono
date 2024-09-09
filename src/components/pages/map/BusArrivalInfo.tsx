@@ -1,3 +1,4 @@
+import { FavIcon } from "@/components/atoms/FavIcon";
 import { LoadingSpinner } from "@/components/atoms/LoadingSpinner";
 import { comingBusArrivingColor } from "@/components/pages/map/const";
 import { useAvoidMapScroll } from "@/components/pages/map/hooks/useAvoidMapScroll";
@@ -5,6 +6,7 @@ import {
   BusStop,
   GetBusArrivalQuery,
 } from "@/graphql-codegen/frontend/graphql";
+import { backgroundGradient } from "@/styles/background";
 import { getTimeUntilArrival } from "@/utils/timeUtil";
 import {
   Fragment,
@@ -109,7 +111,7 @@ export const BusArrivalInfo = ({
 
   return (
     <div
-      className="absolute bottom-0 left-1/2 z-[1000] flex h-1/3 w-full -translate-x-1/2 flex-col rounded-lg bg-gradient-to-l from-blue-50 via-blue-100 to-blue-200 shadow-md md:bottom-[unset] md:left-[unset] md:right-8 md:top-20 md:h-[unset] md:max-h-[67%] md:min-w-[320px] md:max-w-[400px] md:translate-x-[unset]"
+      className={`absolute bottom-0 left-1/2 z-[1000] flex h-1/3 w-full -translate-x-1/2 flex-col rounded-lg ${backgroundGradient} shadow-md md:bottom-[unset] md:left-[unset] md:right-8 md:top-20 md:h-[unset] md:max-h-[67%] md:min-w-[320px] md:max-w-[400px] md:translate-x-[unset]`}
       ref={containerRef}
       style={
         isMobile
@@ -126,19 +128,10 @@ export const BusArrivalInfo = ({
       >
         <div className="text-3xl font-bold">{busStop.code}</div>
         <div className="text-xl font-bold">{busStop.description}</div>
-        <svg
+        <FavIcon
           onClick={handleFavoriteClick}
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
           className={`ml-auto h-8 ${favoriteBusStopCodes.includes(busStop.code) ? "fill-current text-yellow-500" : ""}`}
-        >
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-        </svg>
+        />
       </div>
       <hr className="border-t-2 border-gray-200" />
 
