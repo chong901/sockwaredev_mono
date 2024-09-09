@@ -10,7 +10,7 @@ Run the docker compose:
 docker compose up -d
 ```
 
-Wait for ORS to be ready, check `http://localhost:8080/ors/v2/health` and make sure the status is `ready` (might take a few mins), there should be some files under openrouteservice/graphs folder.
+Wait for ORS to be ready, check `http://localhost:8080/ors/v2/health` and make sure the status is `ready` (might take a few mins), there should be some files under openrouteservice/graphs folder. (reference)[https://giscience.github.io/openrouteservice/run-instance/running-with-docker]
 
 Copy .env.local.sample to .env.local
 
