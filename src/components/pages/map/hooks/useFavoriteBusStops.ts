@@ -2,7 +2,7 @@ import { BusStop } from "@/graphql-codegen/backend/types";
 import { useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
-type FavoriteBusStop = {
+export type FavoriteBusStop = {
   name: string;
   busStop: BusStop;
 };
