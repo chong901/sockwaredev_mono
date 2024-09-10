@@ -1,5 +1,5 @@
 import "leaflet/dist/leaflet.css";
-import { Metadata } from "next";
+import { Metadata, Viewport } from "next";
 import dynamic from "next/dynamic";
 
 // avoid SSR for the map component since leaflet uses window object, which cause error in SSR
@@ -40,6 +40,12 @@ export const metadata: Metadata = {
   title: "Real-Time Singapore Bus Arrival Timings | Find Your Next Bus Easily",
   description:
     "Quickly find real-time bus arrival timings in Singapore. Stay updated with the next bus arrival at your stop. Reliable and easy-to-use Singapore bus timing service.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1.0,
+  viewportFit: "cover",
 };
 
 export default function Home() {

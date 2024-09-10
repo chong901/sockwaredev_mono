@@ -41,6 +41,9 @@ const config: Config = {
         "11/12": "91.666667%",
         "12/12": "100%",
       },
+      padding: {
+        "safe-bottom": "calc(0.5rem + env(safe-area-inset-bottom))",
+      },
     },
   },
   plugins: [],

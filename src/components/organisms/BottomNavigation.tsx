@@ -30,7 +30,7 @@ const BottomNavigation: React.FC = () => {
   const tag = useSearchParamWithDefault("tag", "home");
   return (
     <nav className={`shadow-lg`}>
-      <div className="flex justify-around p-2">
+      <div className="pb-safe-bottom flex justify-around px-2 pt-2">
         {navItems.map((item) => (
           <Link
             key={item.name}
