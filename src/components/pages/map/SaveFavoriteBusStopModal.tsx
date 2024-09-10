@@ -5,7 +5,7 @@ import { useState } from "react";
 type SaveFavoriteBusStopProps = {
   busStop: BusStop;
   onClose: () => void;
-  onSave: (name: string) => void;
+  onSave: (name: string, busStop: BusStop) => void;
 };
 export const SaveFavoriteBusStopModal = ({
   busStop,
@@ -15,7 +15,7 @@ export const SaveFavoriteBusStopModal = ({
   const [busStopName, setBusStopName] = useState("");
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(busStopName);
+    onSave(busStopName, busStop);
   };
   return (
     <Modal className="absolute">

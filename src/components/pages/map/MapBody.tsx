@@ -16,6 +16,7 @@ import { useFavoriteBusStops } from "@/components/pages/map/hooks/useFavoriteBus
 import { useFetchBusArrival } from "@/components/pages/map/hooks/useFetchBusArrival";
 import { SaveFavoriteBusStopModal } from "@/components/pages/map/SaveFavoriteBusStopModal";
 import {
+  BusStop,
   GetBusArrivalQuery,
   GetBusRoutesQuery,
   GetBusRoutesQueryVariables,
@@ -195,9 +196,9 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
     }
   };
 
-  const handleSaveFavoriteBusStop = (name: string) => {
+  const handleSaveFavoriteBusStop = (name: string, busStop: BusStop) => {
     if (!selectedBusStop) return;
-    addFavoriteBusStop({ name, busStop: selectedBusStop });
+    addFavoriteBusStop({ name, busStop });
     toggleShowSaveFavoriteBusStopModal(false);
   };
 
