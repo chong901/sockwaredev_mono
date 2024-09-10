@@ -1,5 +1,5 @@
 import { InfoContainer } from "@/components/containers/InfoContainer";
-import { FavoriteBusStopList } from "@/components/pages/map/FavoriteBusStopList";
+import { FavoriteBusStopList } from "@/components/pages/map/organisms/FavoriteBusStopList";
 
 export const FavoriteBusStopInfo = () => {
   return (

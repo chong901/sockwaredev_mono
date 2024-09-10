@@ -1,6 +1,6 @@
 import { InfoContainer } from "@/components/containers/InfoContainer";
-import { BusArrivalDetail } from "@/components/pages/map/BusArrivalDetail";
-import { BusArrivalHeader } from "@/components/pages/map/BusArrivalHeader";
+import { BusArrivalHeader } from "@/components/pages/map/molecules/BusArrivalHeader";
+import { BusArrivalDetail } from "@/components/pages/map/organisms/BusArrivalDetail";
 import { ComponentProps } from "react";
 import { useMap } from "react-leaflet";
 

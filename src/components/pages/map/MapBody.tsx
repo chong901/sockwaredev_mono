@@ -1,10 +1,6 @@
 import PwaInstallPrompt from "@/components/molecules/PwaInstallPrompt";
 import SearchInput from "@/components/molecules/SearchInput";
-import { BusArrivalInfo } from "@/components/pages/map/BusArrivalInfo";
-import { BusMarker } from "@/components/pages/map/BusMarker";
-import BusStopSearchResult from "@/components/pages/map/BusStopSearchResult";
 import { defaultLat, defaultLng } from "@/components/pages/map/const";
-import { FavoriteBusStopInfo } from "@/components/pages/map/FavoriteBusStopInfo";
 import {
   getBusRoutesQuery,
   getBusStopsQuery,
@@ -14,7 +10,11 @@ import {
 import { useAvoidMapScroll } from "@/components/pages/map/hooks/useAvoidMapScroll";
 import { useFavoriteBusStops } from "@/components/pages/map/hooks/useFavoriteBusStops";
 import { useFetchBusArrival } from "@/components/pages/map/hooks/useFetchBusArrival";
-import { SaveFavoriteBusStopModal } from "@/components/pages/map/SaveFavoriteBusStopModal";
+import { BusMarker } from "@/components/pages/map/molecules/BusMarker";
+import { BusArrivalInfo } from "@/components/pages/map/organisms/BusArrivalInfo";
+import BusStopSearchResult from "@/components/pages/map/organisms/BusStopSearchResult";
+import { FavoriteBusStopInfo } from "@/components/pages/map/organisms/FavoriteBusStopInfo";
+import { SaveFavoriteBusStopModal } from "@/components/pages/map/organisms/SaveFavoriteBusStopModal";
 import {
   BusStop,
   GetBusArrivalQuery,
