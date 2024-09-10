@@ -216,7 +216,6 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
             onServiceClick={setSelectedBusService}
             selectedService={selectedBusService}
             onFavoriteClick={handleFavoriteClick}
-            isFavorite={hasFavoriteBusStop(selectedBusStop)}
           />
         );
       }

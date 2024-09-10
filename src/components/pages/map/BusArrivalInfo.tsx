@@ -14,17 +14,12 @@ export const BusArrivalInfo = ({
   onServiceClick,
   selectedService,
   onFavoriteClick,
-  isFavorite,
 }: BusArrivalInfoProps) => {
   const map = useMap();
   return (
     <InfoContainer
       header={
-        <BusArrivalHeader
-          busStop={busStop}
-          onFavoriteClick={onFavoriteClick}
-          isFavorite={isFavorite}
-        />
+        <BusArrivalHeader busStop={busStop} onFavoriteClick={onFavoriteClick} />
       }
       onHeaderClick={() => map.flyTo([busStop.latitude, busStop.longitude])}
     >

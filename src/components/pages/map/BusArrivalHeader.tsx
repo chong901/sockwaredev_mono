@@ -1,18 +1,19 @@
 import { FavIcon } from "@/components/atoms/FavIcon";
+import { useFavoriteBusStops } from "@/components/pages/map/hooks/useFavoriteBusStops";
 import { BusStop } from "@/graphql-codegen/frontend/graphql";
 import { MouseEventHandler } from "react";
 
 type BusArrivalHeaderProps = {
   busStop: BusStop;
   onFavoriteClick?: MouseEventHandler;
-  isFavorite?: boolean;
 };
 
 export const BusArrivalHeader = ({
   busStop,
   onFavoriteClick,
-  isFavorite,
 }: BusArrivalHeaderProps) => {
+  const { hasFavoriteBusStop } = useFavoriteBusStops();
+  const isFavorite = hasFavoriteBusStop(busStop);
   return (
     <>
       <div className="text-3xl font-bold">{busStop.code}</div>

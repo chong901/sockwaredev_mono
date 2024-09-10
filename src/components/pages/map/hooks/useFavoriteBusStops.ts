@@ -1,14 +1,19 @@
 import { BusStop } from "@/graphql-codegen/backend/types";
-import { useLocalStorage } from "react-use";
+import { useAtom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 
 type FavoriteBusStop = {
   name: string;
   busStop: BusStop;
 };
 
+const favoriteBusStopAtom = atomWithStorage<FavoriteBusStop[]>(
+  "favoriteBusStops",
+  [],
+);
+
 export const useFavoriteBusStops = () => {
-  const [favoriteBusStops, setFavoriteBusStops] =
-    useLocalStorage<FavoriteBusStop[]>("favoriteBusStops");
+  const [favoriteBusStops, setFavoriteBusStops] = useAtom(favoriteBusStopAtom);
 
   const addFavoriteBusStop = (busStop: FavoriteBusStop) => {
     setFavoriteBusStops([...(favoriteBusStops ?? []), busStop]);
