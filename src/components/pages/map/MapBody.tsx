@@ -17,7 +17,6 @@ import { FavoriteBusStopInfo } from "@/components/pages/map/organisms/FavoriteBu
 import { SaveFavoriteBusStopModal } from "@/components/pages/map/organisms/SaveFavoriteBusStopModal";
 import {
   BusStop,
-  GetBusArrivalQuery,
   GetBusRoutesQuery,
   GetBusRoutesQueryVariables,
   GetBusStopsQuery,
@@ -28,6 +27,7 @@ import {
   SearchBusStopsQueryVariables,
 } from "@/graphql-codegen/frontend/graphql";
 import { useSearchParamWithDefault } from "@/hooks/useSearchParamWithDefault";
+import { selectedBusServiceAtom } from "@/store/atoms/busServiceAtoms";
 import { selectedBusStopAtom } from "@/store/atoms/busStopAtoms";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { useAtom } from "jotai";
@@ -80,9 +80,9 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
 
   const hasCurrentUserLocation = currentUserLat && currentUserLong;
 
-  const [selectedBusService, setSelectedBusService] = useState<
-    GetBusArrivalQuery["getBusArrival"]["Services"][number] | undefined
-  >(undefined);
+  const [selectedBusService, setSelectedBusService] = useAtom(
+    selectedBusServiceAtom,
+  );
 
   const { data, previousData } = useQuery<
     GetBusStopsQuery,
