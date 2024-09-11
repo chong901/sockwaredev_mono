@@ -11,9 +11,8 @@ import { useAvoidMapScroll } from "@/components/pages/map/hooks/useAvoidMapScrol
 import { useFavoriteBusStops } from "@/components/pages/map/hooks/useFavoriteBusStops";
 import { useFetchBusArrival } from "@/components/pages/map/hooks/useFetchBusArrival";
 import { BusMarker } from "@/components/pages/map/molecules/BusMarker";
-import { BusArrivalInfo } from "@/components/pages/map/organisms/BusArrivalInfo";
 import BusStopSearchResult from "@/components/pages/map/organisms/BusStopSearchResult";
-import { FavoriteBusStopInfo } from "@/components/pages/map/organisms/FavoriteBusStopInfo";
+import { InfoSection } from "@/components/pages/map/organisms/InfoSection";
 import { SaveFavoriteBusStopModal } from "@/components/pages/map/organisms/SaveFavoriteBusStopModal";
 import {
   BusStop,
@@ -204,27 +203,6 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
 
   const router = useRouter();
 
-  const renderInfo = () => {
-    switch (tag) {
-      case "home": {
-        if (!selectedBusStop) return null;
-        return (
-          <BusArrivalInfo
-            busStop={selectedBusStop}
-            isLoading={busArrivalLoading}
-            busArrivalData={busArrivalData?.getBusArrival}
-            onServiceClick={setSelectedBusService}
-            selectedService={selectedBusService}
-            onFavoriteClick={handleFavoriteClick}
-          />
-        );
-      }
-      case "favorites": {
-        return <FavoriteBusStopInfo />;
-      }
-    }
-  };
-
   return (
     <>
       <TileLayer
@@ -294,7 +272,12 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
           }}
         />
       </SearchInput>
-      {renderInfo()}
+      <InfoSection
+        busArrivalData={busArrivalData?.getBusArrival}
+        isBusArrivalLoading={busArrivalLoading}
+        onFavoriteClick={handleFavoriteClick}
+        onServiceClick={setSelectedBusService}
+      />
       {hasCurrentUserLocation && (
         <div
           onClick={onCurrentLocationClick}
