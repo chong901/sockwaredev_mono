@@ -1,4 +1,8 @@
-import { InfoContainer } from "@/components/containers/InfoContainer";
+import { LoadingSpinner } from "@/components/atoms/LoadingSpinner";
+import {
+  InfoContainer,
+  InfoHeader,
+} from "@/components/containers/InfoContainer";
 import { BusArrivalHeader } from "@/components/pages/map/molecules/BusArrivalHeader";
 import { BusArrivalDetail } from "@/components/pages/map/organisms/BusArrivalDetail";
 import { FavoriteBusStopList } from "@/components/pages/map/organisms/FavoriteBusStopList";
@@ -26,51 +30,45 @@ export const InfoSection = ({
   const [busStop] = useAtom(selectedBusStopAtom);
   const [busService] = useAtom(selectedBusServiceAtom);
   const map = useMap();
-  const renderHeader = () => {
-    switch (tag) {
-      case "home":
-        return (
-          <BusArrivalHeader
-            busStop={busStop!}
-            onFavoriteClick={onFavoriteClick}
-          />
-        );
-      case "favorites":
-        return <div className="text-3xl font-bold">Favorite </div>;
-    }
-  };
   const renderBody = () => {
+    if (!busStop)
+      return (
+        <div className="flex flex-1 items-center justify-center p-4">
+          <LoadingSpinner />
+        </div>
+      );
     switch (tag) {
       case "home":
         return (
-          <BusArrivalDetail
-            key={busStop!.code}
-            busArrivalData={busArrivalData}
-            onServiceClick={onServiceClick}
-            selectedService={busService}
-            isLoading={isBusArrivalLoading}
-          />
+          <>
+            <InfoHeader
+              onClick={() => map.flyTo([busStop.latitude, busStop.longitude])}
+            >
+              <BusArrivalHeader
+                busStop={busStop}
+                onFavoriteClick={onFavoriteClick}
+              />
+            </InfoHeader>
+            <BusArrivalDetail
+              key={busStop.code}
+              busArrivalData={busArrivalData}
+              onServiceClick={onServiceClick}
+              selectedService={busService}
+              isLoading={isBusArrivalLoading}
+            />
+          </>
         );
       case "favorites":
-        return <FavoriteBusStopList />;
+        return (
+          <>
+            <InfoHeader>
+              <div className="text-3xl font-bold">Favorite</div>
+            </InfoHeader>
+            <FavoriteBusStopList />
+          </>
+        );
     }
   };
 
-  const handleHeaderClick = () => {
-    if (!busStop) return;
-    switch (tag) {
-      case "home":
-        return map.flyTo([busStop.latitude, busStop.longitude]);
-      case "favorites":
-        return;
-    }
-  };
-
-  if (!busStop) return null;
-
-  return (
-    <InfoContainer header={renderHeader()} onHeaderClick={handleHeaderClick}>
-      {renderBody()}
-    </InfoContainer>
-  );
+  return <InfoContainer>{renderBody()}</InfoContainer>;
 };
