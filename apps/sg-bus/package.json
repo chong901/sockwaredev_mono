@@ -57,11 +57,11 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "dev": "next dev",
-    "graphql:codegen": "yarn graphql:codegen:be && yarn graphql:codegen:fe",
+    "graphql:codegen": "pnpm graphql:codegen:be && pnpm graphql:codegen:fe",
     "graphql:codegen:be": "graphql-codegen --config codegen-backend.ts",
     "graphql:codegen:fe": "graphql-codegen --config codegen-frontend.ts",
     "lint": "next lint",
-    "prepare-data": "yarn data:update-bus-stops && yarn data:update-bus-route && yarn data:update-bus-route-polyline",
+    "prepare-data": "pnpm data:update-bus-stops && pnpm data:update-bus-route && pnpm data:update-bus-route-polyline",
     "start": "next start"
   },
   "version": "0.1.0"
