@@ -1,6 +1,11 @@
 {
   "private": true,
+  "name": "sockwaredev",
   "workspaces": [
     "sg-bus"
-  ]
+  ],
+  "devDependencies": {
+    "turbo": "^2.1.2"
+  },
+  "packageManager": "pnpm@9.10.0"
 }
