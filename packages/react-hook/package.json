@@ -1,0 +1,14 @@
+{
+  "description": "",
+  "exports": {
+    "hooks": "./index.ts"
+  },
+  "name": "@repo/react-hook",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.0",
+  "dependencies": {
+    "react": "^18"
+  }
+}
