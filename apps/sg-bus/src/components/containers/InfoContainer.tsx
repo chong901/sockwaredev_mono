@@ -63,7 +63,7 @@ export const InfoHeader = ({ children, onClick }: InfoHeaderProps) => {
   const handleHeaderTouchStart: TouchEventHandler = (e) => {
     map.dragging.disable();
     containerHeightOffsetRef.current =
-      e.touches[0].clientY -
+      e.touches[0]!.clientY -
       (containerRef?.current?.getBoundingClientRect().y ?? 0);
   };
   const handleHeaderTouchEnd: TouchEventHandler = () => {
@@ -75,7 +75,7 @@ export const InfoHeader = ({ children, onClick }: InfoHeaderProps) => {
         containerOriginalHeightRef.current!,
         containerOriginYRef.current! +
           containerOriginalHeightRef.current! -
-          e.touches[0].clientY +
+          e.touches[0]!.clientY +
           containerHeightOffsetRef.current!,
       ),
     );

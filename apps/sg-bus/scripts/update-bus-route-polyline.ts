@@ -199,8 +199,9 @@ const processRelation = (
   element.members?.forEach((member) => {
     if (member.type === "node") return;
     const way = ways[member.ref];
+    if (!way) return;
     polylines.push(
-      way.nodes.map((nodeId) => [nodes[nodeId].lat, nodes[nodeId].lon]),
+      way.nodes.map((nodeId) => [nodes[nodeId]!.lat, nodes[nodeId]!.lon]),
     );
   });
 
@@ -339,7 +340,7 @@ const fetchPolylinePositionsFromORS = async (busStops: BusStop[]) => {
       "Content-Type": "application/json",
     },
   });
-  const json = (await data.json()) as { routes: { geometry: string }[] };
+  const json = (await data.json()) as { routes: [{ geometry: string }] };
   return polyline.decode(json.routes[0].geometry);
 };
 

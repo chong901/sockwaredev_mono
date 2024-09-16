@@ -17,7 +17,7 @@ const main = async () => {
       "Content-Type": "application/json",
     },
   });
-  const json = (await data.json()) as { routes: { geometry: string }[] };
+  const json = (await data.json()) as { routes: [{ geometry: string }] };
   writeFileSync(
     "temp.json",
     JSON.stringify([[...polyline.decode(json.routes[0].geometry)]]),

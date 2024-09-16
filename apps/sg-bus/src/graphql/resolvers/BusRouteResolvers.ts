@@ -32,9 +32,10 @@ export const getBusRoutes: QueryResolvers["getBusRoutes"] = async (
     .where(
       and(
         eq(BusRoutePolylineModel.serviceNo, serviceNo),
-        eq(BusRoutePolylineModel.direction, firstStop.Direction),
+        eq(BusRoutePolylineModel.direction, firstStop?.Direction ?? 0),
       ),
     )
     .limit(1);
-  return result[0].polylines as number[][][];
+  if (!result || result.length === 0) return [];
+  return result[0]?.polylines as number[][][];
 };

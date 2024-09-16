@@ -56,7 +56,7 @@ export const getNearestBusStops: QueryResolvers["getNearestBusStops"] = async (
     .from(BusStopModel)
     .orderBy(sql`distance`)
     .limit(1);
-  return result[0];
+  return result[0]!;
 };
 
 export const searchBusStops: QueryResolvers["searchBusStops"] = async (
