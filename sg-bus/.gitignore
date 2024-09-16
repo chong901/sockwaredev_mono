@@ -34,3 +34,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+overpass-bus-routes.json
+
+# PWA files
+public/sw.js
+public/sw.js.map
+public/workbox*.js
+public/workbox*.js.map
+
+# ORS
+openrouteservice/ors-docker/graphs/
+openrouteservice/ors-docker/logs/
+openrouteservice/ors-docker/elevation_cache/
+openrouteservice/ors-docker/files/example-heidelberg.osm.gz
