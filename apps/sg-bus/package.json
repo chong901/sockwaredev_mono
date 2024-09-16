@@ -1,22 +1,4 @@
 {
-  "name": "sg-bus",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "graphql:codegen:be": "graphql-codegen --config codegen-backend.ts",
-    "graphql:codegen:fe": "graphql-codegen --config codegen-frontend.ts",
-    "graphql:codegen": "yarn graphql:codegen:be && yarn graphql:codegen:fe",
-    "prepare-data": "yarn data:update-bus-stops && yarn data:update-bus-route && yarn data:update-bus-route-polyline",
-    "data:update-bus-stops": "tsx scripts/update-bus-stops.ts",
-    "data:update-bus-route": "tsx scripts/update-bus-route.ts",
-    "data:update-bus-route-polyline": "tsx scripts/update-bus-route-polyline.ts"
-  },
   "dependencies": {
     "@apollo/client": "^3.11.4",
     "@apollo/experimental-nextjs-app-support": "^0.11.2",
@@ -62,5 +44,24 @@
     "tailwindcss": "^3.4.1",
     "tsx": "^4.19.0",
     "typescript": "^5"
-  }
+  },
+  "name": "sg-bus",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "check-types": "tsc --noEmit",
+    "data:update-bus-route": "tsx scripts/update-bus-route.ts",
+    "data:update-bus-route-polyline": "tsx scripts/update-bus-route-polyline.ts",
+    "data:update-bus-stops": "tsx scripts/update-bus-stops.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "dev": "next dev",
+    "graphql:codegen": "yarn graphql:codegen:be && yarn graphql:codegen:fe",
+    "graphql:codegen:be": "graphql-codegen --config codegen-backend.ts",
+    "graphql:codegen:fe": "graphql-codegen --config codegen-frontend.ts",
+    "lint": "next lint",
+    "prepare-data": "yarn data:update-bus-stops && yarn data:update-bus-route && yarn data:update-bus-route-polyline",
+    "start": "next start"
+  },
+  "version": "0.1.0"
 }
