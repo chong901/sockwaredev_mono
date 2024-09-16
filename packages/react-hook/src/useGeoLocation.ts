@@ -26,7 +26,9 @@ export interface GeoLocationSensorState {
   error?: Error | IGeolocationPositionError;
 }
 
-const useGeolocation = (options?: PositionOptions): GeoLocationSensorState => {
+export const useGeolocation = (
+  options?: PositionOptions
+): GeoLocationSensorState => {
   const [state, setState] = useState<GeoLocationSensorState>({
     loading: true,
     latitude: undefined,
@@ -55,7 +57,7 @@ const useGeolocation = (options?: PositionOptions): GeoLocationSensorState => {
     const watcher = navigator.geolocation.watchPosition(
       onEvent,
       onEventError,
-      options,
+      options
     );
 
     return () => {
@@ -65,5 +67,3 @@ const useGeolocation = (options?: PositionOptions): GeoLocationSensorState => {
 
   return state;
 };
-
-export default useGeolocation;
