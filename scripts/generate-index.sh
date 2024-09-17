@@ -19,7 +19,7 @@ generate_index_file() {
             # Get the base filename without the extension
             basename=$(basename "$(basename "$file" .tsx)" .ts)
             # Write the export statement to index.ts
-            echo "export * from './$basename';" >> "$index_file"
+            echo "export * from \"./$basename\";" >> "$index_file"
         done
 
         echo "index.ts generated in $dir"
