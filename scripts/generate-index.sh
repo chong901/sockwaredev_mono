@@ -8,7 +8,7 @@ generate_index_file() {
     local dir=$1
     local index_file="$dir/index.ts"
 
-    ts_files=$(find "$dir" -maxdepth 1 -type f \( -name "*.ts" -o -name "*.tsx" \) ! -name "index.ts" ! -name "index.tsx" ! -name "tailwind.config.ts")
+    ts_files=$(find "$dir" -maxdepth 1 -type f \( -name "*.ts" -o -name "*.tsx" \) ! -name "index.ts" ! -name "index.tsx" ! -name "tailwind.config.ts" ! -name "*.d.ts")
 
     if [ -n "$ts_files" ]; then
         echo "Generating $index_file..."
