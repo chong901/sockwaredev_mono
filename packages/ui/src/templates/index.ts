@@ -1,1 +1,1 @@
-export * from './PwaInstallPrompt';
+export * from "./PwaInstallPrompt";
