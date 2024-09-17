@@ -6,7 +6,10 @@
   "description": "",
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@types/react": "^18"
+    "@repo/tailwind-config": "workspace:*",
+    "@types/react": "^18",
+    "@types/node": "^20",
+    "tailwindcss": "^3.4.1"
   },
   "exports": {
     "./*": "./src/*/index.ts"
