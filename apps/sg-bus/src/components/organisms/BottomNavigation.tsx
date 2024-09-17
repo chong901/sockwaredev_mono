@@ -1,7 +1,7 @@
 // components/BottomNavigation.tsx
 import { FavIcon } from "@/components/atoms/FavIcon";
 import { HomeIcon } from "@/components/atoms/HomeIcon";
-import { useSearchParamWithDefault } from "@/hooks/useSearchParamWithDefault";
+import { useSearchParamWithDefault } from "@repo/react-hook";
 import Link from "next/link";
 import React from "react";
 
@@ -30,7 +30,7 @@ const BottomNavigation: React.FC = () => {
   const tag = useSearchParamWithDefault("tag", "home");
   return (
     <nav className={`shadow-lg`}>
-      <div className="pb-safe-bottom flex justify-around px-2 pt-2">
+      <div className="flex justify-around px-2 pb-safe-bottom pt-2">
         {navItems.map((item) => (
           <Link
             key={item.name}

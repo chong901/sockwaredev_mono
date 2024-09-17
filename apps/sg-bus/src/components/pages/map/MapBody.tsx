@@ -25,10 +25,10 @@ import {
   SearchBusStopsQuery,
   SearchBusStopsQueryVariables,
 } from "@/graphql-codegen/frontend/graphql";
-import { useSearchParamWithDefault } from "@/hooks/useSearchParamWithDefault";
 import { selectedBusServiceAtom } from "@/store/atoms/busServiceAtoms";
 import { selectedBusStopAtom } from "@/store/atoms/busStopAtoms";
 import { useLazyQuery, useQuery } from "@apollo/client";
+import { useSearchParamWithDefault } from "@repo/react-hook";
 import { useAtom } from "jotai";
 import { icon, LatLngExpression } from "leaflet";
 import Image from "next/image";
