@@ -1,4 +1,6 @@
-import BottomNavigation from "@/components/organisms/BottomNavigation";
+import { useSearchParamWithDefault } from "@repo/react-hook";
+import { FavIcon, HomeIcon } from "@repo/ui/atoms";
+import { BottomNavigation, NavItem } from "@repo/ui/organisms";
 import { atom, useAtom } from "jotai";
 import {
   MouseEventHandler,
@@ -14,6 +16,19 @@ import { useMedia } from "react-use";
 const infoContainerRefAtom = atom<RefObject<HTMLDivElement> | null>(null);
 const containerHeightAtom = atom<number | undefined>(undefined);
 
+const navItems: NavItem[] = [
+  {
+    name: "Home",
+    tag: "home",
+    icon: <HomeIcon className="h-6 w-6" />,
+  },
+  {
+    name: "Favorites",
+    tag: "favorites",
+    icon: <FavIcon className="h-6" />,
+  },
+];
+
 type InfoContainerProps = {
   children: ReactNode;
 };
@@ -23,6 +38,7 @@ export const InfoContainer = ({ children }: InfoContainerProps) => {
   const isMobile = useMedia("(max-width: 767px)");
   const [containerHeight] = useAtom(containerHeightAtom);
   const [_, setInfoContainerRef] = useAtom(infoContainerRefAtom);
+  const tag = useSearchParamWithDefault("tag", "home");
 
   useEffect(() => {
     setInfoContainerRef(containerRef);
@@ -40,7 +56,7 @@ export const InfoContainer = ({ children }: InfoContainerProps) => {
     >
       {children}
       <hr className="border-t-2 border-gray-200" />
-      <BottomNavigation />
+      <BottomNavigation items={navItems} tag={tag} />
     </div>
   );
 };
