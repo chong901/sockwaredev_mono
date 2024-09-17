@@ -1,5 +1,4 @@
 import PwaInstallPrompt from "@/components/molecules/PwaInstallPrompt";
-import SearchInput from "@/components/molecules/SearchInput";
 import { defaultLat, defaultLng } from "@/components/pages/map/const";
 import {
   getBusRoutesQuery,
@@ -29,6 +28,7 @@ import { selectedBusServiceAtom } from "@/store/atoms/busServiceAtoms";
 import { selectedBusStopAtom } from "@/store/atoms/busStopAtoms";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { useSearchParamWithDefault } from "@repo/react-hook";
+import { SearchInput } from "@repo/ui/molecules";
 import { useAtom } from "jotai";
 import { icon, LatLngExpression } from "leaflet";
 import Image from "next/image";
