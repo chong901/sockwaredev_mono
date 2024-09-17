@@ -1,6 +1,6 @@
-import { Modal } from "@/components/containers/Modal";
 import { useDisableMapInteraction } from "@/components/pages/map/hooks/useDisableMapInteraction";
 import { useIsSafari, useIsStandalone } from "@repo/react-hook";
+import { Modal } from "@repo/ui/containers";
 import Image from "next/image";
 import React, { ComponentProps, useEffect, useRef, useState } from "react";
 

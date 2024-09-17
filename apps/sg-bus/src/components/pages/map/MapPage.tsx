@@ -1,9 +1,9 @@
 "use client";
-import { PageContainer } from "@/components/containers/PageContainer";
 import { defaultLat, defaultLng } from "@/components/pages/map/const";
 import { MapBody } from "@/components/pages/map/MapBody";
 import { useGeolocation } from "@repo/react-hook";
 import { LoadingSpinner } from "@repo/ui/atoms";
+import { PageContainer } from "@repo/ui/containers";
 import { MapContainer } from "react-leaflet";
 
 export default function MapPage() {

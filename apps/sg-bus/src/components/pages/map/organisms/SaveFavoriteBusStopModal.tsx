@@ -1,5 +1,5 @@
-import { Modal } from "@/components/containers/Modal";
 import { BusStop } from "@/graphql-codegen/frontend/graphql";
+import { Modal } from "@repo/ui/containers";
 import { useState } from "react";
 
 type SaveFavoriteBusStopProps = {
