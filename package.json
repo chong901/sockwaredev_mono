@@ -1,9 +1,6 @@
 {
   "private": true,
   "name": "sockwaredev",
-  "workspaces": [
-    "sg-bus"
-  ],
   "devDependencies": {
     "husky": "^9.1.6",
     "turbo": "^2.1.2"
