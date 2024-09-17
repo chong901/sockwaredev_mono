@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Get the list of staged files
+STAGED_FILES=$(git diff --cached --name-only)
+
+CHANGES_IN_PACKAGES=false
+for FILE in $STAGED_FILES; do
+  if [[ $FILE == packages/* ]]; then
+    CHANGES_IN_PACKAGES=true
+    break
+  fi
+done
+
+
+if [ "$CHANGES_IN_PACKAGES" = true ]; then
+  pnpm install
+fi
+
+exit 0
