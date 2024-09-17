@@ -1,0 +1,20 @@
+{
+  "author": "",
+  "dependencies": {
+    "react": "^18"
+  },
+  "description": "",
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/react": "^18"
+  },
+  "exports": {
+    "./*": "./src/*/index.ts"
+  },
+  "license": "ISC",
+  "name": "@repo/ui",
+  "scripts": {
+    "generate-index": "../../scripts/generate-index.sh ."
+  },
+  "version": "1.0.0"
+}
