@@ -1,7 +1,6 @@
 // components/BottomNavigation.tsx
-import { FavIcon } from "@/components/atoms/FavIcon";
-import { HomeIcon } from "@/components/atoms/HomeIcon";
 import { useSearchParamWithDefault } from "@repo/react-hook";
+import { FavIcon, HomeIcon } from "@repo/ui/atoms";
 import Link from "next/link";
 import React from "react";
 

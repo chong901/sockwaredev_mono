@@ -1,12 +1,15 @@
-import DeleteIcon from "@/components/atoms/DeleteIcon";
 import React, { MouseEventHandler } from "react";
+import { DeleteIcon } from "./DeleteIcon";
 
 interface DeleteIconProps {
   className?: string;
   onClick?: MouseEventHandler<HTMLButtonElement>;
 }
 
-const DeleteButton: React.FC<DeleteIconProps> = ({ className, onClick }) => {
+export const DeleteButton: React.FC<DeleteIconProps> = ({
+  className,
+  onClick,
+}) => {
   return (
     <button
       onClick={onClick}
@@ -16,5 +19,3 @@ const DeleteButton: React.FC<DeleteIconProps> = ({ className, onClick }) => {
     </button>
   );
 };
-
-export default DeleteButton;

@@ -1,8 +1,8 @@
-import { LoadingSpinner } from "@/components/atoms/LoadingSpinner";
 import { comingBusArrivingColor } from "@/components/pages/map/const";
 import { useAvoidMapScroll } from "@/components/pages/map/hooks/useAvoidMapScroll";
 import { GetBusArrivalQuery } from "@/graphql-codegen/frontend/graphql";
 import { getTimeUntilArrival } from "@/utils/timeUtil";
+import { LoadingSpinner } from "@repo/ui/atoms";
 import { Fragment, useEffect, useRef, useState } from "react";
 
 type BusArrivalInfoProps = {

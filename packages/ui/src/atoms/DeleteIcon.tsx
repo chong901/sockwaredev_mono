@@ -5,7 +5,10 @@ interface DeleteIconProps {
   onClick?: () => void;
 }
 
-const DeleteIcon: React.FC<DeleteIconProps> = ({ className, onClick }) => {
+export const DeleteIcon: React.FC<DeleteIconProps> = ({
+  className,
+  onClick,
+}) => {
   return (
     <svg
       onClick={onClick}
@@ -24,5 +27,3 @@ const DeleteIcon: React.FC<DeleteIconProps> = ({ className, onClick }) => {
     </svg>
   );
 };
-
-export default DeleteIcon;

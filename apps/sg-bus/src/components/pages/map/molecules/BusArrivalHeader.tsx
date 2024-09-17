@@ -1,6 +1,6 @@
-import { FavIcon } from "@/components/atoms/FavIcon";
 import { useFavoriteBusStops } from "@/components/pages/map/hooks/useFavoriteBusStops";
 import { BusStop } from "@/graphql-codegen/frontend/graphql";
+import { FavIcon } from "@repo/ui/atoms";
 import { MouseEventHandler } from "react";
 
 type BusArrivalHeaderProps = {

@@ -1,5 +1,5 @@
-import { LoadingSpinner } from "@/components/atoms/LoadingSpinner";
 import { SearchBusStopsQuery } from "@/graphql-codegen/frontend/graphql";
+import { LoadingSpinner } from "@repo/ui/atoms";
 import React, { ComponentProps, Fragment } from "react";
 
 type SearchResultsProps = {

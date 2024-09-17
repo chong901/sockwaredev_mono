@@ -1,4 +1,3 @@
-import { LoadingSpinner } from "@/components/atoms/LoadingSpinner";
 import {
   InfoContainer,
   InfoHeader,
@@ -9,6 +8,7 @@ import { FavoriteBusStopList } from "@/components/pages/map/organisms/FavoriteBu
 import { selectedBusServiceAtom } from "@/store/atoms/busServiceAtoms";
 import { selectedBusStopAtom } from "@/store/atoms/busStopAtoms";
 import { useSearchParamWithDefault } from "@repo/react-hook";
+import { LoadingSpinner } from "@repo/ui/atoms";
 import { useAtom } from "jotai";
 import { ComponentProps } from "react";
 import { useMap } from "react-leaflet";

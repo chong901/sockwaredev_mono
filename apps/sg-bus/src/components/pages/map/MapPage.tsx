@@ -1,9 +1,9 @@
 "use client";
-import { LoadingSpinner } from "@/components/atoms/LoadingSpinner";
 import { PageContainer } from "@/components/containers/PageContainer";
 import { defaultLat, defaultLng } from "@/components/pages/map/const";
 import { MapBody } from "@/components/pages/map/MapBody";
 import { useGeolocation } from "@repo/react-hook";
+import { LoadingSpinner } from "@repo/ui/atoms";
 import { MapContainer } from "react-leaflet";
 
 export default function MapPage() {
