@@ -1,15 +1,15 @@
 {
   "author": "",
   "peerDependencies": {
-    "react": "^18",
-    "next": "14.2.6"
+    "next": "14.2.6",
+    "react": "^18"
   },
   "description": "",
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
     "@repo/tailwind-config": "workspace:*",
-    "@types/react": "^18",
+    "@repo/typescript-config": "workspace:*",
     "@types/node": "^20",
+    "@types/react": "^18",
     "tailwindcss": "^3.4.1"
   },
   "exports": {
@@ -20,5 +20,8 @@
   "scripts": {
     "generate-index": "../../scripts/generate-index.sh ."
   },
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "dependencies": {
+    "@react-spring/web": "^9.7.4"
+  }
 }
