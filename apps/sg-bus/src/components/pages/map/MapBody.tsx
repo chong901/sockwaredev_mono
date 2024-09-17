@@ -1,4 +1,3 @@
-import PwaInstallPrompt from "@/components/molecules/PwaInstallPrompt";
 import { defaultLat, defaultLng } from "@/components/pages/map/const";
 import {
   getBusRoutesQuery,
@@ -29,6 +28,7 @@ import { selectedBusStopAtom } from "@/store/atoms/busStopAtoms";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { useSearchParamWithDefault } from "@repo/react-hook";
 import { SearchInput } from "@repo/ui/molecules";
+import { PwaInstallPrompt } from "@repo/ui/templates";
 import { useAtom } from "jotai";
 import { icon, LatLngExpression } from "leaflet";
 import Image from "next/image";
@@ -36,6 +36,7 @@ import { useRouter } from "next/navigation";
 import {
   Fragment,
   MouseEventHandler,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -202,6 +203,24 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
   };
 
   const router = useRouter();
+  const handlePwaInstallPromptDisplayChange = useCallback(
+    (isDisplay: boolean) => {
+      if (isDisplay) {
+        map.dragging.disable();
+        map.scrollWheelZoom.disable();
+        map.doubleClickZoom.disable();
+        map.touchZoom.disable();
+        map.boxZoom.disable();
+      } else {
+        map.dragging.enable();
+        map.scrollWheelZoom.enable();
+        map.doubleClickZoom.enable();
+        map.touchZoom.enable();
+        map.boxZoom.enable();
+      }
+    },
+    [map],
+  );
 
   return (
     <>
@@ -209,7 +228,10 @@ export const MapBody = ({ currentUserLat, currentUserLong }: MapBodyProps) => {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <PwaInstallPrompt />
+      <PwaInstallPrompt
+        imageSrc="/ios/192.png"
+        onDisplayChange={handlePwaInstallPromptDisplayChange}
+      />
       {selectedBusStop && showSaveFavoriteBusStopModal && (
         <SaveFavoriteBusStopModal
           busStop={selectedBusStop}
