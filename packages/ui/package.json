@@ -1,14 +1,13 @@
 {
   "author": "",
-  "peerDependencies": {
-    "next": "14.2.6",
-    "react": "^18"
+  "dependencies": {
+    "@react-spring/web": "^9.7.4"
   },
   "description": "",
   "devDependencies": {
+    "@repo/react-hook": "workspace:*",
     "@repo/tailwind-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@repo/react-hook": "workspace:*",
     "@types/node": "^20",
     "@types/react": "^18",
     "tailwindcss": "^3.4.1"
@@ -18,11 +17,13 @@
   },
   "license": "ISC",
   "name": "@repo/ui",
+  "peerDependencies": {
+    "next": "14.2.6",
+    "react": "^18"
+  },
+  "private": true,
   "scripts": {
     "generate-index": "../../scripts/generate-index.sh ."
   },
-  "version": "1.0.0",
-  "dependencies": {
-    "@react-spring/web": "^9.7.4"
-  }
+  "version": "1.0.0"
 }
