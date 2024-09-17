@@ -38,9 +38,6 @@ importers:
       '@mapbox/polyline':
         specifier: ^1.2.1
         version: 1.2.1
-      '@react-spring/web':
-        specifier: ^9.7.4
-        version: 9.7.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@repo/react-hook':
         specifier: workspace:*
         version: link:../../packages/react-hook

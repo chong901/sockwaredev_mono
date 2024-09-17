@@ -1,8 +1,8 @@
-import { ItemList } from "@/components/organisms/ItemList";
 import { useAvoidMapScroll } from "@/components/pages/map/hooks/useAvoidMapScroll";
 import { useFavoriteBusStops } from "@/components/pages/map/hooks/useFavoriteBusStops";
 import { selectedBusStopAtom } from "@/store/atoms/busStopAtoms";
 import { DeleteButton } from "@repo/ui/atoms";
+import { ItemList } from "@repo/ui/organisms";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import { useRef } from "react";
