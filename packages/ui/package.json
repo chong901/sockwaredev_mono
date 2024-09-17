@@ -1,7 +1,8 @@
 {
   "author": "",
-  "dependencies": {
-    "react": "^18"
+  "peerDependencies": {
+    "react": "^18",
+    "next": "14.2.6"
   },
   "description": "",
   "devDependencies": {
