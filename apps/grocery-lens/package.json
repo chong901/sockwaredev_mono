@@ -9,20 +9,21 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "next": "14.2.11",
+    "next-auth": "beta",
     "react": "^18",
-    "react-dom": "^18",
-    "next": "14.2.11"
+    "react-dom": "^18"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
     "@repo/tailwind-config": "workspace:*",
-    "typescript": "^5",
+    "@repo/typescript-config": "workspace:*",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.11",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.11"
+    "typescript": "^5"
   }
 }
