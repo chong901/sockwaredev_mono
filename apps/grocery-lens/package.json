@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:generate": "npx @edgedb/generate interfaces && npx @edgedb/generate edgeql-js --out src/edgedb/edgeql-js"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.0",
