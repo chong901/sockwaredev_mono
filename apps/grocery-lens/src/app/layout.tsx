@@ -35,10 +35,10 @@ export default async function RootLayout({
     <html lang="en">
       <SessionProvider session={session}>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col h-svh overflow-hidden`}
         >
           <Header />
-          {children}
+          <div className="flex-1 w-full overflow-scroll">{children}</div>
         </body>
       </SessionProvider>
     </html>

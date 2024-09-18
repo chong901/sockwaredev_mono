@@ -21,7 +21,7 @@ export function Header() {
   const navItems = [{ name: "Home", href: "#" }];
 
   return (
-    <header className="bg-gradient-to-r fixed w-full from-purple-600 to-indigo-600 text-white shadow-lg">
+    <header className="bg-gradient-to-r w-full from-purple-600 to-indigo-600 text-white shadow-lg">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
