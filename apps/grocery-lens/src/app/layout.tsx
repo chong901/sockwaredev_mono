@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { Header } from "@/components/header";
 import type { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
 import localFont from "next/font/local";
@@ -36,6 +37,7 @@ export default async function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
+          <Header />
           {children}
         </body>
       </SessionProvider>
