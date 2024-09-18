@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { nextAuth } from "@/auth";
 import { Header } from "@/components/header";
 import type { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
@@ -27,7 +27,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
+  const session = await nextAuth.auth();
   if (!session) {
     redirect("/api/auth/signin");
   }
