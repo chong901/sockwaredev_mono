@@ -69,6 +69,7 @@ export type MutationAddStoreArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  getGroceryItems: Array<GroceryItem>;
   getLabels: Array<Label>;
   getStores: Array<Store>;
 };
@@ -213,6 +214,7 @@ export type MutationResolvers<ContextType = ApolloContext, ParentType extends Re
 }>;
 
 export type QueryResolvers<ContextType = ApolloContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  getGroceryItems?: Resolver<Array<ResolversTypes['GroceryItem']>, ParentType, ContextType>;
   getLabels?: Resolver<Array<ResolversTypes['Label']>, ParentType, ContextType>;
   getStores?: Resolver<Array<ResolversTypes['Store']>, ParentType, ContextType>;
 }>;

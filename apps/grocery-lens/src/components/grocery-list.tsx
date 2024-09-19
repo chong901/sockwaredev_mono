@@ -19,7 +19,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { GetGroceryItemsQuery } from "@/graphql-codegen/frontend/graphql";
+import { useQuery } from "@apollo/client";
 import { AnimatePresence, motion } from "framer-motion";
+import gql from "graphql-tag";
 import { Check, Edit, ShoppingCart, Trash2, X } from "lucide-react";
 import { useState } from "react";
 
@@ -33,50 +36,44 @@ type GroceryItem = {
   labels: string[];
 };
 
+const getGroceryItemsQuery = gql`
+  query GetGroceryItems {
+    getGroceryItems {
+      id
+      name
+      store {
+        id
+        name
+      }
+      price
+      amount
+      unit
+      notes
+      labels {
+        id
+        name
+      }
+    }
+  }
+`;
+
 export function GroceryListComponent() {
-  const [items, setItems] = useState<GroceryItem[]>([
-    {
-      id: 1,
-      name: "Milk",
-      amount: 1,
-      unit: "liter",
-      price: 2.99,
-      store: "Supermarket",
-      labels: ["Dairy"],
-    },
-    {
-      id: 2,
-      name: "Bread",
-      amount: 1,
-      unit: "piece",
-      price: 1.99,
-      store: "Bakery",
-      labels: ["Bakery"],
-    },
-    {
-      id: 3,
-      name: "Apples",
-      amount: 1,
-      unit: "kilogram",
-      price: 3.99,
-      store: "Fruit Market",
-      labels: ["Fruit"],
-    },
-  ]);
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const { data: groceryItems } =
+    useQuery<GetGroceryItemsQuery>(getGroceryItemsQuery);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [newItem, setNewItem] = useState<Partial<GroceryItem>>({});
 
-  const handleEditItem = (id: number) => {
-    const updatedItems = items.map((item) =>
-      item.id === id ? { ...item, ...newItem } : item
-    );
-    setItems(updatedItems);
-    setEditingId(null);
-    setNewItem({});
+  const handleEditItem = (id: string) => {
+    // const updatedItems = items.map((item) =>
+    //   item.id === id ? { ...item, ...newItem } : item
+    // );
+    // setItems(updatedItems);
+    // setEditingId(null);
+    // setNewItem({});
   };
 
-  const handleDeleteItem = (id: number) => {
-    setItems(items.filter((item) => item.id !== id));
+  const handleDeleteItem = (id: string) => {
+    // setItems(items.filter((item) => item.id !== id));
   };
 
   const unitOptions = ["gram", "bag", "kilogram", "piece", "liter", "box"];
@@ -108,7 +105,7 @@ export function GroceryListComponent() {
       </motion.div>
       <ScrollArea className="h-[calc(100vh-200px)]">
         <AnimatePresence>
-          {items.map((item) => (
+          {(groceryItems?.getGroceryItems ?? []).map((item) => (
             <motion.div
               key={item.id}
               layout
@@ -194,7 +191,7 @@ export function GroceryListComponent() {
                     </div>
                   </CardTitle>
                   <CardDescription className="text-indigo-600">
-                    {item.store} - ${item.price.toFixed(2)}
+                    {item.store.name} - ${item.price.toFixed(2)}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -236,9 +233,9 @@ export function GroceryListComponent() {
                       )}
                     </span>
                     <div className="flex flex-wrap gap-2">
-                      {item.labels.map((label) => (
+                      {item.labels.map(({ id, name }) => (
                         <motion.div
-                          key={label}
+                          key={id}
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
                         >
@@ -246,7 +243,7 @@ export function GroceryListComponent() {
                             variant="secondary"
                             className="bg-indigo-100 text-indigo-800"
                           >
-                            {label}
+                            {name}
                           </Badge>
                         </motion.div>
                       ))}

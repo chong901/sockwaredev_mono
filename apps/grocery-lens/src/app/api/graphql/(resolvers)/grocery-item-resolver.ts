@@ -1,6 +1,32 @@
 import { edgedbClient } from "@/edgedb";
 import e from "@/edgedb/edgeql-js";
-import { MutationResolvers } from "@/graphql-codegen/backend/types";
+import {
+  MutationResolvers,
+  QueryResolvers,
+} from "@/graphql-codegen/backend/types";
+
+export const GroceryItemQueryResolver: Pick<QueryResolvers, "getGroceryItems"> =
+  {
+    getGroceryItems: async (_, __, { userId }) => {
+      const groceryItems = await e
+        .select(e.GroceryItem, (item) => ({
+          id: true,
+          name: true,
+          store: { id: true, name: true },
+          price: true,
+          amount: true,
+          unit: true,
+          notes: true,
+          labels: {
+            id: true,
+            name: true,
+          },
+          filter: e.op(item.owner.id, "=", e.uuid(userId)),
+        }))
+        .run(edgedbClient);
+      return groceryItems;
+    },
+  };
 
 export const GroceryItemMutationResolver: Pick<
   MutationResolvers,

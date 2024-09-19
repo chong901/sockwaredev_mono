@@ -1,4 +1,7 @@
-import { GroceryItemMutationResolver } from "@/app/api/graphql/(resolvers)/grocery-item-resolver";
+import {
+  GroceryItemMutationResolver,
+  GroceryItemQueryResolver,
+} from "@/app/api/graphql/(resolvers)/grocery-item-resolver";
 import {
   LabelMutationResolver,
   LabelQueryResolver,
@@ -28,6 +31,7 @@ const typeDefs = gql`
   type Query {
     getLabels: [Label!]!
     getStores: [Store!]!
+    getGroceryItems: [GroceryItem!]!
   }
 
   type Mutation {
@@ -72,6 +76,7 @@ const resolvers: Resolvers = {
   Query: {
     ...LabelQueryResolver,
     ...StoreQueryResolver,
+    ...GroceryItemQueryResolver,
   },
   Mutation: {
     ...LabelMutationResolver,
