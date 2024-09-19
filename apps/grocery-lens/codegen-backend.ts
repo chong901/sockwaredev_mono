@@ -9,6 +9,7 @@ const config: CodegenConfig = {
       plugins: ["typescript", "typescript-resolvers"],
       config: {
         useIndexSignature: true,
+        contextType: "@/types/apollo/context#ApolloContext",
       },
     },
   },
