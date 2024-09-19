@@ -1,0 +1,19 @@
+{
+  "author": "",
+  "description": "",
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^20"
+  },
+  "exports": {
+    "./*": "./src/*/index.ts"
+  },
+  "license": "ISC",
+  "main": "index.js",
+  "name": "@repo/frontend-util",
+  "private": true,
+  "scripts": {
+    "generate-index": "../../scripts/generate-index.sh ."
+  },
+  "version": "1.0.0"
+}
