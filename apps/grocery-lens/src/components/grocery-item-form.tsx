@@ -22,9 +22,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
+import { GetLabelsQuery } from "@/graphql-codegen/frontend/graphql";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { gql, useQuery } from "@apollo/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CommandList } from "cmdk";
 import { motion } from "framer-motion";
@@ -47,10 +50,21 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
+const getLabelQuery = gql`
+  query GetLabels {
+    getLabels {
+      id
+      name
+    }
+  }
+`;
+
 export function GroceryItemFormComponent() {
   const [openLabels, setOpenLabels] = useState(false);
   const [newLabel, setNewLabel] = useState("");
   const { toast } = useToast();
+  const { data: getLabelsData, loading: getLabelsLoading } =
+    useQuery<GetLabelsQuery>(getLabelQuery);
 
   const {
     register,
@@ -75,14 +89,6 @@ export function GroceryItemFormComponent() {
   });
 
   const unitOptions = ["gram", "bag", "kilogram", "piece", "liter", "box"];
-  const existingLabels = [
-    "Fruit",
-    "Vegetable",
-    "Dairy",
-    "Meat",
-    "Snack",
-    "Beverage",
-  ];
 
   const watchedLabels = watch("labels", []);
 
@@ -281,32 +287,40 @@ export function GroceryItemFormComponent() {
                 <CommandEmpty>No label found.</CommandEmpty>
                 <CommandList>
                   <CommandGroup>
-                    {existingLabels.map((label) => (
-                      <CommandItem
-                        key={label}
-                        onSelect={() => {
-                          setValue(
-                            "labels",
-                            watchedLabels.includes(label)
-                              ? watchedLabels.filter((l) => l !== label)
-                              : [...watchedLabels, label],
-                            { shouldValidate: true }
-                          );
-                          trigger("labels");
-                          setOpenLabels(false);
-                        }}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            watchedLabels.includes(label)
-                              ? "opacity-100"
-                              : "opacity-0"
-                          )}
-                        />
-                        {label}
-                      </CommandItem>
-                    ))}
+                    {getLabelsLoading ? (
+                      <>
+                        <Skeleton className="h-8 w-full mb-2" />
+                        <Skeleton className="h-8 w-full mb-2" />
+                        <Skeleton className="h-8 w-full" />
+                      </>
+                    ) : (
+                      (getLabelsData?.getLabels ?? []).map(({ id, name }) => (
+                        <CommandItem
+                          key={id}
+                          onSelect={() => {
+                            setValue(
+                              "labels",
+                              watchedLabels.includes(name)
+                                ? watchedLabels.filter((l) => l !== name)
+                                : [...watchedLabels, name],
+                              { shouldValidate: true }
+                            );
+                            trigger("labels");
+                            setOpenLabels(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              watchedLabels.includes(name)
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          {name}
+                        </CommandItem>
+                      ))
+                    )}
                   </CommandGroup>
                 </CommandList>
               </Command>
