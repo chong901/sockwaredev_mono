@@ -1,3 +1,4 @@
+import { GroceryItemMutationResolver } from "@/app/api/graphql/(resolvers)/grocery-item-resolver";
 import {
   LabelMutationResolver,
   LabelQueryResolver,
@@ -32,6 +33,38 @@ const typeDefs = gql`
   type Mutation {
     addLabel(name: String!): Label!
     addStore(name: String!): Store!
+    addGroceryItem(input: CreateGroceryItemInput!): GroceryItem!
+  }
+
+  enum Unit {
+    gram
+    kilogram
+    liter
+    milliliter
+    piece
+    bag
+    box
+  }
+
+  type GroceryItem {
+    id: ID!
+    name: String!
+    store: Store!
+    price: Float!
+    amount: Float!
+    unit: String!
+    notes: String
+    labels: [Label!]!
+  }
+
+  input CreateGroceryItemInput {
+    itemName: String!
+    store: String!
+    price: Float!
+    amount: Float!
+    unit: Unit!
+    labels: [String!]!
+    notes: String
   }
 `;
 
@@ -43,6 +76,7 @@ const resolvers: Resolvers = {
   Mutation: {
     ...LabelMutationResolver,
     ...StoreMutationResolver,
+    ...GroceryItemMutationResolver,
   },
 };
 

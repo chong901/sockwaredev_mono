@@ -17,6 +17,28 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type CreateGroceryItemInput = {
+  amount: Scalars['Float']['input'];
+  itemName: Scalars['String']['input'];
+  labels: Array<Scalars['String']['input']>;
+  notes?: InputMaybe<Scalars['String']['input']>;
+  price: Scalars['Float']['input'];
+  store: Scalars['String']['input'];
+  unit: Unit;
+};
+
+export type GroceryItem = {
+  __typename?: 'GroceryItem';
+  amount: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
+  labels: Array<Label>;
+  name: Scalars['String']['output'];
+  notes?: Maybe<Scalars['String']['output']>;
+  price: Scalars['Float']['output'];
+  store: Store;
+  unit: Scalars['String']['output'];
+};
+
 export type Label = {
   __typename?: 'Label';
   id: Scalars['ID']['output'];
@@ -25,8 +47,14 @@ export type Label = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addGroceryItem: GroceryItem;
   addLabel: Label;
   addStore: Store;
+};
+
+
+export type MutationAddGroceryItemArgs = {
+  input: CreateGroceryItemInput;
 };
 
 
@@ -50,6 +78,16 @@ export type Store = {
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
 };
+
+export enum Unit {
+  Bag = 'bag',
+  Box = 'box',
+  Gram = 'gram',
+  Kilogram = 'kilogram',
+  Liter = 'liter',
+  Milliliter = 'milliliter',
+  Piece = 'piece'
+}
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
 export type ResolversObject<TObject> = WithIndex<TObject>;
@@ -124,23 +162,42 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  CreateGroceryItemInput: CreateGroceryItemInput;
+  Float: ResolverTypeWrapper<Scalars['Float']['output']>;
+  GroceryItem: ResolverTypeWrapper<GroceryItem>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Label: ResolverTypeWrapper<Label>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   Store: ResolverTypeWrapper<Store>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  Unit: Unit;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean']['output'];
+  CreateGroceryItemInput: CreateGroceryItemInput;
+  Float: Scalars['Float']['output'];
+  GroceryItem: GroceryItem;
   ID: Scalars['ID']['output'];
   Label: Label;
   Mutation: {};
   Query: {};
   Store: Store;
   String: Scalars['String']['output'];
+}>;
+
+export type GroceryItemResolvers<ContextType = ApolloContext, ParentType extends ResolversParentTypes['GroceryItem'] = ResolversParentTypes['GroceryItem']> = ResolversObject<{
+  amount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  labels?: Resolver<Array<ResolversTypes['Label']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  price?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  store?: Resolver<ResolversTypes['Store'], ParentType, ContextType>;
+  unit?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type LabelResolvers<ContextType = ApolloContext, ParentType extends ResolversParentTypes['Label'] = ResolversParentTypes['Label']> = ResolversObject<{
@@ -150,6 +207,7 @@ export type LabelResolvers<ContextType = ApolloContext, ParentType extends Resol
 }>;
 
 export type MutationResolvers<ContextType = ApolloContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  addGroceryItem?: Resolver<ResolversTypes['GroceryItem'], ParentType, ContextType, RequireFields<MutationAddGroceryItemArgs, 'input'>>;
   addLabel?: Resolver<ResolversTypes['Label'], ParentType, ContextType, RequireFields<MutationAddLabelArgs, 'name'>>;
   addStore?: Resolver<ResolversTypes['Store'], ParentType, ContextType, RequireFields<MutationAddStoreArgs, 'name'>>;
 }>;
@@ -166,6 +224,7 @@ export type StoreResolvers<ContextType = ApolloContext, ParentType extends Resol
 }>;
 
 export type Resolvers<ContextType = ApolloContext> = ResolversObject<{
+  GroceryItem?: GroceryItemResolvers<ContextType>;
   Label?: LabelResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
