@@ -23,6 +23,7 @@ module default {
     type Label extending Timestamp{
         required name: str;
         required owner: User;
+        constraint exclusive on ((.name, .owner));
     }
 
     type GroceryItem extending Timestamp {
