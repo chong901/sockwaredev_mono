@@ -17,6 +17,7 @@ const documents = {
     "\n  mutation AddLabel($name: String!) {\n    addLabel(name: $name) {\n      id\n      name\n    }\n  }\n": types.AddLabelDocument,
     "\n  query GetStores {\n    getStores {\n      id\n      name\n    }\n  }\n": types.GetStoresDocument,
     "\n  mutation AddStore($name: String!) {\n    addStore(name: $name) {\n      id\n      name\n    }\n  }\n": types.AddStoreDocument,
+    "\n  mutation AddGroceryItem($input: CreateGroceryItemInput!) {\n    addGroceryItem(input: $input) {\n      id\n      name\n      store {\n        name\n      }\n      price\n      amount\n      unit\n      labels {\n        name\n      }\n      notes\n    }\n  }\n": types.AddGroceryItemDocument,
 };
 
 /**
@@ -49,6 +50,10 @@ export function graphql(source: "\n  query GetStores {\n    getStores {\n      i
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation AddStore($name: String!) {\n    addStore(name: $name) {\n      id\n      name\n    }\n  }\n"): (typeof documents)["\n  mutation AddStore($name: String!) {\n    addStore(name: $name) {\n      id\n      name\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation AddGroceryItem($input: CreateGroceryItemInput!) {\n    addGroceryItem(input: $input) {\n      id\n      name\n      store {\n        name\n      }\n      price\n      amount\n      unit\n      labels {\n        name\n      }\n      notes\n    }\n  }\n"): (typeof documents)["\n  mutation AddGroceryItem($input: CreateGroceryItemInput!) {\n    addGroceryItem(input: $input) {\n      id\n      name\n      store {\n        name\n      }\n      price\n      amount\n      unit\n      labels {\n        name\n      }\n      notes\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

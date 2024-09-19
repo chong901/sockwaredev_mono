@@ -16,6 +16,28 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type CreateGroceryItemInput = {
+  amount: Scalars['Float']['input'];
+  itemName: Scalars['String']['input'];
+  labels: Array<Scalars['String']['input']>;
+  notes?: InputMaybe<Scalars['String']['input']>;
+  price: Scalars['Float']['input'];
+  store: Scalars['String']['input'];
+  unit: Unit;
+};
+
+export type GroceryItem = {
+  __typename?: 'GroceryItem';
+  amount: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
+  labels: Array<Label>;
+  name: Scalars['String']['output'];
+  notes?: Maybe<Scalars['String']['output']>;
+  price: Scalars['Float']['output'];
+  store: Store;
+  unit: Scalars['String']['output'];
+};
+
 export type Label = {
   __typename?: 'Label';
   id: Scalars['ID']['output'];
@@ -24,8 +46,14 @@ export type Label = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addGroceryItem: GroceryItem;
   addLabel: Label;
   addStore: Store;
+};
+
+
+export type MutationAddGroceryItemArgs = {
+  input: CreateGroceryItemInput;
 };
 
 
@@ -49,6 +77,16 @@ export type Store = {
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
 };
+
+export enum Unit {
+  Bag = 'bag',
+  Box = 'box',
+  Gram = 'gram',
+  Kilogram = 'kilogram',
+  Liter = 'liter',
+  Milliliter = 'milliliter',
+  Piece = 'piece'
+}
 
 export type GetLabelsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -74,8 +112,16 @@ export type AddStoreMutationVariables = Exact<{
 
 export type AddStoreMutation = { __typename?: 'Mutation', addStore: { __typename?: 'Store', id: string, name: string } };
 
+export type AddGroceryItemMutationVariables = Exact<{
+  input: CreateGroceryItemInput;
+}>;
+
+
+export type AddGroceryItemMutation = { __typename?: 'Mutation', addGroceryItem: { __typename?: 'GroceryItem', id: string, name: string, price: number, amount: number, unit: string, notes?: string | null, store: { __typename?: 'Store', name: string }, labels: Array<{ __typename?: 'Label', name: string }> } };
+
 
 export const GetLabelsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetLabels"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getLabels"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<GetLabelsQuery, GetLabelsQueryVariables>;
 export const AddLabelDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AddLabel"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addLabel"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<AddLabelMutation, AddLabelMutationVariables>;
 export const GetStoresDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetStores"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getStores"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<GetStoresQuery, GetStoresQueryVariables>;
 export const AddStoreDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AddStore"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addStore"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<AddStoreMutation, AddStoreMutationVariables>;
+export const AddGroceryItemDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AddGroceryItem"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateGroceryItemInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addGroceryItem"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"store"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"price"}},{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"labels"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}}]}}]} as unknown as DocumentNode<AddGroceryItemMutation, AddGroceryItemMutationVariables>;

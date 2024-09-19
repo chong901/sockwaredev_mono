@@ -25,12 +25,15 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  AddGroceryItemMutation,
+  AddGroceryItemMutationVariables,
   AddLabelMutation,
   AddLabelMutationVariables,
   AddStoreMutation,
   AddStoreMutationVariables,
   GetLabelsQuery,
   GetStoresQuery,
+  Unit,
 } from "@/graphql-codegen/frontend/graphql";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -58,7 +61,9 @@ const formSchema = z.object({
       invalid_type_error: "Price is required",
     })
     .min(0, { message: "Amount must be a positive number" }),
-  unit: z.string().min(1, { message: "Unit is required" }),
+  unit: z.enum(["gram", "bag", "kilogram", "piece", "liter", "box"], {
+    required_error: "Unit is required",
+  }),
   labels: z
     .array(z.string())
     .min(1, { message: "At least one label is required" }),
@@ -103,6 +108,25 @@ const addStoreMutation = gql`
   }
 `;
 
+const addGroceryItemMutation = gql`
+  mutation AddGroceryItem($input: CreateGroceryItemInput!) {
+    addGroceryItem(input: $input) {
+      id
+      name
+      store {
+        name
+      }
+      price
+      amount
+      unit
+      labels {
+        name
+      }
+      notes
+    }
+  }
+`;
+
 export function GroceryItemFormComponent() {
   const [openLabels, setOpenLabels] = useState(false);
   const [openStores, setOpenStores] = useState(false);
@@ -120,6 +144,10 @@ export function GroceryItemFormComponent() {
   const [addStore] = useMutation<AddStoreMutation, AddStoreMutationVariables>(
     addStoreMutation
   );
+  const [addGroceryItem] = useMutation<
+    AddGroceryItemMutation,
+    AddGroceryItemMutationVariables
+  >(addGroceryItemMutation);
 
   const {
     register,
@@ -137,7 +165,7 @@ export function GroceryItemFormComponent() {
       store: "",
       price: 0,
       amount: 0,
-      unit: "",
+      unit: undefined,
       labels: [],
       notes: "",
     },
@@ -176,8 +204,10 @@ export function GroceryItemFormComponent() {
     }
   };
 
-  const onSubmit = (data: FormData) => {
-    console.log(data);
+  const onSubmit = async (data: FormData) => {
+    await addGroceryItem({
+      variables: { input: { ...data, unit: data.unit as Unit } },
+    });
     toast({
       title: "Item added successfully",
       description: `${data.itemName} has been added to your grocery list.`,
