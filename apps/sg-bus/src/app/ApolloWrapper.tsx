@@ -7,21 +7,16 @@ import {
   ApolloNextAppProvider,
   InMemoryCache,
 } from "@apollo/experimental-nextjs-app-support";
-
-const getUri = () => {
-  const domainUrl = process.env.NEXT_PUBLIC_DOMAIN_URL;
-  const vercelUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
-  const scheme = domainUrl || vercelUrl ? "https" : "http";
-  return `${scheme}://${
-    domainUrl ?? vercelUrl ?? "localhost:3000"
-  }/api/graphql`;
-};
+import { getApolloUri } from "@repo/frontend-util/apollo";
 
 // have a function to create a client for you
 function makeClient() {
   const httpLink = new HttpLink({
     // this needs to be an absolute url, as relative urls cannot be used in SSR
-    uri: getUri(),
+    uri: getApolloUri({
+      domainUrl: process.env.NEXT_PUBLIC_DOMAIN_URL,
+      vercelUrl: process.env.NEXT_PUBLIC_VERCEL_URL,
+    }),
     // you can disable result caching here if you want to
     // (this does not work if you are rendering your page with `export const dynamic = "force-static"`)
     fetchOptions: { cache: "no-store" },
