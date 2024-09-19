@@ -6,7 +6,7 @@ export const LabelResolver: QueryResolvers = {
   getLabels: async (_, __, ctx) => {
     const user = await e
       .select(e.User, () => ({
-        labels: () => ({ name: true }),
+        labels: () => ({ name: true, id: true }),
         filter_single: { id: ctx.userId },
       }))
       .run(edgedbClient);

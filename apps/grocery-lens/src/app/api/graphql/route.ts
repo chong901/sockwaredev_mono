@@ -8,6 +8,7 @@ import { Session } from "next-auth";
 
 const typeDefs = gql`
   type Label {
+    id: ID!
     name: String!
   }
 
