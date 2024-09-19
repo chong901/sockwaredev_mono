@@ -40,8 +40,18 @@ import * as z from "zod";
 const formSchema = z.object({
   itemName: z.string().min(1, { message: "Item name is required" }),
   store: z.string().optional(),
-  price: z.string().min(1, { message: "Price is required" }),
-  amount: z.string().min(1, { message: "Amount is required" }),
+  price: z
+    .number({
+      required_error: "Price is required",
+      invalid_type_error: "Price is required",
+    })
+    .min(0, { message: "Price must be a positive number" }),
+  amount: z
+    .number({
+      required_error: "Price is required",
+      invalid_type_error: "Price is required",
+    })
+    .min(0, { message: "Amount must be a positive number" }),
   unit: z.string().min(1, { message: "Unit is required" }),
   labels: z
     .array(z.string())
@@ -92,8 +102,8 @@ export function GroceryItemFormComponent() {
     defaultValues: {
       itemName: "",
       store: "",
-      price: "",
-      amount: "",
+      price: 0,
+      amount: 0,
       unit: "",
       labels: [],
       notes: "",
@@ -194,6 +204,7 @@ export function GroceryItemFormComponent() {
             id="price"
             type="number"
             {...register("price", {
+              valueAsNumber: true,
               onChange: () => trigger("price"),
             })}
             placeholder="Enter price"
@@ -218,6 +229,7 @@ export function GroceryItemFormComponent() {
                 id="amount"
                 type="number"
                 {...register("amount", {
+                  valueAsNumber: true,
                   onChange: () => trigger("amount"),
                 })}
                 placeholder="Amount"
