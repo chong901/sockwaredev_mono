@@ -22,6 +22,7 @@ export const GroceryItemQueryResolver: Pick<QueryResolvers, "getGroceryItems"> =
             name: true,
           },
           filter: e.op(item.owner.id, "=", e.uuid(userId)),
+          order_by: { expression: item.created_at, direction: e.DESC },
         }))
         .run(edgedbClient);
       return groceryItems;

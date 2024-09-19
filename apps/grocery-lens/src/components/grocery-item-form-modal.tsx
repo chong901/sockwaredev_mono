@@ -49,7 +49,11 @@ import {
   addLabelMutation,
   addStoreMutation,
 } from "@/graphql/mutation";
-import { getLabelQuery, getStoresQuery } from "@/graphql/query";
+import {
+  getGroceryItemsQuery,
+  getLabelQuery,
+  getStoresQuery,
+} from "@/graphql/query";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { useMutation, useQuery } from "@apollo/client";
@@ -169,6 +173,7 @@ export function GroceryItemFormModal() {
   const onSubmit = async (data: FormData) => {
     await addGroceryItem({
       variables: { input: { ...data, unit: data.unit as Unit } },
+      refetchQueries: [{ query: getGroceryItemsQuery }],
     });
     toast({
       title: "Item added successfully",
