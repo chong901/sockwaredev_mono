@@ -26,6 +26,7 @@ export type Label = {
 export type Mutation = {
   __typename?: 'Mutation';
   addLabel: Label;
+  addStore: Store;
 };
 
 
@@ -33,9 +34,21 @@ export type MutationAddLabelArgs = {
   name: Scalars['String']['input'];
 };
 
+
+export type MutationAddStoreArgs = {
+  name: Scalars['String']['input'];
+};
+
 export type Query = {
   __typename?: 'Query';
   getLabels: Array<Label>;
+  getStores: Array<Store>;
+};
+
+export type Store = {
+  __typename?: 'Store';
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -115,6 +128,7 @@ export type ResolversTypes = ResolversObject<{
   Label: ResolverTypeWrapper<Label>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
+  Store: ResolverTypeWrapper<Store>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
 }>;
 
@@ -125,6 +139,7 @@ export type ResolversParentTypes = ResolversObject<{
   Label: Label;
   Mutation: {};
   Query: {};
+  Store: Store;
   String: Scalars['String']['output'];
 }>;
 
@@ -136,15 +151,24 @@ export type LabelResolvers<ContextType = ApolloContext, ParentType extends Resol
 
 export type MutationResolvers<ContextType = ApolloContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   addLabel?: Resolver<ResolversTypes['Label'], ParentType, ContextType, RequireFields<MutationAddLabelArgs, 'name'>>;
+  addStore?: Resolver<ResolversTypes['Store'], ParentType, ContextType, RequireFields<MutationAddStoreArgs, 'name'>>;
 }>;
 
 export type QueryResolvers<ContextType = ApolloContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   getLabels?: Resolver<Array<ResolversTypes['Label']>, ParentType, ContextType>;
+  getStores?: Resolver<Array<ResolversTypes['Store']>, ParentType, ContextType>;
+}>;
+
+export type StoreResolvers<ContextType = ApolloContext, ParentType extends ResolversParentTypes['Store'] = ResolversParentTypes['Store']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type Resolvers<ContextType = ApolloContext> = ResolversObject<{
   Label?: LabelResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Store?: StoreResolvers<ContextType>;
 }>;
 
