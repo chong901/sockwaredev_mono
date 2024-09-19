@@ -2,6 +2,7 @@ import {
   LabelMutationResolver,
   LabelQueryResolver,
 } from "@/app/api/graphql/(resolvers)/label-resolver";
+import { StoreQueryResolver } from "@/app/api/graphql/(resolvers)/store-resolver";
 import { nextAuth } from "@/auth";
 import { Resolvers } from "@/graphql-codegen/backend/types";
 import { ApolloServer } from "@apollo/server";
@@ -15,8 +16,14 @@ const typeDefs = gql`
     name: String!
   }
 
+  type Store {
+    id: ID!
+    name: String!
+  }
+
   type Query {
     getLabels: [Label!]!
+    getStores: [Store!]!
   }
 
   type Mutation {
@@ -27,6 +34,7 @@ const typeDefs = gql`
 const resolvers: Resolvers = {
   Query: {
     ...LabelQueryResolver,
+    ...StoreQueryResolver,
   },
   Mutation: {
     ...LabelMutationResolver,
