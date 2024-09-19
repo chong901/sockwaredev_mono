@@ -16,6 +16,7 @@ module default {
         image: str;
         multi labels := .<owner[is Label];
         multi groceryItems := .<owner[is GroceryItem];
+        multi stores := .<owner[is Store];
     }
 
     scalar type Unit extending enum<gram, kilogram, liter, milliliter, piece, bag, box>;
@@ -28,12 +29,18 @@ module default {
 
     type GroceryItem extending Timestamp {
         required name: str;
-        optional store: str;
+        required store: Store;
         required price: float32;
         required amount: float32;
         required unit: Unit;
         optional notes: str;
         required owner: User;
         multi labels: Label;
+    }
+
+    type Store extending Timestamp {
+        required name: str;
+        required owner: User;
+        multi groceryItems := .<store[is GroceryItem];
     }
 }
