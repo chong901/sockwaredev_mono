@@ -24,8 +24,14 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
-import { MutationAddLabelArgs } from "@/graphql-codegen/backend/types";
-import { GetLabelsQuery } from "@/graphql-codegen/frontend/graphql";
+import {
+  AddLabelMutation,
+  AddLabelMutationVariables,
+  AddStoreMutation,
+  AddStoreMutationVariables,
+  GetLabelsQuery,
+  GetStoresQuery,
+} from "@/graphql-codegen/frontend/graphql";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { gql, useMutation, useQuery } from "@apollo/client";
@@ -39,7 +45,7 @@ import * as z from "zod";
 
 const formSchema = z.object({
   itemName: z.string().min(1, { message: "Item name is required" }),
-  store: z.string().optional(),
+  store: z.string().min(1, { message: "Store is required" }),
   price: z
     .number({
       required_error: "Price is required",
@@ -79,14 +85,41 @@ const addLabelMutation = gql`
   }
 `;
 
+const getStoresQuery = gql`
+  query GetStores {
+    getStores {
+      id
+      name
+    }
+  }
+`;
+
+const addStoreMutation = gql`
+  mutation AddStore($name: String!) {
+    addStore(name: $name) {
+      id
+      name
+    }
+  }
+`;
+
 export function GroceryItemFormComponent() {
   const [openLabels, setOpenLabels] = useState(false);
+  const [openStores, setOpenStores] = useState(false);
   const [newLabel, setNewLabel] = useState("");
+  const [newStore, setNewStore] = useState("");
   const { toast } = useToast();
   const { data: getLabelsData, loading: getLabelsLoading } =
     useQuery<GetLabelsQuery>(getLabelQuery);
+  const { data: getStoresData, loading: getStoresLoading } =
+    useQuery<GetStoresQuery>(getStoresQuery);
 
-  const [addLabel] = useMutation<MutationAddLabelArgs>(addLabelMutation);
+  const [addLabel] = useMutation<AddLabelMutation, AddLabelMutationVariables>(
+    addLabelMutation
+  );
+  const [addStore] = useMutation<AddStoreMutation, AddStoreMutationVariables>(
+    addStoreMutation
+  );
 
   const {
     register,
@@ -113,8 +146,10 @@ export function GroceryItemFormComponent() {
   const unitOptions = ["gram", "bag", "kilogram", "piece", "liter", "box"];
 
   const watchedLabels = watch("labels", []);
+  const watchedStore = watch("store", "");
 
   const labels = getLabelsData?.getLabels ?? [];
+  const stores = getStoresData?.getStores ?? [];
 
   const handleAddLabel = async () => {
     if (newLabel && !watchedLabels.includes(newLabel)) {
@@ -126,6 +161,18 @@ export function GroceryItemFormComponent() {
         shouldValidate: true,
       });
       setNewLabel("");
+    }
+  };
+
+  const handleAddStore = async () => {
+    if (newStore) {
+      await addStore({
+        variables: { name: newStore },
+        refetchQueries: [{ query: getStoresQuery }],
+      });
+      setValue("store", newStore, { shouldValidate: true });
+      setNewStore("");
+      setOpenStores(false);
     }
   };
 
@@ -186,14 +233,84 @@ export function GroceryItemFormComponent() {
 
         <div className="space-y-2">
           <Label htmlFor="store" className="text-indigo-700">
-            Store
+            Store *
           </Label>
-          <Input
-            id="store"
-            {...register("store")}
-            placeholder="Enter store name"
-            className="bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500"
-          />
+          <Popover open={openStores} onOpenChange={setOpenStores}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={openStores}
+                className={cn(
+                  "w-full justify-between bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500",
+                  errors.store && (touchedFields.store || dirtyFields.store)
+                    ? "border-red-500"
+                    : ""
+                )}
+              >
+                {watchedStore || "Select store..."}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-full p-0">
+              <Command>
+                <CommandInput placeholder="Search store..." className="h-9" />
+                <CommandEmpty>No store found.</CommandEmpty>
+                <CommandList>
+                  <CommandGroup>
+                    {getStoresLoading ? (
+                      <>
+                        <Skeleton className="h-8 w-full mb-2" />
+                        <Skeleton className="h-8 w-full mb-2" />
+                        <Skeleton className="h-8 w-full" />
+                      </>
+                    ) : (
+                      stores.map(({ id, name }) => (
+                        <CommandItem
+                          key={id}
+                          onSelect={() => {
+                            setValue("store", name, { shouldValidate: true });
+                            setOpenStores(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              watchedStore === name
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          {name}
+                        </CommandItem>
+                      ))
+                    )}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+              <div className="flex items-center border-t p-2">
+                <Input
+                  placeholder="Add new store"
+                  value={newStore}
+                  onChange={(e) => setNewStore(e.target.value)}
+                  className="flex-grow"
+                />
+                <Button
+                  disabled={
+                    !!stores.find((s) => s.name === newStore) || !newStore
+                  }
+                  type="button"
+                  onClick={handleAddStore}
+                  className="ml-2"
+                >
+                  <PlusCircle className="h-4 w-4" />
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+          {errors.store && (touchedFields.store || dirtyFields.store) && (
+            <p className="text-red-500 text-sm">{errors.store.message}</p>
+          )}
         </div>
 
         <div className="space-y-2">
@@ -363,7 +480,9 @@ export function GroceryItemFormComponent() {
                 />
                 <Button
                   type="button"
-                  disabled={!!labels.find((l) => l.name === newLabel)}
+                  disabled={
+                    !!labels.find((l) => l.name === newLabel) || !newLabel
+                  }
                   onClick={handleAddLabel}
                   className="ml-2"
                 >
