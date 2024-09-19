@@ -1,5 +1,9 @@
 {
   "dependencies": {
+    "@apollo/client": "^3.11.4",
+    "@apollo/experimental-nextjs-app-support": "^0.11.2",
+    "@apollo/server": "^4.11.0",
+    "@as-integrations/next": "^3.1.0",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.1",
@@ -14,6 +18,7 @@
     "cmdk": "1.0.0",
     "edgedb": "^1.5.12",
     "framer-motion": "^11.5.4",
+    "graphql-tag": "^2.12.6",
     "lucide-react": "^0.441.0",
     "next": "14.2.11",
     "next-auth": "beta",
@@ -26,6 +31,9 @@
   },
   "devDependencies": {
     "@edgedb/generate": "^0.5.6",
+    "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/typescript": "^4.0.9",
+    "@graphql-codegen/typescript-resolvers": "^4.2.1",
     "@repo/frontend-util": "workspace:*",
     "@repo/tailwind-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
@@ -44,6 +52,9 @@
     "build": "next build",
     "db:generate": "npx @edgedb/generate interfaces && npx @edgedb/generate edgeql-js --out src/edgedb/edgeql-js",
     "dev": "next dev",
+    "graphql:codegen": "pnpm graphql:codegen:be && pnpm graphql:codegen:fe",
+    "graphql:codegen:be": "graphql-codegen --config codegen-backend.ts",
+    "graphql:codegen:fe": "graphql-codegen --config codegen-frontend.ts",
     "lint": "next lint",
     "start": "next start"
   },

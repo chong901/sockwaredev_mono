@@ -11,6 +11,15 @@ export const nextAuth = NextAuth({
     }),
   ],
   callbacks: {
+    session: async ({ session }) => {
+      const dbUser = await e
+        .select(e.User, () => ({
+          filter_single: { email: session.user.email },
+        }))
+        .run(edgedbClient);
+      session.userId = dbUser?.id ?? "";
+      return session;
+    },
     signIn: async ({ user }) => {
       const userExists = await e
         .select(e.User, () => ({

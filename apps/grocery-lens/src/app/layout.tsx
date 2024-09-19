@@ -5,6 +5,7 @@ import { SessionProvider } from "next-auth/react";
 import localFont from "next/font/local";
 import { redirect } from "next/navigation";
 import "./globals.css";
+import { ApolloWrapper } from "@/app/ApolloWrapper";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -34,12 +35,14 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <SessionProvider session={session}>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col h-svh overflow-hidden`}
-        >
-          <Header />
-          <div className="flex-1 w-full overflow-scroll">{children}</div>
-        </body>
+        <ApolloWrapper>
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col h-svh overflow-hidden`}
+          >
+            <Header />
+            <div className="flex-1 w-full overflow-scroll">{children}</div>
+          </body>
+        </ApolloWrapper>
       </SessionProvider>
     </html>
   );
