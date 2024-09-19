@@ -37,7 +37,7 @@ type GroceryItem = {
 };
 
 export function GroceryListComponent() {
-  const { data: groceryItems } =
+  const { data: groceryItems, loading } =
     useQuery<GetGroceryItemsQuery>(getGroceryItemsQuery);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [newItem, setNewItem] = useState<Partial<GroceryItem>>({});
@@ -84,154 +84,222 @@ export function GroceryListComponent() {
       </motion.div>
       <ScrollArea className="h-[calc(100vh-200px)]">
         <AnimatePresence>
-          {(groceryItems?.getGroceryItems ?? []).map((item) => (
-            <motion.div
-              key={item.id}
-              layout
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -50 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="mb-4"
-            >
-              <Card className="bg-white/50 border-indigo-200 shadow-md hover:shadow-lg transition-shadow duration-300">
-                <CardHeader>
-                  <CardTitle className="flex justify-between items-center text-indigo-800">
-                    {editingId === item.id ? (
-                      <Input
-                        value={newItem.name || item.name}
-                        onChange={(e) =>
-                          setNewItem({ ...newItem, name: e.target.value })
-                        }
-                        className="font-bold bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500"
-                      />
-                    ) : (
-                      <span>{item.name}</span>
-                    )}
-                    <div className="flex space-x-2">
-                      {editingId === item.id ? (
-                        <>
-                          <motion.div
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                          >
-                            <Button
-                              size="sm"
-                              onClick={() => handleEditItem(item.id)}
-                              className="bg-green-500 hover:bg-green-600 text-white"
-                            >
-                              <Check className="h-4 w-4" />
-                            </Button>
-                          </motion.div>
-                          <motion.div
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                          >
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => setEditingId(null)}
-                              className="border-indigo-300 text-indigo-600 hover:bg-indigo-100"
-                            >
-                              <X className="h-4 w-4" />
-                            </Button>
-                          </motion.div>
-                        </>
-                      ) : (
-                        <>
-                          <motion.div
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                          >
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => setEditingId(item.id)}
-                              className="border-indigo-300 text-indigo-600 hover:bg-indigo-100"
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                          </motion.div>
-                          <motion.div
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                          >
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              onClick={() => handleDeleteItem(item.id)}
-                              className="bg-red-500 hover:bg-red-600 text-white"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </motion.div>
-                        </>
-                      )}
-                    </div>
-                  </CardTitle>
-                  <CardDescription className="text-indigo-600">
-                    {item.store.name} - ${item.price.toFixed(2)}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex justify-between items-center">
-                    <span className="text-indigo-700">
-                      {editingId === item.id ? (
-                        <div className="flex items-center space-x-2">
-                          <Input
-                            type="number"
-                            value={newItem.amount || item.amount}
-                            onChange={(e) =>
-                              setNewItem({
-                                ...newItem,
-                                amount: parseFloat(e.target.value),
-                              })
-                            }
-                            className="w-20 bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500"
+          {loading ? (
+            <>
+              {[1, 2, 3].map((index) => (
+                <motion.div
+                  key={`skeleton-${index}`}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -50 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  className="mb-4"
+                >
+                  <Card className="bg-white/50 border-indigo-200 shadow-md overflow-hidden">
+                    <div className="animate-pulse">
+                      <CardHeader>
+                        <CardTitle className="flex justify-between items-center">
+                          <div
+                            className="h-6 w-1/3 bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200 rounded"
+                            style={{ animation: "shimmer 2s infinite linear" }}
                           />
-                          <Select
-                            onValueChange={(value) =>
-                              setNewItem({ ...newItem, unit: value })
-                            }
-                            value={newItem.unit || item.unit}
-                          >
-                            <SelectTrigger className="w-[100px] bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500">
-                              <SelectValue placeholder="Select unit" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {unitOptions.map((unit) => (
-                                <SelectItem key={unit} value={unit}>
-                                  {unit}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <div className="flex space-x-2">
+                            <div
+                              className="h-8 w-8 bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200 rounded-full"
+                              style={{
+                                animation: "shimmer 2s infinite linear",
+                              }}
+                            />
+                            <div
+                              className="h-8 w-8 bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200 rounded-full"
+                              style={{
+                                animation: "shimmer 2s infinite linear",
+                              }}
+                            />
+                          </div>
+                        </CardTitle>
+                        <div
+                          className="h-4 w-1/4 bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200 rounded"
+                          style={{ animation: "shimmer 2s infinite linear" }}
+                        />
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex justify-between items-center">
+                          <div
+                            className="h-4 w-1/5 bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200 rounded"
+                            style={{ animation: "shimmer 2s infinite linear" }}
+                          />
+                          <div className="flex space-x-2">
+                            <div
+                              className="h-6 w-16 bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200 rounded-full"
+                              style={{
+                                animation: "shimmer 2s infinite linear",
+                              }}
+                            />
+                            <div
+                              className="h-6 w-16 bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200 rounded-full"
+                              style={{
+                                animation: "shimmer 2s infinite linear",
+                              }}
+                            />
+                          </div>
                         </div>
-                      ) : (
-                        `${item.amount} ${item.unit}`
-                      )}
-                    </span>
-                    <div className="flex flex-wrap gap-2">
-                      {item.labels.map(({ id, name }) => (
-                        <motion.div
-                          key={id}
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
-                        >
-                          <Badge
-                            variant="secondary"
-                            className="bg-indigo-100 text-indigo-800"
-                          >
-                            {name}
-                          </Badge>
-                        </motion.div>
-                      ))}
+                      </CardContent>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+                  </Card>
+                </motion.div>
+              ))}
+            </>
+          ) : (
+            (groceryItems?.getGroceryItems ?? []).map((item) => (
+              <motion.div
+                key={item.id}
+                layout
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -50 }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                className="mb-4"
+              >
+                <Card className="bg-white/50 border-indigo-200 shadow-md hover:shadow-lg transition-shadow duration-300">
+                  <CardHeader>
+                    <CardTitle className="flex justify-between items-center text-indigo-800">
+                      {editingId === item.id ? (
+                        <Input
+                          value={newItem.name || item.name}
+                          onChange={(e) =>
+                            setNewItem({ ...newItem, name: e.target.value })
+                          }
+                          className="font-bold bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500"
+                        />
+                      ) : (
+                        <span>{item.name}</span>
+                      )}
+                      <div className="flex space-x-2">
+                        {editingId === item.id ? (
+                          <>
+                            <motion.div
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                            >
+                              <Button
+                                size="sm"
+                                onClick={() => handleEditItem(item.id)}
+                                className="bg-green-500 hover:bg-green-600 text-white"
+                              >
+                                <Check className="h-4 w-4" />
+                              </Button>
+                            </motion.div>
+                            <motion.div
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                            >
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setEditingId(null)}
+                                className="border-indigo-300 text-indigo-600 hover:bg-indigo-100"
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </motion.div>
+                          </>
+                        ) : (
+                          <>
+                            <motion.div
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                            >
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setEditingId(item.id)}
+                                className="border-indigo-300 text-indigo-600 hover:bg-indigo-100"
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                            </motion.div>
+                            <motion.div
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                            >
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => handleDeleteItem(item.id)}
+                                className="bg-red-500 hover:bg-red-600 text-white"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </motion.div>
+                          </>
+                        )}
+                      </div>
+                    </CardTitle>
+                    <CardDescription className="text-indigo-600">
+                      {item.store.name} - ${item.price.toFixed(2)}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex justify-between items-center">
+                      <span className="text-indigo-700">
+                        {editingId === item.id ? (
+                          <div className="flex items-center space-x-2">
+                            <Input
+                              type="number"
+                              value={newItem.amount || item.amount}
+                              onChange={(e) =>
+                                setNewItem({
+                                  ...newItem,
+                                  amount: parseFloat(e.target.value),
+                                })
+                              }
+                              className="w-20 bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500"
+                            />
+                            <Select
+                              onValueChange={(value) =>
+                                setNewItem({ ...newItem, unit: value })
+                              }
+                              value={newItem.unit || item.unit}
+                            >
+                              <SelectTrigger className="w-[100px] bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500">
+                                <SelectValue placeholder="Select unit" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {unitOptions.map((unit) => (
+                                  <SelectItem key={unit} value={unit}>
+                                    {unit}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        ) : (
+                          `${item.amount} ${item.unit}`
+                        )}
+                      </span>
+                      <div className="flex flex-wrap gap-2">
+                        {item.labels.map(({ id, name }) => (
+                          <motion.div
+                            key={id}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                          >
+                            <Badge
+                              variant="secondary"
+                              className="bg-indigo-100 text-indigo-800"
+                            >
+                              {name}
+                            </Badge>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))
+          )}
         </AnimatePresence>
       </ScrollArea>
     </motion.div>
