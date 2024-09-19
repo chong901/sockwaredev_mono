@@ -44,9 +44,15 @@ import {
   GetStoresQuery,
   Unit,
 } from "@/graphql-codegen/frontend/graphql";
+import {
+  addGroceryItemMutation,
+  addLabelMutation,
+  addStoreMutation,
+} from "@/graphql/mutation";
+import { getLabelQuery, getStoresQuery } from "@/graphql/query";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CommandList } from "cmdk";
 import { motion } from "framer-motion";
@@ -80,61 +86,6 @@ const formSchema = z.object({
 });
 
 type FormData = z.infer<typeof formSchema>;
-
-const getLabelQuery = gql`
-  query GetLabels {
-    getLabels {
-      id
-      name
-    }
-  }
-`;
-
-const addLabelMutation = gql`
-  mutation AddLabel($name: String!) {
-    addLabel(name: $name) {
-      id
-      name
-    }
-  }
-`;
-
-const getStoresQuery = gql`
-  query GetStores {
-    getStores {
-      id
-      name
-    }
-  }
-`;
-
-const addStoreMutation = gql`
-  mutation AddStore($name: String!) {
-    addStore(name: $name) {
-      id
-      name
-    }
-  }
-`;
-
-const addGroceryItemMutation = gql`
-  mutation AddGroceryItem($input: CreateGroceryItemInput!) {
-    addGroceryItem(input: $input) {
-      id
-      name
-      store {
-        name
-      }
-      price
-      amount
-      unit
-      labels {
-        name
-      }
-      notes
-    }
-  }
-`;
 
 export function GroceryItemFormModal() {
   const [isOpen, setIsOpen] = useState(false);

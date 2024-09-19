@@ -20,9 +20,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { GetGroceryItemsQuery } from "@/graphql-codegen/frontend/graphql";
+import { getGroceryItemsQuery } from "@/graphql/query";
 import { useQuery } from "@apollo/client";
 import { AnimatePresence, motion } from "framer-motion";
-import gql from "graphql-tag";
 import { Check, Edit, ShoppingCart, Trash2, X } from "lucide-react";
 import { useState } from "react";
 
@@ -35,27 +35,6 @@ type GroceryItem = {
   store: string;
   labels: string[];
 };
-
-const getGroceryItemsQuery = gql`
-  query GetGroceryItems {
-    getGroceryItems {
-      id
-      name
-      store {
-        id
-        name
-      }
-      price
-      amount
-      unit
-      notes
-      labels {
-        id
-        name
-      }
-    }
-  }
-`;
 
 export function GroceryListComponent() {
   const { data: groceryItems } =
