@@ -22,6 +22,16 @@ export type Label = {
   name: Scalars['String']['output'];
 };
 
+export type Mutation = {
+  __typename?: 'Mutation';
+  addLabel: Label;
+};
+
+
+export type MutationAddLabelArgs = {
+  name: Scalars['String']['input'];
+};
+
 export type Query = {
   __typename?: 'Query';
   getLabels: Array<Label>;

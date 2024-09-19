@@ -24,10 +24,11 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
+import { MutationAddLabelArgs } from "@/graphql-codegen/backend/types";
 import { GetLabelsQuery } from "@/graphql-codegen/frontend/graphql";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CommandList } from "cmdk";
 import { motion } from "framer-motion";
@@ -59,12 +60,23 @@ const getLabelQuery = gql`
   }
 `;
 
+const addLabelMutation = gql`
+  mutation AddLabel($name: String!) {
+    addLabel(name: $name) {
+      id
+      name
+    }
+  }
+`;
+
 export function GroceryItemFormComponent() {
   const [openLabels, setOpenLabels] = useState(false);
   const [newLabel, setNewLabel] = useState("");
   const { toast } = useToast();
   const { data: getLabelsData, loading: getLabelsLoading } =
     useQuery<GetLabelsQuery>(getLabelQuery);
+
+  const [addLabel] = useMutation<MutationAddLabelArgs>(addLabelMutation);
 
   const {
     register,
@@ -92,8 +104,14 @@ export function GroceryItemFormComponent() {
 
   const watchedLabels = watch("labels", []);
 
-  const handleAddLabel = () => {
+  const labels = getLabelsData?.getLabels ?? [];
+
+  const handleAddLabel = async () => {
     if (newLabel && !watchedLabels.includes(newLabel)) {
+      await addLabel({
+        variables: { name: newLabel },
+        refetchQueries: [{ query: getLabelQuery }],
+      });
       setValue("labels", [...watchedLabels, newLabel], {
         shouldValidate: true,
       });
@@ -294,7 +312,7 @@ export function GroceryItemFormComponent() {
                         <Skeleton className="h-8 w-full" />
                       </>
                     ) : (
-                      (getLabelsData?.getLabels ?? []).map(({ id, name }) => (
+                      labels.map(({ id, name }) => (
                         <CommandItem
                           key={id}
                           onSelect={() => {
@@ -331,7 +349,12 @@ export function GroceryItemFormComponent() {
                   onChange={(e) => setNewLabel(e.target.value)}
                   className="flex-grow"
                 />
-                <Button type="button" onClick={handleAddLabel} className="ml-2">
+                <Button
+                  type="button"
+                  disabled={!!labels.find((l) => l.name === newLabel)}
+                  onClick={handleAddLabel}
+                  className="ml-2"
+                >
                   <PlusCircle className="h-4 w-4" />
                 </Button>
               </div>
