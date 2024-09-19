@@ -7,6 +7,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -20,6 +21,16 @@ export type Label = {
   __typename?: 'Label';
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  addLabel: Label;
+};
+
+
+export type MutationAddLabelArgs = {
+  name: Scalars['String']['input'];
 };
 
 export type Query = {
@@ -102,6 +113,7 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Label: ResolverTypeWrapper<Label>;
+  Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
 }>;
@@ -111,6 +123,7 @@ export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean']['output'];
   ID: Scalars['ID']['output'];
   Label: Label;
+  Mutation: {};
   Query: {};
   String: Scalars['String']['output'];
 }>;
@@ -121,12 +134,17 @@ export type LabelResolvers<ContextType = ApolloContext, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type MutationResolvers<ContextType = ApolloContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  addLabel?: Resolver<ResolversTypes['Label'], ParentType, ContextType, RequireFields<MutationAddLabelArgs, 'name'>>;
+}>;
+
 export type QueryResolvers<ContextType = ApolloContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   getLabels?: Resolver<Array<ResolversTypes['Label']>, ParentType, ContextType>;
 }>;
 
 export type Resolvers<ContextType = ApolloContext> = ResolversObject<{
   Label?: LabelResolvers<ContextType>;
+  Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
 }>;
 
