@@ -1,4 +1,4 @@
-import { GroceryItemFormModal } from "@/components/grocery-item-form";
+import { GroceryItemFormModal } from "@/components/grocery-item-form-modal";
 
 export default function Home() {
   return (
