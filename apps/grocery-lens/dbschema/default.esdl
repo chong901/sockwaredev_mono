@@ -42,5 +42,6 @@ module default {
         required name: str;
         required owner: User;
         multi groceryItems := .<store[is GroceryItem];
+        constraint exclusive on ((.name, .owner));
     }
 }
