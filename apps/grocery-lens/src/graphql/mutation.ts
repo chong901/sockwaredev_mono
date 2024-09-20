@@ -55,3 +55,11 @@ export const updateGroceryItemMutation = gql`
     }
   }
 `;
+
+export const deleteGroceryItemMutation = gql`
+  mutation DeleteGroceryItem($id: ID!) {
+    deleteGroceryItem(id: $id) {
+      id
+    }
+  }
+`;

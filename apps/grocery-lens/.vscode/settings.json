@@ -4,6 +4,10 @@
       {
         "match": "src/app/api/graphql/route.ts",
         "cmd": "pnpm -F grocery-lens graphql:codegen:be"
+      },
+      {
+        "match": "src/graphql/(query|mutation).ts",
+        "cmd": "pnpm -F grocery-lens graphql:codegen:fe"
       }
     ]
   }

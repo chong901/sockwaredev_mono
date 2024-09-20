@@ -9,9 +9,14 @@ import {
   GroceryItemFormModal,
   isEditModalOpenAtom,
 } from "@/components/grocery-item-form-modal";
-import { GetGroceryItemsQuery } from "@/graphql-codegen/frontend/graphql";
-import { getGroceryItemsQuery } from "@/graphql/query";
-import { useQuery } from "@apollo/client";
+import {
+  DeleteGroceryItemMutation,
+  DeleteGroceryItemMutationVariables,
+  GetGroceryItemsQuery,
+} from "@/graphql-codegen/frontend/graphql";
+import { deleteGroceryItemMutation } from "@/graphql/mutation";
+import { getGroceryItemsQuery, GroceryItem } from "@/graphql/query";
+import { useMutation, useQuery } from "@apollo/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSetAtom } from "jotai";
 import { ShoppingCart } from "lucide-react";
@@ -21,6 +26,24 @@ export function GroceryListComponent() {
     useQuery<GetGroceryItemsQuery>(getGroceryItemsQuery);
   const setEditingItem = useSetAtom(editingItemAtom);
   const setEditItemModalOpen = useSetAtom(isEditModalOpenAtom);
+  const [deleteGroceryItem] = useMutation<
+    DeleteGroceryItemMutation,
+    DeleteGroceryItemMutationVariables
+  >(deleteGroceryItemMutation, {
+    update(cache, { data }) {
+      cache.evict({ id: cache.identify(data!.deleteGroceryItem) });
+      cache.gc();
+    },
+  });
+
+  const handleDelete = async (id: string) => {
+    deleteGroceryItem({ variables: { id } });
+  };
+
+  const handleEdit = (item: GroceryItem) => {
+    setEditingItem(item);
+    setEditItemModalOpen(true);
+  };
 
   return (
     <motion.div
@@ -69,11 +92,8 @@ export function GroceryListComponent() {
               <GroceryItemCard
                 key={item.id}
                 item={item}
-                onDelete={() => {}}
-                onEdit={(item) => {
-                  setEditingItem(item);
-                  setEditItemModalOpen(true);
-                }}
+                onDelete={handleDelete}
+                onEdit={handleEdit}
                 className="mb-4"
               />
             ))
