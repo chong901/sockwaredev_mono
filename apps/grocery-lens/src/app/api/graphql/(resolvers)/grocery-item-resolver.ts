@@ -117,18 +117,21 @@ export const GroceryItemMutationResolver: Pick<
       filter_single: { id: userId },
     }));
     const [grocery] = await e
-      .delete(e.GroceryItem, (item) => ({
-        filter: e.all(
-          e.set(
-            e.op(item.id, "=", e.uuid(id)),
-            e.op(item.owner.id, "=", currentUser.id)
-          )
-        ),
-      }))
+      .select(
+        e.delete(e.GroceryItem, (item) => ({
+          filter: e.all(
+            e.set(
+              e.op(item.id, "=", e.uuid(id)),
+              e.op(item.owner.id, "=", currentUser.id)
+            )
+          ),
+        })),
+        () => defaultGroceryItemReturnShape
+      )
       .run(edgedbClient);
     if (!grocery) {
-      return false;
+      throw new Error("Grocery item not found");
     }
-    return true;
+    return grocery;
   },
 };

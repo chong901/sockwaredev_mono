@@ -51,7 +51,7 @@ export type Mutation = {
   addGroceryItem: GroceryItem;
   addLabel: Label;
   addStore: Store;
-  deleteGroceryItem: Scalars['Boolean']['output'];
+  deleteGroceryItem: GroceryItem;
   updateGroceryItem: GroceryItem;
 };
 
@@ -226,7 +226,7 @@ export type MutationResolvers<ContextType = ApolloContext, ParentType extends Re
   addGroceryItem?: Resolver<ResolversTypes['GroceryItem'], ParentType, ContextType, RequireFields<MutationAddGroceryItemArgs, 'input'>>;
   addLabel?: Resolver<ResolversTypes['Label'], ParentType, ContextType, RequireFields<MutationAddLabelArgs, 'name'>>;
   addStore?: Resolver<ResolversTypes['Store'], ParentType, ContextType, RequireFields<MutationAddStoreArgs, 'name'>>;
-  deleteGroceryItem?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteGroceryItemArgs, 'id'>>;
+  deleteGroceryItem?: Resolver<ResolversTypes['GroceryItem'], ParentType, ContextType, RequireFields<MutationDeleteGroceryItemArgs, 'id'>>;
   updateGroceryItem?: Resolver<ResolversTypes['GroceryItem'], ParentType, ContextType, RequireFields<MutationUpdateGroceryItemArgs, 'id' | 'input'>>;
 }>;
 
