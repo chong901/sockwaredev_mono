@@ -59,6 +59,7 @@ const typeDefs = gql`
     unit: String!
     notes: String
     labels: [Label!]!
+    pricePerUnit: Float!
   }
 
   input CreateGroceryItemInput {

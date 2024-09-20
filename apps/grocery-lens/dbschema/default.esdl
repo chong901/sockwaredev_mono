@@ -36,6 +36,8 @@ module default {
         optional notes: str;
         required owner: User;
         multi labels: Label;
+        pricePerUnit := .price / .amount;
+        
     }
 
     type Store extending Timestamp {

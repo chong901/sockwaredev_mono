@@ -35,6 +35,7 @@ export type GroceryItem = {
   name: Scalars['String']['output'];
   notes?: Maybe<Scalars['String']['output']>;
   price: Scalars['Float']['output'];
+  pricePerUnit: Scalars['Float']['output'];
   store: Store;
   unit: Scalars['String']['output'];
 };
@@ -196,6 +197,7 @@ export type GroceryItemResolvers<ContextType = ApolloContext, ParentType extends
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   price?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  pricePerUnit?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   store?: Resolver<ResolversTypes['Store'], ParentType, ContextType>;
   unit?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
