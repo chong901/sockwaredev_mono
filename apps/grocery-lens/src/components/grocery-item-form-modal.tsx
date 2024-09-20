@@ -98,9 +98,7 @@ const formSchema = z.object({
   unit: z.enum(["gram", "bag", "kilogram", "piece", "liter", "box"], {
     required_error: "Unit is required",
   }),
-  labels: z
-    .array(z.string())
-    .min(1, { message: "At least one label is required" }),
+  labels: z.array(z.string()),
   notes: z.string().optional(),
 });
 
@@ -159,7 +157,7 @@ export function GroceryItemFormModal() {
       isSubmitting,
     },
     setValue,
-    watch,
+    getValues,
     trigger,
     reset,
   } = useForm<FormData>({
@@ -181,19 +179,17 @@ export function GroceryItemFormModal() {
 
   const unitOptions = ["gram", "bag", "kilogram", "piece", "liter", "box"];
 
-  const watchedLabels = watch("labels", []);
-  const watchedStore = watch("store", "");
-
   const labels = getLabelsData?.getLabels ?? [];
   const stores = getStoresData?.getStores ?? [];
 
   const handleAddLabel = async () => {
-    if (newLabel && !watchedLabels.includes(newLabel)) {
+    const fieldLabels = getValues("labels");
+    if (newLabel && !fieldLabels.includes(newLabel)) {
       await addLabel({
         variables: { name: newLabel },
         refetchQueries: [{ query: getLabelQuery }],
       });
-      setValue("labels", [...watchedLabels, newLabel], {
+      setValue("labels", [...fieldLabels, newLabel], {
         shouldValidate: true,
       });
       setNewLabel("");
@@ -309,88 +305,98 @@ export function GroceryItemFormModal() {
             <Label htmlFor="store" className="text-indigo-700">
               Store *
             </Label>
-            <Popover open={openStores} onOpenChange={setOpenStores}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={openStores}
-                  className={cn(
-                    "w-full justify-between bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500",
-                    errors.store && (touchedFields.store || dirtyFields.store)
-                      ? "border-red-500"
-                      : ""
-                  )}
-                >
-                  {watchedStore || "Select store..."}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-full p-0">
-                <Command>
-                  <CommandInput placeholder="Search store..." className="h-9" />
-                  <CommandEmpty>No store found.</CommandEmpty>
-                  <CommandList>
-                    <CommandGroup>
-                      {getStoresLoading ? (
-                        <>
-                          <Skeleton className="h-8 w-full mb-2" />
-                          <Skeleton className="h-8 w-full mb-2" />
-                          <Skeleton className="h-8 w-full" />
-                        </>
-                      ) : (
-                        stores.map(({ id, name }) => (
-                          <CommandItem
-                            key={id}
-                            onSelect={() => {
-                              setValue("store", name, {
-                                shouldValidate: true,
-                                shouldDirty: true,
-                              });
-                              setOpenStores(false);
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                watchedStore === name
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                            {name}
-                          </CommandItem>
-                        ))
+            <Controller
+              control={control}
+              name="store"
+              render={({ field: { value: fieldStore } }) => (
+                <Popover open={openStores} onOpenChange={setOpenStores}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={openStores}
+                      className={cn(
+                        "w-full justify-between bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500",
+                        errors.store &&
+                          (touchedFields.store || dirtyFields.store)
+                          ? "border-red-500"
+                          : ""
                       )}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-                <div className="flex items-center border-t p-2">
-                  <Input
-                    placeholder="Add new store"
-                    value={newStore}
-                    onChange={(e) => setNewStore(e.target.value)}
-                    className="flex-grow"
-                  />
-                  <Button
-                    disabled={
-                      !!stores.find((s) => s.name === newStore) ||
-                      !newStore ||
-                      addStoreLoading
-                    }
-                    type="button"
-                    onClick={handleAddStore}
-                    className="ml-2"
-                  >
-                    {addStoreLoading ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <PlusCircle className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-              </PopoverContent>
-            </Popover>
+                    >
+                      {fieldStore || "Select store..."}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-full p-0">
+                    <Command>
+                      <CommandInput
+                        placeholder="Search store..."
+                        className="h-9"
+                      />
+                      <CommandEmpty>No store found.</CommandEmpty>
+                      <CommandList>
+                        <CommandGroup>
+                          {getStoresLoading ? (
+                            <>
+                              <Skeleton className="h-8 w-full mb-2" />
+                              <Skeleton className="h-8 w-full mb-2" />
+                              <Skeleton className="h-8 w-full" />
+                            </>
+                          ) : (
+                            stores.map(({ id, name }) => (
+                              <CommandItem
+                                key={id}
+                                onSelect={() => {
+                                  setValue("store", name, {
+                                    shouldValidate: true,
+                                    shouldDirty: true,
+                                  });
+                                  setOpenStores(false);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    fieldStore === name
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                                {name}
+                              </CommandItem>
+                            ))
+                          )}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                    <div className="flex items-center border-t p-2">
+                      <Input
+                        placeholder="Add new store"
+                        value={newStore}
+                        onChange={(e) => setNewStore(e.target.value)}
+                        className="flex-grow"
+                      />
+                      <Button
+                        disabled={
+                          !!stores.find((s) => s.name === newStore) ||
+                          !newStore ||
+                          addStoreLoading
+                        }
+                        type="button"
+                        onClick={handleAddStore}
+                        className="ml-2"
+                      >
+                        {addStoreLoading ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <PlusCircle className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              )}
+            />
             {errors.store && (touchedFields.store || dirtyFields.store) && (
               <p className="text-red-500 text-sm">{errors.store.message}</p>
             )}
@@ -491,97 +497,109 @@ export function GroceryItemFormModal() {
 
           <div className="space-y-2">
             <Label htmlFor="labels" className="text-indigo-700">
-              Labels *
+              Labels
             </Label>
-            <Popover open={openLabels} onOpenChange={setOpenLabels}>
-              <PopoverTrigger asChild>
-                <Button
-                  type="button"
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={openLabels}
-                  className={cn(
-                    "w-full justify-between bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500",
-                    errors.labels &&
-                      (touchedFields.labels || dirtyFields.labels)
-                      ? "border-red-500"
-                      : ""
-                  )}
-                >
-                  {watchedLabels.length > 0
-                    ? watchedLabels.join(", ")
-                    : "Select labels..."}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-full p-0">
-                <Command>
-                  <CommandInput placeholder="Search label..." className="h-9" />
-                  <CommandEmpty>No label found.</CommandEmpty>
-                  <CommandList>
-                    <CommandGroup>
-                      {getLabelsLoading ? (
-                        <>
-                          <Skeleton className="h-8 w-full mb-2" />
-                          <Skeleton className="h-8 w-full mb-2" />
-                          <Skeleton className="h-8 w-full" />
-                        </>
-                      ) : (
-                        labels.map(({ id, name }) => (
-                          <CommandItem
-                            key={id}
-                            onSelect={() => {
-                              setValue(
-                                "labels",
-                                watchedLabels.includes(name)
-                                  ? watchedLabels.filter((l) => l !== name)
-                                  : [...watchedLabels, name],
-                                { shouldValidate: true, shouldDirty: true }
-                              );
-                              trigger("labels");
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                watchedLabels.includes(name)
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                            {name}
-                          </CommandItem>
-                        ))
+            <Controller
+              control={control}
+              name="labels"
+              render={({ field: { value: fieldLabels } }) => (
+                <Popover open={openLabels} onOpenChange={setOpenLabels}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={openLabels}
+                      className={cn(
+                        "w-full justify-between bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500",
+                        errors.labels &&
+                          (touchedFields.labels || dirtyFields.labels)
+                          ? "border-red-500"
+                          : ""
                       )}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-                <div className="flex items-center border-t p-2">
-                  <Input
-                    placeholder="Add new label"
-                    value={newLabel}
-                    onChange={(e) => setNewLabel(e.target.value)}
-                    className="flex-grow"
-                  />
-                  <Button
-                    type="button"
-                    disabled={
-                      !!labels.find((l) => l.name === newLabel) ||
-                      !newLabel ||
-                      addLabelLoading
-                    }
-                    onClick={handleAddLabel}
-                    className="ml-2"
-                  >
-                    {addLabelLoading ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <PlusCircle className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-              </PopoverContent>
-            </Popover>
+                    >
+                      {fieldLabels.length > 0
+                        ? fieldLabels.join(", ")
+                        : "Select labels..."}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-full p-0">
+                    <Command>
+                      <CommandInput
+                        placeholder="Search label..."
+                        className="h-9"
+                      />
+                      <CommandEmpty>No label found.</CommandEmpty>
+                      <CommandList>
+                        <CommandGroup>
+                          {getLabelsLoading ? (
+                            <>
+                              <Skeleton className="h-8 w-full mb-2" />
+                              <Skeleton className="h-8 w-full mb-2" />
+                              <Skeleton className="h-8 w-full" />
+                            </>
+                          ) : (
+                            labels.map(({ id, name }) => (
+                              <CommandItem
+                                key={id}
+                                onSelect={() => {
+                                  setValue(
+                                    "labels",
+                                    fieldLabels.includes(name)
+                                      ? fieldLabels.filter((l) => l !== name)
+                                      : [...fieldLabels, name],
+                                    {
+                                      shouldValidate: true,
+                                      shouldDirty: true,
+                                    }
+                                  );
+                                  trigger("labels");
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    fieldLabels.includes(name)
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                                {name}
+                              </CommandItem>
+                            ))
+                          )}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                    <div className="flex items-center border-t p-2">
+                      <Input
+                        placeholder="Add new label"
+                        value={newLabel}
+                        onChange={(e) => setNewLabel(e.target.value)}
+                        className="flex-grow"
+                      />
+                      <Button
+                        type="button"
+                        disabled={
+                          !!labels.find((l) => l.name === newLabel) ||
+                          !newLabel ||
+                          addLabelLoading
+                        }
+                        onClick={handleAddLabel}
+                        className="ml-2"
+                      >
+                        {addLabelLoading ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <PlusCircle className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              )}
+            />
             {errors.labels && (touchedFields.labels || dirtyFields.labels) && (
               <p className="text-red-500 text-sm">{errors.labels.message}</p>
             )}
