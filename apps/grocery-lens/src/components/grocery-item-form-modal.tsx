@@ -60,7 +60,13 @@ import { useMutation, useQuery } from "@apollo/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CommandList } from "cmdk";
 import { motion } from "framer-motion";
-import { Check, ChevronsUpDown, PlusCircle, ShoppingCart } from "lucide-react";
+import {
+  Check,
+  ChevronsUpDown,
+  Loader2,
+  PlusCircle,
+  ShoppingCart,
+} from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
@@ -103,12 +109,14 @@ export function GroceryItemFormModal() {
   const { data: getStoresData, loading: getStoresLoading } =
     useQuery<GetStoresQuery>(getStoresQuery);
 
-  const [addLabel] = useMutation<AddLabelMutation, AddLabelMutationVariables>(
-    addLabelMutation
-  );
-  const [addStore] = useMutation<AddStoreMutation, AddStoreMutationVariables>(
-    addStoreMutation
-  );
+  const [addLabel, { loading: addLabelLoading }] = useMutation<
+    AddLabelMutation,
+    AddLabelMutationVariables
+  >(addLabelMutation);
+  const [addStore, { loading: addStoreLoading }] = useMutation<
+    AddStoreMutation,
+    AddStoreMutationVariables
+  >(addStoreMutation);
   const [addGroceryItem] = useMutation<
     AddGroceryItemMutation,
     AddGroceryItemMutationVariables
@@ -304,13 +312,19 @@ export function GroceryItemFormModal() {
                   />
                   <Button
                     disabled={
-                      !!stores.find((s) => s.name === newStore) || !newStore
+                      !!stores.find((s) => s.name === newStore) ||
+                      !newStore ||
+                      addStoreLoading
                     }
                     type="button"
                     onClick={handleAddStore}
                     className="ml-2"
                   >
-                    <PlusCircle className="h-4 w-4" />
+                    {addStoreLoading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <PlusCircle className="h-4 w-4" />
+                    )}
                   </Button>
                 </div>
               </PopoverContent>
@@ -490,12 +504,18 @@ export function GroceryItemFormModal() {
                   <Button
                     type="button"
                     disabled={
-                      !!labels.find((l) => l.name === newLabel) || !newLabel
+                      !!labels.find((l) => l.name === newLabel) ||
+                      !newLabel ||
+                      addLabelLoading
                     }
                     onClick={handleAddLabel}
                     className="ml-2"
                   >
-                    <PlusCircle className="h-4 w-4" />
+                    {addLabelLoading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <PlusCircle className="h-4 w-4" />
+                    )}
                   </Button>
                 </div>
               </PopoverContent>
