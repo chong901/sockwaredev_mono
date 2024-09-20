@@ -36,7 +36,7 @@ export const GroceryItemQueryResolver: Pick<QueryResolvers, "getGroceryItems"> =
 
 export const GroceryItemMutationResolver: Pick<
   MutationResolvers,
-  "addGroceryItem" | "updateGroceryItem"
+  "addGroceryItem" | "updateGroceryItem" | "deleteGroceryItem"
 > = {
   addGroceryItem: async (_, { input }, { userId }) => {
     const currentUser = e.select(e.User, () => ({
@@ -110,5 +110,25 @@ export const GroceryItemMutationResolver: Pick<
       throw new Error("Grocery item not found");
     }
     return grocery;
+  },
+
+  deleteGroceryItem: async (_, { id }, { userId }) => {
+    const currentUser = e.select(e.User, () => ({
+      filter_single: { id: userId },
+    }));
+    const [grocery] = await e
+      .delete(e.GroceryItem, (item) => ({
+        filter: e.all(
+          e.set(
+            e.op(item.id, "=", e.uuid(id)),
+            e.op(item.owner.id, "=", currentUser.id)
+          )
+        ),
+      }))
+      .run(edgedbClient);
+    if (!grocery) {
+      return false;
+    }
+    return true;
   },
 };
