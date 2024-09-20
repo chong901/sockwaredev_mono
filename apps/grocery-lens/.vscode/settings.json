@@ -1,0 +1,10 @@
+{
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "src/app/api/graphql/route.ts",
+        "cmd": "pnpm -F grocery-lens graphql:codegen:be"
+      }
+    ]
+  }
+}
