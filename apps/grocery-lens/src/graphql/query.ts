@@ -1,4 +1,7 @@
+import { GetGroceryItemsQuery } from "@/graphql-codegen/frontend/graphql";
 import gql from "graphql-tag";
+
+export type GroceryItem = GetGroceryItemsQuery["getGroceryItems"][number];
 
 export const getGroceryItemsQuery = gql`
   query GetGroceryItems {

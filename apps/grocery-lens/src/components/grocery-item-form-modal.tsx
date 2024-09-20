@@ -53,6 +53,7 @@ import {
   getGroceryItemsQuery,
   getLabelQuery,
   getStoresQuery,
+  GroceryItem,
 } from "@/graphql/query";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -60,6 +61,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CommandList } from "cmdk";
 import { motion } from "framer-motion";
+import { atom, useAtom } from "jotai";
 import {
   Check,
   ChevronsUpDown,
@@ -67,17 +69,21 @@ import {
   PlusCircle,
   ShoppingCart,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 
+export const editingItemAtom = atom<GroceryItem | undefined>(undefined);
+export const isEditModalOpenAtom = atom(false);
+
 const formSchema = z.object({
+  id: z.string().optional(),
   itemName: z.string().min(1, { message: "Item name is required" }),
   store: z.string().min(1, { message: "Store is required" }),
   price: z
     .number({
       required_error: "Price is required",
-      invalid_type_error: "Price is required",
+      invalid_type_error: "Price must be a positive number.",
     })
     .min(0, { message: "Price must be a positive number" }),
   amount: z
@@ -97,8 +103,19 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
+const defaultFormData = {
+  itemName: "",
+  store: "",
+  price: 0,
+  amount: 0,
+  unit: undefined,
+  labels: [],
+  notes: "",
+};
+
 export function GroceryItemFormModal() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [item, setItem] = useAtom(editingItemAtom);
+  const [isOpen, setIsOpen] = useAtom(isEditModalOpenAtom);
   const [openLabels, setOpenLabels] = useState(false);
   const [openStores, setOpenStores] = useState(false);
   const [newLabel, setNewLabel] = useState("");
@@ -126,7 +143,7 @@ export function GroceryItemFormModal() {
     register,
     control,
     handleSubmit,
-    formState: { errors, isValid, touchedFields, dirtyFields },
+    formState: { errors, isValid, touchedFields, dirtyFields, isDirty },
     setValue,
     watch,
     trigger,
@@ -144,6 +161,8 @@ export function GroceryItemFormModal() {
       notes: "",
     },
   });
+
+  const isSubmitButtonEnable = isValid && isDirty;
 
   const unitOptions = ["gram", "bag", "kilogram", "piece", "liter", "box"];
 
@@ -178,6 +197,23 @@ export function GroceryItemFormModal() {
     }
   };
 
+  useEffect(() => {
+    if (!item) {
+      reset(defaultFormData);
+    } else {
+      reset({
+        id: item.id,
+        amount: item.amount,
+        itemName: item.name,
+        labels: item.labels.map((l) => l.name),
+        notes: item.notes ?? "",
+        price: item.price,
+        store: item.store.name,
+        unit: item.unit as FormData["unit"],
+      });
+    }
+  }, [item, reset]);
+
   const onSubmit = async (data: FormData) => {
     await addGroceryItem({
       variables: { input: { ...data, unit: data.unit as Unit } },
@@ -187,14 +223,17 @@ export function GroceryItemFormModal() {
       title: "Item added successfully",
       description: `${data.itemName} has been added to your grocery list.`,
     });
-    reset();
+    setItem(undefined);
     setIsOpen(false);
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white">
+        <Button
+          className="bg-indigo-600 hover:bg-indigo-700 text-white"
+          onClick={() => setItem(undefined)}
+        >
           Add Grocery Item
         </Button>
       </DialogTrigger>
@@ -547,12 +586,12 @@ export function GroceryItemFormModal() {
               Cancel
             </Button>
             <motion.div
-              whileHover={!isValid ? undefined : { scale: 1.05 }}
+              whileHover={!isSubmitButtonEnable ? undefined : { scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               <Button
                 type="submit"
-                disabled={!isValid}
+                disabled={!isSubmitButtonEnable}
                 className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
               >
                 Add Item

@@ -86,6 +86,9 @@ importers:
       graphql-tag:
         specifier: ^2.12.6
         version: 2.12.6(graphql@16.9.0)
+      jotai:
+        specifier: ^2.9.3
+        version: 2.9.3(@types/react@18.3.7)(react@18.3.1)
       lucide-react:
         specifier: ^0.441.0
         version: 0.441.0(react@18.3.1)
@@ -11439,6 +11442,11 @@ snapshots:
   jotai@2.9.3(@types/react@18.3.5)(react@18.3.1):
     optionalDependencies:
       '@types/react': 18.3.5
+      react: 18.3.1
+
+  jotai@2.9.3(@types/react@18.3.7)(react@18.3.1):
+    optionalDependencies:
+      '@types/react': 18.3.7
       react: 18.3.1
 
   js-cookie@2.2.1: {}

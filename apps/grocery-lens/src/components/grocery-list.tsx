@@ -4,16 +4,23 @@ import {
   GroceryItemCard,
   GroceryItemCardSkeleton,
 } from "@/components/grocery-item-card";
-import { GroceryItemFormModal } from "@/components/grocery-item-form-modal";
+import {
+  editingItemAtom,
+  GroceryItemFormModal,
+  isEditModalOpenAtom,
+} from "@/components/grocery-item-form-modal";
 import { GetGroceryItemsQuery } from "@/graphql-codegen/frontend/graphql";
 import { getGroceryItemsQuery } from "@/graphql/query";
 import { useQuery } from "@apollo/client";
 import { AnimatePresence, motion } from "framer-motion";
+import { useSetAtom } from "jotai";
 import { ShoppingCart } from "lucide-react";
 
 export function GroceryListComponent() {
   const { data: groceryItems, loading } =
     useQuery<GetGroceryItemsQuery>(getGroceryItemsQuery);
+  const setEditingItem = useSetAtom(editingItemAtom);
+  const setEditItemModalOpen = useSetAtom(isEditModalOpenAtom);
 
   return (
     <motion.div
@@ -63,7 +70,10 @@ export function GroceryListComponent() {
                 key={item.id}
                 item={item}
                 onDelete={() => {}}
-                onEdit={() => {}}
+                onEdit={(item) => {
+                  setEditingItem(item);
+                  setEditItemModalOpen(true);
+                }}
                 className="mb-4"
               />
             ))

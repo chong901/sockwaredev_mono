@@ -10,7 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { GetGroceryItemsQuery } from "@/graphql-codegen/frontend/graphql";
+import { GroceryItem } from "@/graphql/query";
 import { motion } from "framer-motion";
 import { DollarSign, Edit2, ShoppingBag, Tag, Trash2 } from "lucide-react";
 
@@ -24,8 +24,6 @@ const shimmer = `
     }
   }
 `;
-
-type GroceryItem = GetGroceryItemsQuery["getGroceryItems"][number];
 
 export function GroceryItemCard({
   item,
