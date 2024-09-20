@@ -11,6 +11,8 @@ export const getGroceryItemsQuery = gql`
       }
       price
       amount
+      price
+      pricePerUnit
       unit
       notes
       labels {

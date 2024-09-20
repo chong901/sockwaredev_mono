@@ -19,11 +19,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { GetGroceryItemsQuery } from "@/graphql-codegen/frontend/graphql";
 import { getGroceryItemsQuery } from "@/graphql/query";
 import { useQuery } from "@apollo/client";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, Edit, ShoppingCart, Trash2, X } from "lucide-react";
+import {
+  Check,
+  DollarSign,
+  Edit,
+  Scale,
+  ShoppingCart,
+  Store,
+  Tag,
+  Trash2,
+  X,
+} from "lucide-react";
 import { useState } from "react";
 
 type GroceryItem = {
@@ -236,64 +252,97 @@ export function GroceryListComponent() {
                         )}
                       </div>
                     </CardTitle>
-                    <CardDescription className="text-indigo-600">
-                      {item.store.name} - ${item.price.toFixed(2)}
+                    <CardDescription className="text-indigo-600 flex items-center space-x-2">
+                      <Store className="h-4 w-4" />
+                      <span>{item.store.name}</span>
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex justify-between items-center">
-                      <span className="text-indigo-700">
-                        {editingId === item.id ? (
-                          <div className="flex items-center space-x-2">
-                            <Input
-                              type="number"
-                              value={newItem.amount || item.amount}
-                              onChange={(e) =>
-                                setNewItem({
-                                  ...newItem,
-                                  amount: parseFloat(e.target.value),
-                                })
-                              }
-                              className="w-20 bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500"
-                            />
-                            <Select
-                              onValueChange={(value) =>
-                                setNewItem({ ...newItem, unit: value })
-                              }
-                              value={newItem.unit || item.unit}
-                            >
-                              <SelectTrigger className="w-[100px] bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500">
-                                <SelectValue placeholder="Select unit" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {unitOptions.map((unit) => (
-                                  <SelectItem key={unit} value={unit}>
-                                    {unit}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        ) : (
-                          `${item.amount} ${item.unit}`
-                        )}
-                      </span>
-                      <div className="flex flex-wrap gap-2">
-                        {item.labels.map(({ id, name }) => (
-                          <motion.div
-                            key={id}
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                          >
-                            <Badge
-                              variant="secondary"
-                              className="bg-indigo-100 text-indigo-800"
-                            >
-                              {name}
-                            </Badge>
-                          </motion.div>
-                        ))}
+                    <div className="flex flex-col space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-indigo-700 flex items-center space-x-2">
+                          <Scale className="h-4 w-4" />
+                          <span>
+                            {editingId === item.id ? (
+                              <div className="flex items-center space-x-2">
+                                <Input
+                                  type="number"
+                                  value={newItem.amount || item.amount}
+                                  onChange={(e) =>
+                                    setNewItem({
+                                      ...newItem,
+                                      amount: parseFloat(e.target.value),
+                                    })
+                                  }
+                                  className="w-20 bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500"
+                                />
+                                <Select
+                                  onValueChange={(value) =>
+                                    setNewItem({ ...newItem, unit: value })
+                                  }
+                                  value={newItem.unit || item.unit}
+                                >
+                                  <SelectTrigger className="w-[100px] bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500">
+                                    <SelectValue placeholder="Select unit" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {unitOptions.map((unit) => (
+                                      <SelectItem key={unit} value={unit}>
+                                        {unit}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            ) : (
+                              `${item.amount} ${item.unit}`
+                            )}
+                          </span>
+                        </span>
+                        <div className="flex items-center space-x-2">
+                          <DollarSign className="h-4 w-4 text-indigo-600" />
+                          <span className="text-indigo-700">
+                            ${item.price.toFixed(2)}
+                          </span>
+                        </div>
                       </div>
+                      <div className="flex justify-between items-center">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="text-sm text-indigo-600 cursor-help">
+                                Price per {item.unit}: $
+                                {item.pricePerUnit.toFixed(2)}/{item.unit}
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Price calculated per unit of measurement</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        <div className="flex flex-wrap gap-2">
+                          {item.labels.map(({ id, name }) => (
+                            <motion.div
+                              key={id}
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                            >
+                              <Badge
+                                variant="secondary"
+                                className="bg-indigo-100 text-indigo-800 flex items-center space-x-1"
+                              >
+                                <Tag className="h-3 w-3" />
+                                <span>{name}</span>
+                              </Badge>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </div>
+                      {item.notes && (
+                        <div className="text-sm text-indigo-600 italic">
+                          Note: {item.notes}
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
