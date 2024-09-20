@@ -150,7 +150,14 @@ export function GroceryItemFormModal() {
     register,
     control,
     handleSubmit,
-    formState: { errors, isValid, touchedFields, dirtyFields, isDirty },
+    formState: {
+      errors,
+      isValid,
+      touchedFields,
+      dirtyFields,
+      isDirty,
+      isSubmitting,
+    },
     setValue,
     watch,
     trigger,
@@ -169,7 +176,7 @@ export function GroceryItemFormModal() {
     },
   });
 
-  const isSubmitButtonEnable = isValid && isDirty;
+  const isSubmitButtonEnable = isValid && isDirty && !isSubmitting;
   const isEditing = !!item;
 
   const unitOptions = ["gram", "bag", "kilogram", "piece", "liter", "box"];
@@ -238,7 +245,7 @@ export function GroceryItemFormModal() {
       title: "Item added successfully",
       description: `${data.itemName} has been added to your grocery list.`,
     });
-    setItem(undefined);
+    reset(defaultFormData);
     setIsOpen(false);
   };
 
@@ -610,7 +617,11 @@ export function GroceryItemFormModal() {
                 disabled={!isSubmitButtonEnable}
                 className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
               >
-                {isEditing ? "Save" : "Add"} Item
+                {isSubmitting ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  `${isEditing ? "Save" : "Add"} Item`
+                )}
               </Button>
             </motion.div>
           </div>
