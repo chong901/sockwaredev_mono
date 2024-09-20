@@ -38,6 +38,7 @@ const typeDefs = gql`
     addLabel(name: String!): Label!
     addStore(name: String!): Store!
     addGroceryItem(input: CreateGroceryItemInput!): GroceryItem!
+    updateGroceryItem(id: ID!, input: CreateGroceryItemInput!): GroceryItem!
   }
 
   enum Unit {

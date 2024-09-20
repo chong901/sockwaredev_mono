@@ -36,3 +36,22 @@ export const addGroceryItemMutation = gql`
     }
   }
 `;
+
+export const updateGroceryItemMutation = gql`
+  mutation UpdateGroceryItem($id: ID!, $input: CreateGroceryItemInput!) {
+    updateGroceryItem(id: $id, input: $input) {
+      id
+      name
+      store {
+        name
+      }
+      price
+      amount
+      unit
+      labels {
+        name
+      }
+      notes
+    }
+  }
+`;

@@ -43,11 +43,14 @@ import {
   GetLabelsQuery,
   GetStoresQuery,
   Unit,
+  UpdateGroceryItemMutation,
+  UpdateGroceryItemMutationVariables,
 } from "@/graphql-codegen/frontend/graphql";
 import {
   addGroceryItemMutation,
   addLabelMutation,
   addStoreMutation,
+  updateGroceryItemMutation,
 } from "@/graphql/mutation";
 import {
   getGroceryItemsQuery,
@@ -138,6 +141,10 @@ export function GroceryItemFormModal() {
     AddGroceryItemMutation,
     AddGroceryItemMutationVariables
   >(addGroceryItemMutation);
+  const [updateGroceryItem] = useMutation<
+    UpdateGroceryItemMutation,
+    UpdateGroceryItemMutationVariables
+  >(updateGroceryItemMutation);
 
   const {
     register,
@@ -163,6 +170,7 @@ export function GroceryItemFormModal() {
   });
 
   const isSubmitButtonEnable = isValid && isDirty;
+  const isEditing = !!item;
 
   const unitOptions = ["gram", "bag", "kilogram", "piece", "liter", "box"];
 
@@ -215,10 +223,17 @@ export function GroceryItemFormModal() {
   }, [item, reset]);
 
   const onSubmit = async (data: FormData) => {
-    await addGroceryItem({
-      variables: { input: { ...data, unit: data.unit as Unit } },
-      refetchQueries: [{ query: getGroceryItemsQuery }],
-    });
+    if (data.id) {
+      const { id, ...rest } = data;
+      await updateGroceryItem({
+        variables: { id, input: { ...rest, unit: rest.unit as Unit } },
+      });
+    } else {
+      await addGroceryItem({
+        variables: { input: { ...data, unit: data.unit as Unit } },
+        refetchQueries: [{ query: getGroceryItemsQuery }],
+      });
+    }
     toast({
       title: "Item added successfully",
       description: `${data.itemName} has been added to your grocery list.`,
@@ -247,9 +262,9 @@ export function GroceryItemFormModal() {
             >
               <ShoppingCart className="w-16 h-16 mx-auto text-indigo-600 mb-2" />
             </motion.div>
-            <h2 className="text-3xl font-bold text-indigo-800 mt-4 mb-2">
-              Add Grocery Item
-            </h2>
+            <h3 className="text-3xl font-bold text-indigo-800 mt-4 mb-2">
+              {isEditing ? "Edit" : "Add"} Grocery Item
+            </h3>
           </DialogTitle>
           <DialogDescription className="text-center text-indigo-600">
             Fill in the details of the grocery item you want to add.
@@ -323,6 +338,7 @@ export function GroceryItemFormModal() {
                             onSelect={() => {
                               setValue("store", name, {
                                 shouldValidate: true,
+                                shouldDirty: true,
                               });
                               setOpenStores(false);
                             }}
@@ -513,7 +529,7 @@ export function GroceryItemFormModal() {
                                 watchedLabels.includes(name)
                                   ? watchedLabels.filter((l) => l !== name)
                                   : [...watchedLabels, name],
-                                { shouldValidate: true }
+                                { shouldValidate: true, shouldDirty: true }
                               );
                               trigger("labels");
                             }}
@@ -594,7 +610,7 @@ export function GroceryItemFormModal() {
                 disabled={!isSubmitButtonEnable}
                 className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
               >
-                Add Item
+                {isEditing ? "Save" : "Add"} Item
               </Button>
             </motion.div>
           </div>
