@@ -1,5 +1,6 @@
 "use client";
 
+import { GroceryFilterComponent } from "@/components/grocery-filter";
 import {
   GroceryItemCard,
   GroceryItemCardSkeleton,
@@ -16,6 +17,7 @@ import {
 } from "@/graphql-codegen/frontend/graphql";
 import { deleteGroceryItemMutation } from "@/graphql/mutation";
 import { getGroceryItemsQuery, GroceryItem } from "@/graphql/query";
+import { useGroceryListFilter } from "@/hooks/use-grocery-list-filter";
 import { useMutation, useQuery } from "@apollo/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSetAtom } from "jotai";
@@ -35,6 +37,8 @@ export function GroceryListComponent() {
       cache.gc();
     },
   });
+
+  const { onFilterChange } = useGroceryListFilter();
 
   const handleDelete = async (id: string) => {
     deleteGroceryItem({ variables: { id } });
@@ -56,19 +60,25 @@ export function GroceryListComponent() {
         initial={{ y: -20 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        className="flex justify-between items-center mb-8"
+        className="flex flex-col gap-4 mb-4"
       >
-        <h1 className="text-4xl font-bold text-indigo-800 flex items-center">
-          <motion.div
-            initial={{ rotate: -20 }}
-            animate={{ rotate: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 10 }}
-          >
-            <ShoppingCart className="mr-4 h-10 w-10 text-indigo-600" />
-          </motion.div>
-          Grocery List
-        </h1>
-        <GroceryItemFormModal />
+        <div className="flex justify-between items-center">
+          <h1 className="text-4xl font-bold text-indigo-800 flex items-center">
+            <motion.div
+              initial={{ rotate: -20 }}
+              animate={{ rotate: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 10 }}
+            >
+              <ShoppingCart className="mr-4 h-10 w-10 text-indigo-600" />
+            </motion.div>
+            Grocery List
+          </h1>
+          <GroceryItemFormModal />
+        </div>
+
+        <div className="w-full md:w-auto">
+          <GroceryFilterComponent onFilterChange={onFilterChange} />
+        </div>
       </motion.div>
       <div className="flex-1 overflow-scroll">
         <AnimatePresence>
