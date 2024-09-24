@@ -62,7 +62,6 @@ export class GroceryItemService {
     userId: string,
     data: CreateGroceryItemInput
   ) => {
-    const currentUser = UserService.getUserQuery(userId);
     const store = StoreService.getStoreQuery(userId, data.store);
     const labels = LabelService.getLabelsQuery(userId, data.labels);
     const [grocery] = await e
@@ -71,7 +70,7 @@ export class GroceryItemService {
           filter: e.all(
             e.set(
               e.op(item.id, "=", e.uuid(itemId)),
-              e.op(item.owner.id, "=", currentUser.id)
+              e.op(item.owner.id, "=", e.uuid(userId))
             )
           ),
           set: {
@@ -94,14 +93,13 @@ export class GroceryItemService {
   };
 
   static deleteGroceryItem = async (itemId: string, userId: string) => {
-    const currentUser = UserService.getUserQuery(userId);
     const [grocery] = await e
       .select(
         e.delete(e.GroceryItem, (item) => ({
           filter: e.all(
             e.set(
               e.op(item.id, "=", e.uuid(itemId)),
-              e.op(item.owner.id, "=", currentUser.id)
+              e.op(item.owner.id, "=", e.uuid(userId))
             )
           ),
         })),

@@ -7,7 +7,7 @@ export class StoreService {
       .select(e.Store, (store) => ({
         id: true,
         name: true,
-        filter: e.op(store.owner.id, "=", userId),
+        filter: e.op(store.owner.id, "=", e.uuid(userId)),
       }))
       .run(edgedbClient);
   };

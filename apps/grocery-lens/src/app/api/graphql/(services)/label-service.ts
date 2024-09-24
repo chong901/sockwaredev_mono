@@ -8,7 +8,7 @@ export class LabelService {
       .select(e.Label, (label) => ({
         name: true,
         id: true,
-        filter: e.op(label.owner.id, "=", userId),
+        filter: e.op(label.owner.id, "=", e.uuid(userId)),
       }))
       .run(edgedbClient);
   };
@@ -33,7 +33,7 @@ export class LabelService {
 
     return e.select(e.Label, (label) => {
       const nameInCondition = e.op(label.name, "in", e.set(...names));
-      const isCurrentUser = e.op(label.owner.id, "=", userId);
+      const isCurrentUser = e.op(label.owner.id, "=", e.uuid(userId));
       return {
         filter: e.all(e.set(nameInCondition, isCurrentUser)),
       };
