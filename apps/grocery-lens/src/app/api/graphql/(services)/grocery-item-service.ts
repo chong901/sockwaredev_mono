@@ -1,3 +1,4 @@
+import { LabelService } from "@/app/api/graphql/(services)/label-service";
 import { StoreService } from "@/app/api/graphql/(services)/store-service";
 import { UserService } from "@/app/api/graphql/(services)/user-service";
 import { edgedbClient } from "@/edgedb";
@@ -37,20 +38,7 @@ export class GroceryItemService {
   ) => {
     const currentUser = UserService.getUserQuery(userId);
     const store = StoreService.getStoreQuery(userId, data.store);
-    const labels =
-      data.labels.length === 0
-        ? e.set()
-        : e.select(e.Label, (label) => {
-            const nameInCondition = e.op(
-              label.name,
-              "in",
-              e.set(...data.labels)
-            );
-            const isCurrentUser = e.op(label.owner.id, "=", currentUser.id);
-            return {
-              filter: e.all(e.set(nameInCondition, isCurrentUser)),
-            };
-          });
+    const labels = LabelService.getLabelsQuery(userId, data.labels);
     const grocery = await e
       .select(
         e.insert(e.GroceryItem, {
@@ -76,20 +64,7 @@ export class GroceryItemService {
   ) => {
     const currentUser = UserService.getUserQuery(userId);
     const store = StoreService.getStoreQuery(userId, data.store);
-    const labels =
-      data.labels.length === 0
-        ? e.set()
-        : e.select(e.Label, (label) => {
-            const nameInCondition = e.op(
-              label.name,
-              "in",
-              e.set(...data.labels)
-            );
-            const isCurrentUser = e.op(label.owner.id, "=", currentUser.id);
-            return {
-              filter: e.all(e.set(nameInCondition, isCurrentUser)),
-            };
-          });
+    const labels = LabelService.getLabelsQuery(userId, data.labels);
     const [grocery] = await e
       .select(
         e.update(e.GroceryItem, (item) => ({
