@@ -1,3 +1,4 @@
+import { StoreService } from "@/app/api/graphql/(services)/store-service";
 import { UserService } from "@/app/api/graphql/(services)/user-service";
 import { edgedbClient } from "@/edgedb";
 import e from "@/edgedb/edgeql-js";
@@ -35,9 +36,7 @@ export class GroceryItemService {
     data: CreateGroceryItemInput
   ) => {
     const currentUser = UserService.getUserQuery(userId);
-    const store = e.select(e.Store, () => ({
-      filter_single: { name: data.store, owner: currentUser },
-    }));
+    const store = StoreService.getStoreQuery(userId, data.store);
     const labels =
       data.labels.length === 0
         ? e.set()
@@ -76,9 +75,7 @@ export class GroceryItemService {
     data: CreateGroceryItemInput
   ) => {
     const currentUser = UserService.getUserQuery(userId);
-    const store = e.select(e.Store, () => ({
-      filter_single: { name: data.store, owner: currentUser },
-    }));
+    const store = StoreService.getStoreQuery(userId, data.store);
     const labels =
       data.labels.length === 0
         ? e.set()

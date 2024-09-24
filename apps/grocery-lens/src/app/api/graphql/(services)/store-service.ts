@@ -30,4 +30,9 @@ export class StoreService {
       return newStore;
     }
   };
+
+  static getStoreQuery = (userId: string, name: string) =>
+    e.select(e.Store, () => ({
+      filter_single: { name, owner: UserService.getUserQuery(userId) },
+    }));
 }
