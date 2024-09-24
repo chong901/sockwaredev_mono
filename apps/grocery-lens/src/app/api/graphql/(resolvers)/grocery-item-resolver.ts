@@ -1,3 +1,4 @@
+import { UserService } from "@/app/api/graphql/(services)/user-service";
 import { edgedbClient } from "@/edgedb";
 import e from "@/edgedb/edgeql-js";
 import {
@@ -39,9 +40,7 @@ export const GroceryItemMutationResolver: Pick<
   "addGroceryItem" | "updateGroceryItem" | "deleteGroceryItem"
 > = {
   addGroceryItem: async (_, { input }, { userId }) => {
-    const currentUser = e.select(e.User, () => ({
-      filter_single: { id: userId },
-    }));
+    const currentUser = UserService.getUserQuery(userId);
     const store = e.select(e.Store, () => ({
       filter_single: { name: input.store, owner: currentUser },
     }));
@@ -78,9 +77,7 @@ export const GroceryItemMutationResolver: Pick<
   },
 
   updateGroceryItem: async (_, { id, input }, { userId }) => {
-    const currentUser = e.select(e.User, () => ({
-      filter_single: { id: userId },
-    }));
+    const currentUser = UserService.getUserQuery(userId);
     const store = e.select(e.Store, () => ({
       filter_single: { name: input.store, owner: currentUser },
     }));
@@ -127,9 +124,7 @@ export const GroceryItemMutationResolver: Pick<
   },
 
   deleteGroceryItem: async (_, { id }, { userId }) => {
-    const currentUser = e.select(e.User, () => ({
-      filter_single: { id: userId },
-    }));
+    const currentUser = UserService.getUserQuery(userId);
     const [grocery] = await e
       .select(
         e.delete(e.GroceryItem, (item) => ({

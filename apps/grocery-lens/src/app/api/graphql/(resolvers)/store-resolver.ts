@@ -1,3 +1,4 @@
+import { UserService } from "@/app/api/graphql/(services)/user-service";
 import { edgedbClient } from "@/edgedb";
 import e from "@/edgedb/edgeql-js";
 import {
@@ -22,13 +23,12 @@ export const StoreQueryResolver: Pick<QueryResolvers, "getStores"> = {
 
 export const StoreMutationResolver: Pick<MutationResolvers, "addStore"> = {
   addStore: async (_, { name }, ctx) => {
+    const currentUser = UserService.getUserQuery(ctx.userId);
     const newStore = await e
       .select(
         e.insert(e.Store, {
           name,
-          owner: e.select(e.User, () => ({
-            filter_single: { id: ctx.userId },
-          })),
+          owner: currentUser,
         }),
         () => ({
           id: true,

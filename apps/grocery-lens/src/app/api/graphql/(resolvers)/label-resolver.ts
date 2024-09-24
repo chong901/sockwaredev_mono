@@ -1,3 +1,4 @@
+import { UserService } from "@/app/api/graphql/(services)/user-service";
 import { edgedbClient } from "@/edgedb";
 import e from "@/edgedb/edgeql-js";
 import {
@@ -19,13 +20,12 @@ export const LabelQueryResolver: Pick<QueryResolvers, "getLabels"> = {
 
 export const LabelMutationResolver: Pick<MutationResolvers, "addLabel"> = {
   addLabel: async (_, { name }, ctx) => {
+    const currentUser = UserService.getUserQuery(ctx.userId);
     const label = await e
       .select(
         e.insert(e.Label, {
           name,
-          owner: e.select(e.User, () => ({
-            filter_single: { id: ctx.userId },
-          })),
+          owner: currentUser,
         }),
         () => ({ id: true, name: true })
       )
