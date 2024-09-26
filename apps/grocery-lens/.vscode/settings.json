@@ -8,6 +8,10 @@
       {
         "match": "src/graphql/(query|mutation).ts",
         "cmd": "pnpm -F grocery-lens graphql:codegen"
+      },
+      {
+        "match": "dbschema/default.esdl",
+        "cmd": "pnpm -F grocery-lens db:generate"
       }
     ]
   }

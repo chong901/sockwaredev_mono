@@ -52,12 +52,7 @@ import {
   addStoreMutation,
   updateGroceryItemMutation,
 } from "@/graphql/mutation";
-import {
-  getGroceryItemsQuery,
-  getLabelQuery,
-  getStoresQuery,
-  GroceryItem,
-} from "@/graphql/query";
+import { getLabelQuery, getStoresQuery, GroceryItem } from "@/graphql/query";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { useMutation, useQuery } from "@apollo/client";
@@ -100,6 +95,7 @@ const formSchema = z.object({
     required_error: "Unit is required",
   }),
   labels: z.array(z.string()),
+  url: z.string().url().optional(),
   notes: z.string().optional(),
 });
 
@@ -115,7 +111,11 @@ const defaultFormData = {
   notes: "",
 };
 
-export function GroceryItemFormModal() {
+export function GroceryItemFormModal({
+  onAfterAddItem,
+}: {
+  onAfterAddItem?: () => void;
+}) {
   const [item, setItem] = useAtom(editingItemAtom);
   const [isOpen, setIsOpen] = useAtom(isEditModalOpenAtom);
   const [openLabels, setOpenLabels] = useState(false);
@@ -235,8 +235,8 @@ export function GroceryItemFormModal() {
     } else {
       await addGroceryItem({
         variables: { input: { ...data, unit: data.unit as Unit } },
-        refetchQueries: [{ query: getGroceryItemsQuery }],
       });
+      await onAfterAddItem?.();
     }
     toast({
       title: "Item added successfully",
@@ -611,6 +611,28 @@ export function GroceryItemFormModal() {
               <p className="text-sm text-red-500">{errors.labels.message}</p>
             )}
           </div>
+          <Controller
+            control={control}
+            name="url"
+            render={({ field }) => (
+              <div className="space-y-2">
+                <Label htmlFor="url" className="text-indigo-700">
+                  Url
+                </Label>
+                <Input
+                  id="url"
+                  {...field}
+                  placeholder="Enter the link to the item"
+                  className="border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500"
+                />
+                {errors.url &&
+                  field.value &&
+                  (touchedFields.url || dirtyFields.url) && (
+                    <p className="text-sm text-red-500">{errors.url.message}</p>
+                  )}
+              </div>
+            )}
+          />
 
           <div className="space-y-2">
             <Label htmlFor="notes" className="text-indigo-700">

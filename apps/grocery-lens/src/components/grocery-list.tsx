@@ -31,6 +31,7 @@ export function GroceryListComponent() {
     data: groceryItems,
     loading,
     previousData,
+    refetch,
   } = useQuery<GetGroceryItemsQuery, GetGroceryItemsQueryVariables>(
     getGroceryItemsQuery,
     {
@@ -87,7 +88,7 @@ export function GroceryListComponent() {
             )}
             Grocery List
           </h1>
-          <GroceryItemFormModal />
+          <GroceryItemFormModal onAfterAddItem={refetch} />
         </div>
 
         <div className="w-full md:w-auto">

@@ -22,6 +22,7 @@ export const getGroceryItemsQuery = gql`
         id
         name
       }
+      url
     }
   }
 `;

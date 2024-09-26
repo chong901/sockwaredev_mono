@@ -33,6 +33,7 @@ export const addGroceryItemMutation = gql`
         name
       }
       notes
+      url
     }
   }
 `;
@@ -52,6 +53,7 @@ export const updateGroceryItemMutation = gql`
         name
       }
       notes
+      url
     }
   }
 `;

@@ -21,6 +21,7 @@ const defaultGroceryItemReturnShape = {
     name: true,
   },
   pricePerUnit: true,
+  url: true,
 } as const;
 
 export class GroceryItemService {
@@ -75,6 +76,7 @@ export class GroceryItemService {
           unit: data.unit,
           notes: data.notes,
           labels: labels,
+          url: data.url,
         }),
         () => defaultGroceryItemReturnShape,
       )
@@ -106,6 +108,7 @@ export class GroceryItemService {
             unit: data.unit,
             notes: data.notes,
             labels: labels,
+            url: data.url,
           },
         })),
         () => defaultGroceryItemReturnShape,

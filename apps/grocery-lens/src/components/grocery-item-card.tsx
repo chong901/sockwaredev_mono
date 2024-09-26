@@ -12,7 +12,14 @@ import {
 } from "@/components/ui/tooltip";
 import { GroceryItem } from "@/graphql/query";
 import { motion } from "framer-motion";
-import { DollarSign, Edit2, ShoppingBag, Tag, Trash2 } from "lucide-react";
+import {
+  DollarSign,
+  Edit2,
+  ExternalLink,
+  ShoppingBag,
+  Tag,
+  Trash2,
+} from "lucide-react";
 
 const shimmer = `
   @keyframes shimmer {
@@ -52,9 +59,20 @@ export function GroceryItemCard({
       <Card className="w-full overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 shadow-lg transition-all duration-300 hover:shadow-xl">
         <CardContent className="p-0">
           <div className="relative p-4">
-            <div className="mb-2 flex items-start justify-between">
-              <h3 className="text-xl font-bold capitalize text-indigo-800 sm:text-2xl">
+            <div className="mb-2 flex items-center justify-between">
+              <h3 className="flex items-center gap-2 text-xl font-bold capitalize text-indigo-800 sm:text-2xl">
                 {item.name}
+                {item.url && (
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:text-blue-700"
+                  >
+                    <ExternalLink className="h-5 w-5" />
+                    <span className="sr-only">View product</span>
+                  </a>
+                )}
               </h3>
               <div className="flex space-x-2">
                 <TooltipProvider>
