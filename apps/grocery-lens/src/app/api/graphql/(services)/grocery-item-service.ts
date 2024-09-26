@@ -3,7 +3,10 @@ import { StoreService } from "@/app/api/graphql/(services)/store-service";
 import { UserService } from "@/app/api/graphql/(services)/user-service";
 import { edgedbClient } from "@/edgedb";
 import e from "@/edgedb/edgeql-js";
-import { CreateGroceryItemInput } from "@/graphql-codegen/backend/types";
+import {
+  CreateGroceryItemInput,
+  GroceryItemFilter,
+} from "@/graphql-codegen/backend/types";
 
 const defaultGroceryItemReturnShape = {
   id: true,
@@ -21,13 +24,34 @@ const defaultGroceryItemReturnShape = {
 } as const;
 
 export class GroceryItemService {
-  static getGroceryItems = async (userId: string) => {
+  static getGroceryItems = async (
+    userId: string,
+    { labels, stores }: GroceryItemFilter
+  ) => {
     const groceryItems = await e
-      .select(e.GroceryItem, (item) => ({
-        ...defaultGroceryItemReturnShape,
-        filter: e.op(item.owner.id, "=", e.uuid(userId)),
-        order_by: { expression: item.created_at, direction: e.DESC },
-      }))
+      .select(e.GroceryItem, (item) => {
+        const labelFilter = labels.length
+          ? e.any(
+              e.set(
+                ...labels.map((label) => e.op(item.labels.name, "=", label))
+              )
+            )
+          : e.bool(true);
+        const storesFilter = stores.length
+          ? e.op(item.store.name, "in", e.set(...stores))
+          : e.bool(true);
+        return {
+          ...defaultGroceryItemReturnShape,
+          filter: e.all(
+            e.set(
+              e.op(item.owner.id, "=", e.uuid(userId)),
+              labelFilter,
+              storesFilter
+            )
+          ),
+          order_by: { expression: item.created_at, direction: e.DESC },
+        };
+      })
       .run(edgedbClient);
     return groceryItems;
   };

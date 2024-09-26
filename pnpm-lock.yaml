@@ -29,6 +29,9 @@ importers:
       '@as-integrations/next':
         specifier: ^3.1.0
         version: 3.1.0(@apollo/server@4.11.0(graphql@16.9.0))(next@14.2.11(@babel/core@7.25.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
+      '@graphql-typed-document-node/core':
+        specifier: ^3.2.0
+        version: 3.2.0(graphql@16.9.0)
       '@hookform/resolvers':
         specifier: ^3.9.0
         version: 3.9.0(react-hook-form@7.53.0(react@18.3.1))

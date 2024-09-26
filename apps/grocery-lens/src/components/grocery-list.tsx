@@ -14,6 +14,7 @@ import {
   DeleteGroceryItemMutation,
   DeleteGroceryItemMutationVariables,
   GetGroceryItemsQuery,
+  GetGroceryItemsQueryVariables,
 } from "@/graphql-codegen/frontend/graphql";
 import { deleteGroceryItemMutation } from "@/graphql/mutation";
 import { getGroceryItemsQuery, GroceryItem } from "@/graphql/query";
@@ -24,8 +25,18 @@ import { useSetAtom } from "jotai";
 import { ShoppingCart } from "lucide-react";
 
 export function GroceryListComponent() {
-  const { data: groceryItems, loading } =
-    useQuery<GetGroceryItemsQuery>(getGroceryItemsQuery);
+  const { onFilterChange, labels, stores } = useGroceryListFilter();
+  const {
+    data: groceryItems,
+    loading,
+    previousData,
+  } = useQuery<GetGroceryItemsQuery, GetGroceryItemsQueryVariables>(
+    getGroceryItemsQuery,
+    {
+      variables: { filter: { labels, stores } },
+      fetchPolicy: "cache-and-network",
+    }
+  );
   const setEditingItem = useSetAtom(editingItemAtom);
   const setEditItemModalOpen = useSetAtom(isEditModalOpenAtom);
   const [deleteGroceryItem] = useMutation<
@@ -37,8 +48,6 @@ export function GroceryListComponent() {
       cache.gc();
     },
   });
-
-  const { onFilterChange } = useGroceryListFilter();
 
   const handleDelete = async (id: string) => {
     deleteGroceryItem({ variables: { id } });
@@ -82,7 +91,7 @@ export function GroceryListComponent() {
       </motion.div>
       <div className="flex-1 overflow-scroll">
         <AnimatePresence>
-          {loading ? (
+          {loading && !previousData ? (
             <>
               {[1, 2, 3].map((index) => (
                 <motion.div
@@ -98,7 +107,11 @@ export function GroceryListComponent() {
               ))}
             </>
           ) : (
-            (groceryItems?.getGroceryItems ?? []).map((item) => (
+            (
+              groceryItems?.getGroceryItems ??
+              previousData?.getGroceryItems ??
+              []
+            ).map((item) => (
               <GroceryItemCard
                 key={item.id}
                 item={item}

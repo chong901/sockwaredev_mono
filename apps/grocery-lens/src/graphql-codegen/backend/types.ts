@@ -40,6 +40,11 @@ export type GroceryItem = {
   unit: Scalars['String']['output'];
 };
 
+export type GroceryItemFilter = {
+  labels: Array<Scalars['String']['input']>;
+  stores: Array<Scalars['String']['input']>;
+};
+
 export type Label = {
   __typename?: 'Label';
   id: Scalars['ID']['output'];
@@ -86,6 +91,11 @@ export type Query = {
   getGroceryItems: Array<GroceryItem>;
   getLabels: Array<Label>;
   getStores: Array<Store>;
+};
+
+
+export type QueryGetGroceryItemsArgs = {
+  filter: GroceryItemFilter;
 };
 
 export type Store = {
@@ -180,6 +190,7 @@ export type ResolversTypes = ResolversObject<{
   CreateGroceryItemInput: CreateGroceryItemInput;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   GroceryItem: ResolverTypeWrapper<GroceryItem>;
+  GroceryItemFilter: GroceryItemFilter;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Label: ResolverTypeWrapper<Label>;
   Mutation: ResolverTypeWrapper<{}>;
@@ -195,6 +206,7 @@ export type ResolversParentTypes = ResolversObject<{
   CreateGroceryItemInput: CreateGroceryItemInput;
   Float: Scalars['Float']['output'];
   GroceryItem: GroceryItem;
+  GroceryItemFilter: GroceryItemFilter;
   ID: Scalars['ID']['output'];
   Label: Label;
   Mutation: {};
@@ -231,7 +243,7 @@ export type MutationResolvers<ContextType = ApolloContext, ParentType extends Re
 }>;
 
 export type QueryResolvers<ContextType = ApolloContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  getGroceryItems?: Resolver<Array<ResolversTypes['GroceryItem']>, ParentType, ContextType>;
+  getGroceryItems?: Resolver<Array<ResolversTypes['GroceryItem']>, ParentType, ContextType, RequireFields<QueryGetGroceryItemsArgs, 'filter'>>;
   getLabels?: Resolver<Array<ResolversTypes['Label']>, ParentType, ContextType>;
   getStores?: Resolver<Array<ResolversTypes['Store']>, ParentType, ContextType>;
 }>;

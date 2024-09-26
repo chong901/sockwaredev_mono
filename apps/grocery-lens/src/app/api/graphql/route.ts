@@ -31,7 +31,7 @@ const typeDefs = gql`
   type Query {
     getLabels: [Label!]!
     getStores: [Store!]!
-    getGroceryItems: [GroceryItem!]!
+    getGroceryItems(filter: GroceryItemFilter!): [GroceryItem!]!
   }
 
   type Mutation {
@@ -72,6 +72,11 @@ const typeDefs = gql`
     unit: Unit!
     labels: [String!]!
     notes: String
+  }
+
+  input GroceryItemFilter {
+    stores: [String!]!
+    labels: [String!]!
   }
 `;
 

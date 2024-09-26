@@ -6,8 +6,8 @@ import {
 
 export const GroceryItemQueryResolver: Pick<QueryResolvers, "getGroceryItems"> =
   {
-    getGroceryItems: async (_, __, { userId }) => {
-      return GroceryItemService.getGroceryItems(userId);
+    getGroceryItems: async (_, { filter }, { userId }) => {
+      return GroceryItemService.getGroceryItems(userId, filter);
     },
   };
 
