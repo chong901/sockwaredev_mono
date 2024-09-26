@@ -245,12 +245,17 @@ export function GroceryItemFormModal() {
     setIsOpen(false);
   };
 
+  const handleAddGroceryItemClick = () => {
+    setItem(undefined);
+    reset(defaultFormData);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
           className="bg-indigo-600 text-white hover:bg-indigo-700"
-          onClick={() => setItem(undefined)}
+          onClick={handleAddGroceryItemClick}
         >
           Add Grocery Item
         </Button>
