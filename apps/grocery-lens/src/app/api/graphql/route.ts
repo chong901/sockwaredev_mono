@@ -77,6 +77,7 @@ const typeDefs = gql`
   input GroceryItemFilter {
     stores: [String!]!
     labels: [String!]!
+    keyword: String!
   }
 `;
 

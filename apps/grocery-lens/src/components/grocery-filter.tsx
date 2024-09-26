@@ -1,5 +1,6 @@
 "use client";
 
+import { SearchInput } from "@/components/search-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,25 +15,44 @@ import {
 } from "@/graphql-codegen/frontend/graphql";
 import { getLabelQuery, getStoresQuery } from "@/graphql/query";
 import { useGroceryListFilter } from "@/hooks/use-grocery-list-filter";
+import { cn } from "@/lib/utils";
 import { useQuery } from "@apollo/client";
+import debounce from "lodash.debounce";
 import { Check, Filter, X } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-interface GroceryFilterProps {
-  onFilterChange?: (filters: { stores: string[]; labels: string[] }) => void;
-}
-
-export function GroceryFilterComponent({
-  onFilterChange = () => {},
-}: GroceryFilterProps) {
+export function GroceryFilterComponent() {
   const { data: storeData } = useQuery<GetStoresQuery>(getStoresQuery);
   const { data: labelData } = useQuery<GetLabelsQuery>(getLabelQuery);
 
   const [selectedStores, setSelectedStores] = useState<string[]>([]);
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
-  const { labels: appliedLabels, stores: appliedStores } =
-    useGroceryListFilter();
+  const {
+    labels: appliedLabels,
+    stores: appliedStores,
+    keyword,
+    onSearchChange,
+    onFilterChange,
+  } = useGroceryListFilter();
+  const [search, setSearch] = useState(keyword);
   const [isOpen, setIsOpen] = useState(false);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedHandleSearchChange = useCallback(
+    debounce((search: string) => {
+      onSearchChange(search);
+    }, 300),
+    [onSearchChange]
+  );
+
+  useEffect(() => {
+    debouncedHandleSearchChange(search);
+    return () => debouncedHandleSearchChange.cancel();
+  }, [debouncedHandleSearchChange, search]);
+
+  useEffect(() => {
+    setSearch(keyword);
+  }, [keyword]);
 
   const handleStoreChange = (store: string) => {
     setSelectedStores((prev) =>
@@ -67,17 +87,28 @@ export function GroceryFilterComponent({
     setSelectedStores([]);
     setSelectedLabels([]);
     onFilterChange({ stores: [], labels: [] });
+    setSearch("");
   };
 
   const totalAppliedFilters = appliedStores.length + appliedLabels.length;
 
   return (
     <div className="flex items-center gap-2 flex-wrap">
+      <SearchInput
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="bg-white"
+        onClear={() => setSearch("")}
+        placeholder="Search groceries"
+      />
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
-            className="bg-white text-purple-600 border-purple-600 hover:bg-purple-100"
+            className={cn(
+              "bg-white text-purple-600 border-purple-300 hover:bg-purple-100",
+              isOpen ? "border-purple-500" : ""
+            )}
           >
             <Filter className="mr-2 h-4 w-4" />
             Filter {totalAppliedFilters > 0 && `(${totalAppliedFilters})`}

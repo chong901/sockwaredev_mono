@@ -25,7 +25,7 @@ import { useSetAtom } from "jotai";
 import { ShoppingCart } from "lucide-react";
 
 export function GroceryListComponent() {
-  const { onFilterChange, labels, stores } = useGroceryListFilter();
+  const { labels, stores, keyword } = useGroceryListFilter();
   const {
     data: groceryItems,
     loading,
@@ -33,7 +33,7 @@ export function GroceryListComponent() {
   } = useQuery<GetGroceryItemsQuery, GetGroceryItemsQueryVariables>(
     getGroceryItemsQuery,
     {
-      variables: { filter: { labels, stores } },
+      variables: { filter: { labels, stores, keyword } },
       fetchPolicy: "cache-and-network",
     }
   );
@@ -86,7 +86,7 @@ export function GroceryListComponent() {
         </div>
 
         <div className="w-full md:w-auto">
-          <GroceryFilterComponent onFilterChange={onFilterChange} />
+          <GroceryFilterComponent />
         </div>
       </motion.div>
       <div className="flex-1 overflow-scroll">

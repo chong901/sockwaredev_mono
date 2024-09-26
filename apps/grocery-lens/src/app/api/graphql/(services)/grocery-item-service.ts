@@ -26,7 +26,7 @@ const defaultGroceryItemReturnShape = {
 export class GroceryItemService {
   static getGroceryItems = async (
     userId: string,
-    { labels, stores }: GroceryItemFilter
+    { labels, stores, keyword }: GroceryItemFilter
   ) => {
     const groceryItems = await e
       .select(e.GroceryItem, (item) => {
@@ -46,7 +46,8 @@ export class GroceryItemService {
             e.set(
               e.op(item.owner.id, "=", e.uuid(userId)),
               labelFilter,
-              storesFilter
+              storesFilter,
+              e.op(item.name, "ilike", `%${keyword}%`)
             )
           ),
           order_by: { expression: item.created_at, direction: e.DESC },

@@ -41,6 +41,7 @@ export type GroceryItem = {
 };
 
 export type GroceryItemFilter = {
+  keyword: Scalars['String']['input'];
   labels: Array<Scalars['String']['input']>;
   stores: Array<Scalars['String']['input']>;
 };

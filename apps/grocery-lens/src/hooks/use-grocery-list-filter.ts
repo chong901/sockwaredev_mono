@@ -1,17 +1,23 @@
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 export const useGroceryListFilter = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  // use ref to avoid recreating those callbacks
+  const searchParamsRef = useRef(searchParams);
 
   const stores = searchParams.get("stores")?.split(",") ?? [];
   const labels = searchParams.get("labels")?.split(",") ?? [];
+  const keyword = searchParams.get("keyword") ?? "";
+
+  useEffect(() => {
+    searchParamsRef.current = searchParams;
+  }, [searchParams]);
 
   const onFilterChange = useCallback(
     (filters: { stores: string[]; labels: string[] }) => {
-      const params = new URLSearchParams();
-
+      const params = new URLSearchParams(searchParamsRef.current.toString());
       if (filters.stores.length > 0) {
         params.set("stores", filters.stores.join(","));
       } else {
@@ -29,9 +35,25 @@ export const useGroceryListFilter = () => {
     [router]
   );
 
+  const onSearchChange = useCallback(
+    (keyword: string) => {
+      const params = new URLSearchParams(searchParamsRef.current.toString());
+      if (keyword) {
+        params.set("keyword", keyword);
+      } else {
+        params.delete("keyword");
+      }
+
+      router.push(`?${params.toString()}`);
+    },
+    [router]
+  );
+
   return {
     stores,
     labels,
+    keyword,
     onFilterChange,
+    onSearchChange,
   };
 };
