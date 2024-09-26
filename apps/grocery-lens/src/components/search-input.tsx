@@ -21,7 +21,7 @@ export function SearchInput({
 }: GrocerySearchProps) {
   const inputClassName = cn(
     "pr-10 border-purple-300 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50",
-    className
+    className,
   );
 
   return (

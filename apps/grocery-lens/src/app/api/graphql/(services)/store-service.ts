@@ -24,7 +24,7 @@ export class StoreService {
           () => ({
             id: true,
             name: true,
-          })
+          }),
         )
         .run(edgedbClient);
       return newStore;

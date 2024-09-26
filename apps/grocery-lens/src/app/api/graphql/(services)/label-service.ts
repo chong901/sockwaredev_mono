@@ -21,7 +21,7 @@ export class LabelService {
           name,
           owner: currentUser,
         }),
-        () => ({ id: true, name: true })
+        () => ({ id: true, name: true }),
       )
       .run(edgedbClient);
 

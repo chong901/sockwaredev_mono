@@ -37,10 +37,10 @@ export default async function RootLayout({
       <SessionProvider session={session}>
         <ApolloWrapper>
           <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col h-svh overflow-hidden`}
+            className={`${geistSans.variable} ${geistMono.variable} flex h-svh flex-col overflow-hidden antialiased`}
           >
             <Header />
-            <div className="flex-1 w-full overflow-scroll">{children}</div>
+            <div className="w-full flex-1 overflow-scroll">{children}</div>
           </body>
         </ApolloWrapper>
       </SessionProvider>

@@ -42,7 +42,7 @@ export function GroceryFilterComponent() {
     debounce((search: string) => {
       onSearchChange(search);
     }, 300),
-    [onSearchChange]
+    [onSearchChange],
   );
 
   useEffect(() => {
@@ -56,13 +56,13 @@ export function GroceryFilterComponent() {
 
   const handleStoreChange = (store: string) => {
     setSelectedStores((prev) =>
-      prev.includes(store) ? prev.filter((s) => s !== store) : [...prev, store]
+      prev.includes(store) ? prev.filter((s) => s !== store) : [...prev, store],
     );
   };
 
   const handleLabelChange = (label: string) => {
     setSelectedLabels((prev) =>
-      prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label]
+      prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label],
     );
   };
 
@@ -93,7 +93,7 @@ export function GroceryFilterComponent() {
   const totalAppliedFilters = appliedStores.length + appliedLabels.length;
 
   return (
-    <div className="flex items-center gap-2 flex-wrap">
+    <div className="flex flex-wrap items-center gap-2">
       <SearchInput
         value={search}
         onChange={(e) => setSearch(e.target.value)}
@@ -106,8 +106,8 @@ export function GroceryFilterComponent() {
           <Button
             variant="outline"
             className={cn(
-              "bg-white text-purple-600 border-purple-300 hover:bg-purple-100",
-              isOpen ? "border-purple-500" : ""
+              "border-purple-300 bg-white text-purple-600 hover:bg-purple-100",
+              isOpen ? "border-purple-500" : "",
             )}
           >
             <Filter className="mr-2 h-4 w-4" />
@@ -122,9 +122,9 @@ export function GroceryFilterComponent() {
                 {storeData?.getStores?.map(({ id, name }) => (
                   <Label
                     key={id}
-                    className={`flex items-center space-x-2 rounded-md border p-2 cursor-pointer ${
+                    className={`flex cursor-pointer items-center space-x-2 rounded-md border p-2 ${
                       selectedStores.includes(name)
-                        ? "bg-blue-100 border-blue-600"
+                        ? "border-blue-600 bg-blue-100"
                         : ""
                     }`}
                   >
@@ -148,7 +148,7 @@ export function GroceryFilterComponent() {
                 {labelData?.getLabels?.map(({ id, name }) => (
                   <Label
                     key={id}
-                    className={`flex items-center space-x-2 rounded-full px-3 py-1 text-sm cursor-pointer ${
+                    className={`flex cursor-pointer items-center space-x-2 rounded-full px-3 py-1 text-sm ${
                       selectedLabels.includes(name)
                         ? "bg-purple-600 text-white"
                         : "bg-gray-200 text-gray-800"
@@ -176,13 +176,13 @@ export function GroceryFilterComponent() {
       </Popover>
 
       {(appliedStores.length > 0 || appliedLabels.length > 0) && (
-        <div className="flex flex-wrap gap-2 items-center">
+        <div className="flex flex-wrap items-center gap-2">
           {appliedStores.map((store) => (
             <Button
               key={store}
               variant="outline"
               size="sm"
-              className="bg-blue-100 text-blue-600 border-blue-300 hover:bg-blue-200"
+              className="border-blue-300 bg-blue-100 text-blue-600 hover:bg-blue-200"
               onClick={() => removeFilter("store", store)}
             >
               {store}
@@ -194,7 +194,7 @@ export function GroceryFilterComponent() {
               key={label}
               variant="outline"
               size="sm"
-              className="bg-purple-100 text-purple-600 border-purple-300 hover:bg-purple-200"
+              className="border-purple-300 bg-purple-100 text-purple-600 hover:bg-purple-200"
               onClick={() => removeFilter("label", label)}
             >
               {label}

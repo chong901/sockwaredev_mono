@@ -45,11 +45,11 @@ export function GroceryItemCard({
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
       className={className}
     >
-      <Card className="w-full bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
+      <Card className="w-full overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 shadow-lg transition-all duration-300 hover:shadow-xl">
         <CardContent className="p-0">
           <div className="relative p-4">
-            <div className="flex justify-between items-start mb-2">
-              <h3 className="text-2xl font-bold text-indigo-800 capitalize">
+            <div className="mb-2 flex items-start justify-between">
+              <h3 className="text-2xl font-bold capitalize text-indigo-800">
                 {item.name}
               </h3>
               <div className="flex space-x-2">
@@ -60,7 +60,7 @@ export function GroceryItemCard({
                         variant="ghost"
                         size="icon"
                         onClick={() => onEdit(item)}
-                        className="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-200"
+                        className="text-indigo-600 hover:bg-indigo-200 hover:text-indigo-800"
                       >
                         <Edit2 className="h-4 w-4" />
                         <span className="sr-only">Edit item</span>
@@ -78,7 +78,7 @@ export function GroceryItemCard({
                         variant="ghost"
                         size="icon"
                         onClick={() => onDelete(item.id)}
-                        className="text-red-500 hover:text-red-700 hover:bg-red-100"
+                        className="text-red-500 hover:bg-red-100 hover:text-red-700"
                       >
                         <Trash2 className="h-4 w-4" />
                         <span className="sr-only">Delete item</span>
@@ -91,11 +91,11 @@ export function GroceryItemCard({
                 </TooltipProvider>
               </div>
             </div>
-            <div className="flex items-center text-indigo-600 mb-2">
-              <ShoppingBag className="h-4 w-4 mr-2" />
+            <div className="mb-2 flex items-center text-indigo-600">
+              <ShoppingBag className="mr-2 h-4 w-4" />
               <span className="text-sm">{item.store.name}</span>
             </div>
-            <div className="flex justify-between items-center mb-2">
+            <div className="mb-2 flex items-center justify-between">
               <div className="flex items-center">
                 <span className="text-2xl font-bold text-indigo-700">
                   {item.amount}
@@ -109,19 +109,19 @@ export function GroceryItemCard({
                 </span>
               </div>
             </div>
-            <div className="flex items-center flex-wrap justify-between gap-2">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="text-sm text-indigo-600">
                 Price per {item.unit}: ${item.pricePerUnit.toFixed(2)}/
                 {item.unit}
               </div>
-              <div className="flex gap-2 flex-wrap">
+              <div className="flex flex-wrap gap-2">
                 {item.labels.map(({ id, name }) => (
                   <Badge
                     key={id}
                     variant="secondary"
                     className="bg-indigo-200 text-indigo-800"
                   >
-                    <Tag className="h-3 w-3 mr-1" />
+                    <Tag className="mr-1 h-3 w-3" />
                     {name}
                   </Badge>
                 ))}
@@ -136,44 +136,44 @@ export function GroceryItemCard({
 }
 export function GroceryItemCardSkeleton() {
   return (
-    <Card className="bg-white/50 border-indigo-200 shadow-md overflow-hidden">
+    <Card className="overflow-hidden border-indigo-200 bg-white/50 shadow-md">
       <style>{shimmer}</style>
       <div className="animate-pulse">
         <CardHeader>
-          <CardTitle className="flex justify-between items-center">
+          <CardTitle className="flex items-center justify-between">
             <Skeleton
-              className="h-6 w-1/3 bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200 rounded"
+              className="h-6 w-1/3 rounded bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200"
               style={{ animation: "shimmer 20s infinite linear" }}
             />
             <div className="flex space-x-2">
               <Skeleton
-                className="h-8 w-8 bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200 rounded-full"
+                className="h-8 w-8 rounded-full bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200"
                 style={{ animation: "shimmer 40s infinite linear" }}
               />
               <Skeleton
-                className="h-8 w-8 bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200 rounded-full"
+                className="h-8 w-8 rounded-full bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200"
                 style={{ animation: "shimmer 40s infinite linear" }}
               />
             </div>
           </CardTitle>
           <Skeleton
-            className="h-4 w-1/4 bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200 rounded"
+            className="h-4 w-1/4 rounded bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200"
             style={{ animation: "shimmer 20s infinite linear" }}
           />
         </CardHeader>
         <CardContent>
-          <div className="flex justify-between items-center">
+          <div className="flex items-center justify-between">
             <Skeleton
-              className="h-4 w-1/5 bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200 rounded"
+              className="h-4 w-1/5 rounded bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200"
               style={{ animation: "shimmer 20s infinite linear" }}
             />
             <div className="flex space-x-2">
               <Skeleton
-                className="h-6 w-16 bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200 rounded-full"
+                className="h-6 w-16 rounded-full bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200"
                 style={{ animation: "shimmer 20s infinite linear" }}
               />
               <Skeleton
-                className="h-6 w-16 bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200 rounded-full"
+                className="h-6 w-16 rounded-full bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200"
                 style={{ animation: "shimmer 20s infinite linear" }}
               />
             </div>

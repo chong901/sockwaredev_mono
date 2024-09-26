@@ -32,7 +32,7 @@ export const useGroceryListFilter = () => {
 
       router.push(`?${params.toString()}`);
     },
-    [router]
+    [router],
   );
 
   const onSearchChange = useCallback(
@@ -46,7 +46,7 @@ export const useGroceryListFilter = () => {
 
       router.push(`?${params.toString()}`);
     },
-    [router]
+    [router],
   );
 
   return {

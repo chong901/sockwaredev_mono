@@ -26,15 +26,15 @@ const defaultGroceryItemReturnShape = {
 export class GroceryItemService {
   static getGroceryItems = async (
     userId: string,
-    { labels, stores, keyword }: GroceryItemFilter
+    { labels, stores, keyword }: GroceryItemFilter,
   ) => {
     const groceryItems = await e
       .select(e.GroceryItem, (item) => {
         const labelFilter = labels.length
           ? e.any(
               e.set(
-                ...labels.map((label) => e.op(item.labels.name, "=", label))
-              )
+                ...labels.map((label) => e.op(item.labels.name, "=", label)),
+              ),
             )
           : e.bool(true);
         const storesFilter = stores.length
@@ -47,8 +47,8 @@ export class GroceryItemService {
               e.op(item.owner.id, "=", e.uuid(userId)),
               labelFilter,
               storesFilter,
-              e.op(item.name, "ilike", `%${keyword}%`)
-            )
+              e.op(item.name, "ilike", `%${keyword}%`),
+            ),
           ),
           order_by: { expression: item.created_at, direction: e.DESC },
         };
@@ -59,7 +59,7 @@ export class GroceryItemService {
 
   static addGroceryItem = async (
     userId: string,
-    data: CreateGroceryItemInput
+    data: CreateGroceryItemInput,
   ) => {
     const currentUser = UserService.getUserQuery(userId);
     const store = StoreService.getStoreQuery(userId, data.store);
@@ -76,7 +76,7 @@ export class GroceryItemService {
           notes: data.notes,
           labels: labels,
         }),
-        () => defaultGroceryItemReturnShape
+        () => defaultGroceryItemReturnShape,
       )
       .run(edgedbClient);
     return grocery;
@@ -85,7 +85,7 @@ export class GroceryItemService {
   static updateGroceryItem = async (
     itemId: string,
     userId: string,
-    data: CreateGroceryItemInput
+    data: CreateGroceryItemInput,
   ) => {
     const store = StoreService.getStoreQuery(userId, data.store);
     const labels = LabelService.getLabelsQuery(userId, data.labels);
@@ -95,8 +95,8 @@ export class GroceryItemService {
           filter: e.all(
             e.set(
               e.op(item.id, "=", e.uuid(itemId)),
-              e.op(item.owner.id, "=", e.uuid(userId))
-            )
+              e.op(item.owner.id, "=", e.uuid(userId)),
+            ),
           ),
           set: {
             amount: data.amount,
@@ -108,7 +108,7 @@ export class GroceryItemService {
             labels: labels,
           },
         })),
-        () => defaultGroceryItemReturnShape
+        () => defaultGroceryItemReturnShape,
       )
       .run(edgedbClient);
     if (!grocery) {
@@ -124,11 +124,11 @@ export class GroceryItemService {
           filter: e.all(
             e.set(
               e.op(item.id, "=", e.uuid(itemId)),
-              e.op(item.owner.id, "=", e.uuid(userId))
-            )
+              e.op(item.owner.id, "=", e.uuid(userId)),
+            ),
           ),
         })),
-        () => defaultGroceryItemReturnShape
+        () => defaultGroceryItemReturnShape,
       )
       .run(edgedbClient);
     if (!grocery) {

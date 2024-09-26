@@ -21,9 +21,9 @@ export function Header() {
   const navItems = [{ name: "Home", href: "#" }];
 
   return (
-    <header className="bg-gradient-to-r w-full from-purple-600 to-indigo-600 text-white shadow-lg">
+    <header className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <a href="#" className="flex-shrink-0">
               <svg
@@ -40,13 +40,13 @@ export function Header() {
                 />
               </svg>
             </a>
-            <nav className="hidden md:block ml-10">
+            <nav className="ml-10 hidden md:block">
               <ul className="flex space-x-4">
                 {navItems.map((item) => (
                   <li key={item.name}>
                     <a
                       href={item.href}
-                      className="text-white hover:bg-purple-500 hover:bg-opacity-75 px-3 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"
+                      className="rounded-md px-3 py-2 text-sm font-medium text-white transition duration-150 ease-in-out hover:bg-purple-500 hover:bg-opacity-75"
                     >
                       {item.name}
                     </a>
@@ -55,7 +55,7 @@ export function Header() {
               </ul>
             </nav>
           </div>
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden items-center space-x-4 md:flex">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -116,18 +116,18 @@ export function Header() {
       </div>
       {isMobileMenuOpen && (
         <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
             {navItems.map((item) => (
               <a
                 key={item.name}
                 href={item.href}
-                className="text-white hover:bg-purple-500 hover:bg-opacity-75 block px-3 py-2 rounded-md text-base font-medium"
+                className="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-purple-500 hover:bg-opacity-75"
               >
                 {item.name}
               </a>
             ))}
           </div>
-          <div className="pt-4 pb-3 border-t border-purple-500">
+          <div className="border-t border-purple-500 pb-3 pt-4">
             <div className="flex items-center px-5">
               <div className="flex-shrink-0">
                 <Avatar className="h-10 w-10">
@@ -147,22 +147,22 @@ export function Header() {
                 </div>
               </div>
             </div>
-            <div className="mt-3 px-2 space-y-1">
+            <div className="mt-3 space-y-1 px-2">
               <Button
                 variant="ghost"
-                className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:bg-purple-500 hover:bg-opacity-75"
+                className="block w-full rounded-md px-3 py-2 text-left text-base font-medium text-white hover:bg-purple-500 hover:bg-opacity-75"
               >
                 Profile
               </Button>
               <Button
                 variant="ghost"
-                className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:bg-purple-500 hover:bg-opacity-75"
+                className="block w-full rounded-md px-3 py-2 text-left text-base font-medium text-white hover:bg-purple-500 hover:bg-opacity-75"
               >
                 Settings
               </Button>
               <Button
                 variant="ghost"
-                className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:bg-purple-500 hover:bg-opacity-75"
+                className="block w-full rounded-md px-3 py-2 text-left text-base font-medium text-white hover:bg-purple-500 hover:bg-opacity-75"
                 onClick={() => signOut()}
               >
                 Sign out

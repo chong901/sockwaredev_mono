@@ -249,13 +249,13 @@ export function GroceryItemFormModal() {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
-          className="bg-indigo-600 hover:bg-indigo-700 text-white"
+          className="bg-indigo-600 text-white hover:bg-indigo-700"
           onClick={() => setItem(undefined)}
         >
           Add Grocery Item
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-gradient-to-br from-purple-100 to-indigo-100 rounded-lg shadow-lg">
+      <DialogContent className="rounded-lg bg-gradient-to-br from-purple-100 to-indigo-100 shadow-lg sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="text-center">
             <motion.div
@@ -263,9 +263,9 @@ export function GroceryItemFormModal() {
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 260, damping: 20 }}
             >
-              <ShoppingCart className="w-16 h-16 mx-auto text-indigo-600 mb-2" />
+              <ShoppingCart className="mx-auto mb-2 h-16 w-16 text-indigo-600" />
             </motion.div>
-            <h3 className="text-3xl font-bold text-indigo-800 mt-4 mb-2">
+            <h3 className="mb-2 mt-4 text-3xl font-bold text-indigo-800">
               {isEditing ? "Edit" : "Add"} Grocery Item
             </h3>
           </DialogTitle>
@@ -286,16 +286,16 @@ export function GroceryItemFormModal() {
               })}
               placeholder="Enter item name"
               className={cn(
-                "bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500",
+                "border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500",
                 errors.itemName &&
                   (touchedFields.itemName || dirtyFields.itemName)
                   ? "border-red-500"
-                  : ""
+                  : "",
               )}
             />
             {errors.itemName &&
               (touchedFields.itemName || dirtyFields.itemName) && (
-                <p className="text-red-500 text-sm">
+                <p className="text-sm text-red-500">
                   {errors.itemName.message}
                 </p>
               )}
@@ -316,11 +316,11 @@ export function GroceryItemFormModal() {
                       role="combobox"
                       aria-expanded={openStores}
                       className={cn(
-                        "w-full justify-between bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500",
+                        "w-full justify-between border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500",
                         errors.store &&
                           (touchedFields.store || dirtyFields.store)
                           ? "border-red-500"
-                          : ""
+                          : "",
                       )}
                     >
                       {fieldStore || "Select store..."}
@@ -338,8 +338,8 @@ export function GroceryItemFormModal() {
                         <CommandGroup>
                           {getStoresLoading ? (
                             <>
-                              <Skeleton className="h-8 w-full mb-2" />
-                              <Skeleton className="h-8 w-full mb-2" />
+                              <Skeleton className="mb-2 h-8 w-full" />
+                              <Skeleton className="mb-2 h-8 w-full" />
                               <Skeleton className="h-8 w-full" />
                             </>
                           ) : (
@@ -359,7 +359,7 @@ export function GroceryItemFormModal() {
                                     "mr-2 h-4 w-4",
                                     fieldStore === name
                                       ? "opacity-100"
-                                      : "opacity-0"
+                                      : "opacity-0",
                                   )}
                                 />
                                 {name}
@@ -398,7 +398,7 @@ export function GroceryItemFormModal() {
               )}
             />
             {errors.store && (touchedFields.store || dirtyFields.store) && (
-              <p className="text-red-500 text-sm">{errors.store.message}</p>
+              <p className="text-sm text-red-500">{errors.store.message}</p>
             )}
           </div>
 
@@ -416,14 +416,14 @@ export function GroceryItemFormModal() {
               placeholder="Enter price"
               step="0.01"
               className={cn(
-                "bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500",
+                "border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500",
                 errors.price && (touchedFields.price || dirtyFields.price)
                   ? "border-red-500"
-                  : ""
+                  : "",
               )}
             />
             {errors.price && (touchedFields.price || dirtyFields.price) && (
-              <p className="text-red-500 text-sm">{errors.price.message}</p>
+              <p className="text-sm text-red-500">{errors.price.message}</p>
             )}
           </div>
 
@@ -440,16 +440,16 @@ export function GroceryItemFormModal() {
                   })}
                   placeholder="Amount"
                   className={cn(
-                    "bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500",
+                    "border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500",
                     errors.amount &&
                       (touchedFields.amount || dirtyFields.amount)
                       ? "border-red-500"
-                      : ""
+                      : "",
                   )}
                 />
                 {errors.amount &&
                   (touchedFields.amount || dirtyFields.amount) && (
-                    <p className="text-red-500 text-sm">
+                    <p className="text-sm text-red-500">
                       {errors.amount.message}
                     </p>
                   )}
@@ -469,11 +469,11 @@ export function GroceryItemFormModal() {
                       <SelectTrigger
                         id="unit"
                         className={cn(
-                          "bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500",
+                          "border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500",
                           errors.unit &&
                             (touchedFields.unit || dirtyFields.unit)
                             ? "border-red-500"
-                            : ""
+                            : "",
                         )}
                       >
                         <SelectValue placeholder="Unit" />
@@ -489,7 +489,7 @@ export function GroceryItemFormModal() {
                   )}
                 />
                 {errors.unit && (touchedFields.unit || dirtyFields.unit) && (
-                  <p className="text-red-500 text-sm">{errors.unit.message}</p>
+                  <p className="text-sm text-red-500">{errors.unit.message}</p>
                 )}
               </div>
             </div>
@@ -511,11 +511,11 @@ export function GroceryItemFormModal() {
                       role="combobox"
                       aria-expanded={openLabels}
                       className={cn(
-                        "w-full justify-between bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500",
+                        "w-full justify-between border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500",
                         errors.labels &&
                           (touchedFields.labels || dirtyFields.labels)
                           ? "border-red-500"
-                          : ""
+                          : "",
                       )}
                     >
                       {fieldLabels.length > 0
@@ -535,8 +535,8 @@ export function GroceryItemFormModal() {
                         <CommandGroup>
                           {getLabelsLoading ? (
                             <>
-                              <Skeleton className="h-8 w-full mb-2" />
-                              <Skeleton className="h-8 w-full mb-2" />
+                              <Skeleton className="mb-2 h-8 w-full" />
+                              <Skeleton className="mb-2 h-8 w-full" />
                               <Skeleton className="h-8 w-full" />
                             </>
                           ) : (
@@ -552,7 +552,7 @@ export function GroceryItemFormModal() {
                                     {
                                       shouldValidate: true,
                                       shouldDirty: true,
-                                    }
+                                    },
                                   );
                                   trigger("labels");
                                 }}
@@ -562,7 +562,7 @@ export function GroceryItemFormModal() {
                                     "mr-2 h-4 w-4",
                                     fieldLabels.includes(name)
                                       ? "opacity-100"
-                                      : "opacity-0"
+                                      : "opacity-0",
                                   )}
                                 />
                                 {name}
@@ -601,7 +601,7 @@ export function GroceryItemFormModal() {
               )}
             />
             {errors.labels && (touchedFields.labels || dirtyFields.labels) && (
-              <p className="text-red-500 text-sm">{errors.labels.message}</p>
+              <p className="text-sm text-red-500">{errors.labels.message}</p>
             )}
           </div>
 
@@ -614,7 +614,7 @@ export function GroceryItemFormModal() {
               {...register("notes")}
               placeholder="Enter any additional notes"
               rows={3}
-              className="bg-white/50 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500"
+              className="border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500"
             />
           </div>
           <div className="flex justify-end space-x-2">
@@ -622,7 +622,7 @@ export function GroceryItemFormModal() {
               type="button"
               variant="outline"
               onClick={() => setIsOpen(false)}
-              className="bg-white hover:bg-gray-100 text-indigo-700 font-semibold py-2 px-4 border border-indigo-500 rounded-full transition-colors duration-300"
+              className="rounded-full border border-indigo-500 bg-white px-4 py-2 font-semibold text-indigo-700 transition-colors duration-300 hover:bg-gray-100"
             >
               Cancel
             </Button>
@@ -633,7 +633,7 @@ export function GroceryItemFormModal() {
               <Button
                 type="submit"
                 disabled={!isSubmitButtonEnable}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
+                className="rounded-full bg-indigo-600 px-4 py-2 font-bold text-white transition-colors duration-300 hover:bg-indigo-700"
               >
                 {isSubmitting ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
