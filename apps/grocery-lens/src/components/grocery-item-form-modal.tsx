@@ -70,6 +70,7 @@ import {
   ChevronsUpDown,
   Loader2,
   PlusCircle,
+  PlusIcon,
   ShoppingCart,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -257,7 +258,8 @@ export function GroceryItemFormModal() {
           className="bg-indigo-600 text-white hover:bg-indigo-700"
           onClick={handleAddGroceryItemClick}
         >
-          Add Grocery Item
+          <p className="hidden sm:block">Add Grocery Item</p>
+          <PlusIcon className="sm:hidden" />
         </Button>
       </DialogTrigger>
       <DialogContent className="rounded-lg bg-gradient-to-br from-purple-100 to-indigo-100 shadow-lg sm:max-w-[425px]">

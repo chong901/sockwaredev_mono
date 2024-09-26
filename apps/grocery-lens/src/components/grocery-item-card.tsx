@@ -53,7 +53,7 @@ export function GroceryItemCard({
         <CardContent className="p-0">
           <div className="relative p-4">
             <div className="mb-2 flex items-start justify-between">
-              <h3 className="text-2xl font-bold capitalize text-indigo-800">
+              <h3 className="text-xl font-bold capitalize text-indigo-800 sm:text-2xl">
                 {item.name}
               </h3>
               <div className="flex space-x-2">

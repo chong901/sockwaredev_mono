@@ -73,7 +73,7 @@ export function GroceryListComponent() {
         className="mb-4 flex flex-col gap-4"
       >
         <div className="flex items-center justify-between">
-          <h1 className="flex items-center text-4xl font-bold text-indigo-800">
+          <h1 className="flex items-center text-2xl font-bold text-indigo-800 sm:text-4xl">
             {loading ? (
               <Loader2 className="mr-4 h-10 w-10 animate-spin" />
             ) : (
