@@ -30,11 +30,13 @@ export function GroceryItemCard({
   onEdit,
   onDelete,
   className,
+  onLabelClick,
 }: {
   item: GroceryItem;
   onEdit: (item: GroceryItem) => void;
   onDelete: (id: string) => void;
   className?: string;
+  onLabelClick?: (label: string) => void;
 }) {
   return (
     <motion.div
@@ -119,7 +121,8 @@ export function GroceryItemCard({
                   <Badge
                     key={id}
                     variant="secondary"
-                    className="bg-indigo-200 text-indigo-800"
+                    className="cursor-pointer bg-indigo-200 text-indigo-800"
+                    onClick={() => onLabelClick?.(name)}
                   >
                     <Tag className="mr-1 h-3 w-3" />
                     {name}

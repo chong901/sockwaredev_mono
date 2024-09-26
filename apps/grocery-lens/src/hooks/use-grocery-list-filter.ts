@@ -49,11 +49,24 @@ export const useGroceryListFilter = () => {
     [router],
   );
 
+  const addLabel = useCallback(
+    (label: string) => {
+      const params = new URLSearchParams(searchParamsRef.current.toString());
+      const labels = params.get("labels")?.split(",") ?? [];
+      if (labels.includes(label)) return;
+      labels.push(label);
+      params.set("labels", labels.join(","));
+      router.push(`?${params.toString()}`);
+    },
+    [router],
+  );
+
   return {
     stores,
     labels,
     keyword,
     onFilterChange,
     onSearchChange,
+    addLabel,
   };
 };

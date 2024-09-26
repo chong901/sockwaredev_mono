@@ -25,7 +25,7 @@ import { useSetAtom } from "jotai";
 import { Loader2, ShoppingCart } from "lucide-react";
 
 export function GroceryListComponent() {
-  const { labels, stores, keyword } = useGroceryListFilter();
+  const { labels, stores, keyword, addLabel } = useGroceryListFilter();
   const {
     data: groceryItems,
     loading,
@@ -122,6 +122,7 @@ export function GroceryListComponent() {
                 onDelete={handleDelete}
                 onEdit={handleEdit}
                 className="mb-4"
+                onLabelClick={addLabel}
               />
             ))
           )}
