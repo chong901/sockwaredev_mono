@@ -31,12 +31,14 @@ export function GroceryItemCard({
   onDelete,
   className,
   onLabelClick,
+  onStoreClick,
 }: {
   item: GroceryItem;
   onEdit: (item: GroceryItem) => void;
   onDelete: (id: string) => void;
   className?: string;
   onLabelClick?: (label: string) => void;
+  onStoreClick?: (store: string) => void;
 }) {
   return (
     <motion.div
@@ -93,7 +95,10 @@ export function GroceryItemCard({
                 </TooltipProvider>
               </div>
             </div>
-            <div className="mb-2 flex items-center text-indigo-600">
+            <div
+              className="mb-2 flex w-fit cursor-pointer items-center text-indigo-600"
+              onClick={() => onStoreClick?.(item.store.name)}
+            >
               <ShoppingBag className="mr-2 h-4 w-4" />
               <span className="text-sm">{item.store.name}</span>
             </div>
