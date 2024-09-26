@@ -34,6 +34,7 @@ module default {
         required amount: float32;
         required unit: Unit;
         optional notes: str;
+        optional url: str;
         required owner: User;
         multi labels: Label;
         pricePerUnit := .price / .amount;
