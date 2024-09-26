@@ -22,7 +22,7 @@ import { useGroceryListFilter } from "@/hooks/use-grocery-list-filter";
 import { useMutation, useQuery } from "@apollo/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSetAtom } from "jotai";
-import { ShoppingCart } from "lucide-react";
+import { Loader2, ShoppingCart } from "lucide-react";
 
 export function GroceryListComponent() {
   const { labels, stores, keyword } = useGroceryListFilter();
@@ -35,7 +35,7 @@ export function GroceryListComponent() {
     {
       variables: { filter: { labels, stores, keyword } },
       fetchPolicy: "cache-and-network",
-    }
+    },
   );
   const setEditingItem = useSetAtom(editingItemAtom);
   const setEditItemModalOpen = useSetAtom(isEditModalOpenAtom);
@@ -63,23 +63,27 @@ export function GroceryListComponent() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="container mx-auto p-6 bg-gradient-to-br from-purple-100 to-indigo-100 h-full rounded-lg shadow-lg flex flex-col"
+      className="container mx-auto flex h-full flex-col rounded-lg bg-gradient-to-br from-purple-100 to-indigo-100 p-6 shadow-lg"
     >
       <motion.div
         initial={{ y: -20 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        className="flex flex-col gap-4 mb-4"
+        className="mb-4 flex flex-col gap-4"
       >
-        <div className="flex justify-between items-center">
-          <h1 className="text-4xl font-bold text-indigo-800 flex items-center">
-            <motion.div
-              initial={{ rotate: -20 }}
-              animate={{ rotate: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 10 }}
-            >
-              <ShoppingCart className="mr-4 h-10 w-10 text-indigo-600" />
-            </motion.div>
+        <div className="flex items-center justify-between">
+          <h1 className="flex items-center text-4xl font-bold text-indigo-800">
+            {loading ? (
+              <Loader2 className="mr-4 h-10 w-10 animate-spin" />
+            ) : (
+              <motion.div
+                initial={{ rotate: -20 }}
+                animate={{ rotate: 0 }}
+                transition={{ type: "spring", stiffness: 300, damping: 10 }}
+              >
+                <ShoppingCart className="mr-4 h-10 w-10 text-indigo-600" />
+              </motion.div>
+            )}
             Grocery List
           </h1>
           <GroceryItemFormModal />
