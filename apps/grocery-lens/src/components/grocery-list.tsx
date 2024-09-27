@@ -10,6 +10,7 @@ import {
   GroceryItemFormModal,
   isEditModalOpenAtom,
 } from "@/components/grocery-item-form-modal";
+import { GroceryLensLogo } from "@/components/grocery-lens";
 import {
   DeleteGroceryItemMutation,
   DeleteGroceryItemMutationVariables,
@@ -22,7 +23,7 @@ import { useGroceryListFilter } from "@/hooks/use-grocery-list-filter";
 import { useMutation, useQuery } from "@apollo/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSetAtom } from "jotai";
-import { Loader2, ShoppingCart } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 export function GroceryListComponent() {
   const { labels, stores, keyword, addLabelFilter, addStoreFilter } =
@@ -74,16 +75,16 @@ export function GroceryListComponent() {
         className="mb-4 flex flex-col gap-4"
       >
         <div className="flex items-center justify-between">
-          <h1 className="flex items-center text-2xl font-bold text-indigo-800 sm:text-4xl">
+          <h1 className="flex items-center gap-2 text-2xl font-bold text-indigo-800 sm:text-4xl">
             {loading ? (
-              <Loader2 className="mr-4 h-10 w-10 animate-spin" />
+              <Loader2 className="h-10 w-10 animate-spin" />
             ) : (
               <motion.div
                 initial={{ rotate: -20 }}
                 animate={{ rotate: 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 10 }}
               >
-                <ShoppingCart className="mr-4 h-10 w-10 text-indigo-600" />
+                <GroceryLensLogo className="h-10 w-10 text-indigo-600" />
               </motion.div>
             )}
             Grocery List
