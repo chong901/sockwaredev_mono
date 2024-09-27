@@ -1,5 +1,6 @@
 "use client";
 
+import { GroceryLensLogo } from "@/components/grocery-lens";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,19 +27,7 @@ export function Header() {
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <a href="#" className="flex-shrink-0">
-              <svg
-                className="h-8 w-8"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 10V3L4 14h7v7l9-11h-7z"
-                />
-              </svg>
+              <GroceryLensLogo className="h-8 w-8" />
             </a>
             <nav className="ml-10 hidden md:block">
               <ul className="flex space-x-4">
