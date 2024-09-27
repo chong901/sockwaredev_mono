@@ -47,9 +47,8 @@ export function GroceryFilterComponent() {
   );
 
   useEffect(() => {
-    debouncedHandleSearchChange(search);
     return () => debouncedHandleSearchChange.cancel();
-  }, [debouncedHandleSearchChange, search]);
+  }, [debouncedHandleSearchChange]);
 
   useEffect(() => {
     setSearch(keyword);
@@ -91,15 +90,25 @@ export function GroceryFilterComponent() {
     resetFilters();
   };
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    debouncedHandleSearchChange(e.target.value);
+  };
+
+  const handleClearSearch = () => {
+    setSearch("");
+    onSearchChange("");
+  };
+
   const totalAppliedFilters = appliedStores.length + appliedLabels.length;
 
   return (
     <div className="flex flex-wrap items-center gap-2">
       <SearchInput
         value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        onChange={handleSearchChange}
         className="bg-white"
-        onClear={() => setSearch("")}
+        onClear={handleClearSearch}
         placeholder="Search groceries"
       />
       <Popover open={isOpen} onOpenChange={setIsOpen}>
