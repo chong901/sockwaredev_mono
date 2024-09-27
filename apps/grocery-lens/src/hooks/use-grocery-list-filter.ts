@@ -49,6 +49,14 @@ export const useGroceryListFilter = () => {
     [router],
   );
 
+  const resetFilters = useCallback(() => {
+    const params = new URLSearchParams(searchParamsRef.current.toString());
+    params.delete("stores");
+    params.delete("labels");
+    params.delete("keyword");
+    router.push(`?${params.toString()}`);
+  }, [router]);
+
   const addLabelFilter = useCallback(
     (label: string) => {
       const params = new URLSearchParams(searchParamsRef.current.toString());
@@ -81,5 +89,6 @@ export const useGroceryListFilter = () => {
     onSearchChange,
     addLabelFilter,
     addStoreFilter,
+    resetFilters,
   };
 };

@@ -33,6 +33,7 @@ export function GroceryFilterComponent() {
     keyword,
     onSearchChange,
     onFilterChange,
+    resetFilters,
   } = useGroceryListFilter();
   const [search, setSearch] = useState(keyword);
   const [isOpen, setIsOpen] = useState(false);
@@ -86,8 +87,8 @@ export function GroceryFilterComponent() {
   const clearAllFilters = () => {
     setSelectedStores([]);
     setSelectedLabels([]);
-    onFilterChange({ stores: [], labels: [] });
     setSearch("");
+    resetFilters();
   };
 
   const totalAppliedFilters = appliedStores.length + appliedLabels.length;
