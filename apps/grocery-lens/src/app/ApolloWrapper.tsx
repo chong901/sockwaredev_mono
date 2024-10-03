@@ -29,7 +29,20 @@ function makeClient() {
   // use the `ApolloClient` from "@apollo/experimental-nextjs-app-support"
   return new ApolloClient({
     // use the `InMemoryCache` from "@apollo/experimental-nextjs-app-support"
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            getGroceryItems: {
+              keyArgs: false,
+              merge(existing, incoming) {
+                return [...(existing ?? []), ...(incoming ?? [])];
+              },
+            },
+          },
+        },
+      },
+    }),
     link: httpLink,
   });
 }

@@ -11,6 +11,7 @@ import {
   isEditModalOpenAtom,
 } from "@/components/grocery-item-form-modal";
 import { GroceryLensLogo } from "@/components/grocery-lens";
+import { InfiniteScrollList } from "@/components/infinite-scroll-list";
 import {
   DeleteGroceryItemMutation,
   DeleteGroceryItemMutationVariables,
@@ -25,6 +26,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useSetAtom } from "jotai";
 import { Loader2 } from "lucide-react";
 
+const limit = 10;
+
 export function GroceryListComponent() {
   const { labels, stores, keyword, addLabelFilter, addStoreFilter } =
     useGroceryListFilter();
@@ -33,10 +36,14 @@ export function GroceryListComponent() {
     loading,
     previousData,
     refetch,
+    fetchMore,
   } = useQuery<GetGroceryItemsQuery, GetGroceryItemsQueryVariables>(
     getGroceryItemsQuery,
     {
-      variables: { filter: { labels, stores, keyword } },
+      variables: {
+        filter: { labels, stores, keyword },
+        pagination: { limit, offset: 0 },
+      },
       fetchPolicy: "cache-and-network",
     },
   );
@@ -114,21 +121,36 @@ export function GroceryListComponent() {
               ))}
             </>
           ) : (
-            (
-              groceryItems?.getGroceryItems ??
-              previousData?.getGroceryItems ??
-              []
-            ).map((item) => (
-              <GroceryItemCard
-                key={item.id}
-                item={item}
-                onDelete={handleDelete}
-                onEdit={handleEdit}
-                className="mb-4"
-                onLabelClick={addLabelFilter}
-                onStoreClick={addStoreFilter}
-              />
-            ))
+            <InfiniteScrollList
+              items={
+                groceryItems?.getGroceryItems ??
+                previousData?.getGroceryItems ??
+                []
+              }
+              loadMoreItems={() => {
+                fetchMore({
+                  variables: {
+                    pagination: {
+                      limit,
+                      offset: groceryItems?.getGroceryItems.length ?? 0,
+                    },
+                  },
+                });
+              }}
+              loading={loading}
+            >
+              {(item) => (
+                <GroceryItemCard
+                  key={item.id}
+                  item={item}
+                  onDelete={handleDelete}
+                  onEdit={handleEdit}
+                  className="mb-4"
+                  onLabelClick={addLabelFilter}
+                  onStoreClick={addStoreFilter}
+                />
+              )}
+            </InfiniteScrollList>
           )}
         </AnimatePresence>
       </div>

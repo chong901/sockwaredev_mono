@@ -31,7 +31,10 @@ const typeDefs = gql`
   type Query {
     getLabels: [Label!]!
     getStores: [Store!]!
-    getGroceryItems(filter: GroceryItemFilter!): [GroceryItem!]!
+    getGroceryItems(
+      filter: GroceryItemFilter!
+      pagination: PaginationInput!
+    ): [GroceryItem!]!
   }
 
   type Mutation {
@@ -80,6 +83,11 @@ const typeDefs = gql`
     stores: [String!]!
     labels: [String!]!
     keyword: String!
+  }
+
+  input PaginationInput {
+    limit: Int!
+    offset: Int!
   }
 `;
 

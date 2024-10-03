@@ -89,6 +89,11 @@ export type MutationUpdateGroceryItemArgs = {
   input: CreateGroceryItemInput;
 };
 
+export type PaginationInput = {
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+};
+
 export type Query = {
   __typename?: 'Query';
   getGroceryItems: Array<GroceryItem>;
@@ -99,6 +104,7 @@ export type Query = {
 
 export type QueryGetGroceryItemsArgs = {
   filter: GroceryItemFilter;
+  pagination: PaginationInput;
 };
 
 export type Store = {
@@ -195,8 +201,10 @@ export type ResolversTypes = ResolversObject<{
   GroceryItem: ResolverTypeWrapper<GroceryItem>;
   GroceryItemFilter: GroceryItemFilter;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Label: ResolverTypeWrapper<Label>;
   Mutation: ResolverTypeWrapper<{}>;
+  PaginationInput: PaginationInput;
   Query: ResolverTypeWrapper<{}>;
   Store: ResolverTypeWrapper<Store>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -211,8 +219,10 @@ export type ResolversParentTypes = ResolversObject<{
   GroceryItem: GroceryItem;
   GroceryItemFilter: GroceryItemFilter;
   ID: Scalars['ID']['output'];
+  Int: Scalars['Int']['output'];
   Label: Label;
   Mutation: {};
+  PaginationInput: PaginationInput;
   Query: {};
   Store: Store;
   String: Scalars['String']['output'];
@@ -247,7 +257,7 @@ export type MutationResolvers<ContextType = ApolloContext, ParentType extends Re
 }>;
 
 export type QueryResolvers<ContextType = ApolloContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  getGroceryItems?: Resolver<Array<ResolversTypes['GroceryItem']>, ParentType, ContextType, RequireFields<QueryGetGroceryItemsArgs, 'filter'>>;
+  getGroceryItems?: Resolver<Array<ResolversTypes['GroceryItem']>, ParentType, ContextType, RequireFields<QueryGetGroceryItemsArgs, 'filter' | 'pagination'>>;
   getLabels?: Resolver<Array<ResolversTypes['Label']>, ParentType, ContextType>;
   getStores?: Resolver<Array<ResolversTypes['Store']>, ParentType, ContextType>;
 }>;

@@ -6,6 +6,7 @@ import e from "@/edgedb/edgeql-js";
 import {
   CreateGroceryItemInput,
   GroceryItemFilter,
+  PaginationInput,
 } from "@/graphql-codegen/backend/types";
 
 const defaultGroceryItemReturnShape = {
@@ -28,6 +29,7 @@ export class GroceryItemService {
   static getGroceryItems = async (
     userId: string,
     { labels, stores, keyword }: GroceryItemFilter,
+    { limit, offset }: PaginationInput,
   ) => {
     const groceryItems = await e
       .select(e.GroceryItem, (item) => {
@@ -52,6 +54,8 @@ export class GroceryItemService {
             ),
           ),
           order_by: { expression: item.created_at, direction: e.DESC },
+          limit,
+          offset,
         };
       })
       .run(edgedbClient);
