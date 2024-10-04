@@ -1,11 +1,6 @@
-import { nextAuth } from "@/auth";
-import { Header } from "@/components/header";
 import type { Metadata } from "next";
-import { SessionProvider } from "next-auth/react";
 import localFont from "next/font/local";
-import { redirect } from "next/navigation";
 import "./globals.css";
-import { ApolloWrapper } from "@/app/ApolloWrapper";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,22 +23,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await nextAuth.auth();
-  if (!session) {
-    redirect("/api/auth/signin");
-  }
   return (
     <html lang="en">
-      <SessionProvider session={session}>
-        <ApolloWrapper>
-          <body
-            className={`${geistSans.variable} ${geistMono.variable} flex h-svh flex-col overflow-hidden antialiased`}
-          >
-            <Header />
-            <div className="w-full flex-1 overflow-scroll">{children}</div>
-          </body>
-        </ApolloWrapper>
-      </SessionProvider>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} flex h-svh flex-col overflow-hidden antialiased`}
+      >
+        {children}
+      </body>
     </html>
   );
 }
