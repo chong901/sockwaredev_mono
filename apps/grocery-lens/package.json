@@ -66,7 +66,8 @@
     "graphql:codegen:be": "graphql-codegen --config codegen-backend.ts",
     "graphql:codegen:fe": "graphql-codegen --config codegen-frontend.ts",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "prebuild": "pnpm db:generate"
   },
   "version": "0.1.0"
 }

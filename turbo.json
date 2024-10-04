@@ -11,6 +11,10 @@
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "grocery-lens#build": {
+      "dependsOn": ["^build"],
+      "env": ["EDGEDB_SECRET_KEY", "EDGEDB_INSTANCE"]
     }
   }
 }
