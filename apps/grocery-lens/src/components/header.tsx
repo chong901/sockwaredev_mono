@@ -78,8 +78,6 @@ export function Header() {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => signOut()}>
                   Sign out
                 </DropdownMenuItem>
@@ -137,18 +135,6 @@ export function Header() {
               </div>
             </div>
             <div className="mt-3 space-y-1 px-2">
-              <Button
-                variant="ghost"
-                className="block w-full rounded-md px-3 py-2 text-left text-base font-medium text-white hover:bg-purple-500 hover:bg-opacity-75"
-              >
-                Profile
-              </Button>
-              <Button
-                variant="ghost"
-                className="block w-full rounded-md px-3 py-2 text-left text-base font-medium text-white hover:bg-purple-500 hover:bg-opacity-75"
-              >
-                Settings
-              </Button>
               <Button
                 variant="ghost"
                 className="block w-full rounded-md px-3 py-2 text-left text-base font-medium text-white hover:bg-purple-500 hover:bg-opacity-75"
