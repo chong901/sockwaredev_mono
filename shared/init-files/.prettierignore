@@ -1,0 +1,6 @@
+# Ignore artifacts:
+build
+coverage
+
+# Ignore shadcn components:
+src/components/ui/**
