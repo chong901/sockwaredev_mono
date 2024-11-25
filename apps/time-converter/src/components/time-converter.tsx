@@ -1,26 +1,29 @@
-'use client'
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { fromZonedTime } from 'date-fns-tz'
-import { useState } from 'react'
-import { AddTimezone } from './add-timezone'
-import { DateTimePicker } from './date-time-picker'
-import { TimezoneList } from './timezone-list'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { fromZonedTime } from "date-fns-tz";
+import { useState } from "react";
+import { AddTimezone } from "./add-timezone";
+import { DateTimePicker } from "./date-time-picker";
+import { TimezoneList } from "./timezone-list";
 
 export function TimeConverter() {
-  const [mainDateTime, setMainDateTime] = useState(new Date())
-  const [mainTimezone, setMainTimezone] = useState('Europe/London')
-  const [timezones, setTimezones] = useState(['America/New_York', 'Europe/London', 'Asia/Tokyo'])
+  const [mainDateTime, setMainDateTime] = useState(new Date());
+  const [mainTimezone, setMainTimezone] = useState("Europe/London");
+  const [timezones, setTimezones] = useState([
+    "America/New_York",
+    "Europe/London",
+    "Asia/Tokyo",
+  ]);
 
   const handleAddTimezone = (newTimezone: string) => {
     if (!timezones.includes(newTimezone)) {
-      setTimezones([...timezones, newTimezone])
+      setTimezones([...timezones, newTimezone]);
     }
-  }
-
+  };
 
   return (
-    <Card className="w-full max-w-3xl mx-auto">
+    <Card className="mx-auto w-full max-w-3xl">
       <CardHeader>
         <CardTitle>Time Converter</CardTitle>
       </CardHeader>
@@ -35,9 +38,11 @@ export function TimeConverter() {
           utc={fromZonedTime(mainDateTime, mainTimezone)}
           timezones={timezones}
         />
-        <AddTimezone onAddTimezone={handleAddTimezone} />
+        <AddTimezone
+          onAddTimezone={handleAddTimezone}
+          selectedTimezones={timezones}
+        />
       </CardContent>
     </Card>
-  )
+  );
 }
-

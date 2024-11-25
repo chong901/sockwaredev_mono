@@ -25,25 +25,37 @@ const timezones = Intl.supportedValuesOf("timeZone");
 
 export default function TimezoneSelect({
   onSelect,
-  defaultValue,
+  selectedTimezones,
+  value,
 }: {
   onSelect: (timezone: string) => void;
-  defaultValue?: string;
+  value: string;
+  selectedTimezones?: string[];
 }) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState(defaultValue ?? "");
   const [search, setSearch] = React.useState("");
 
   // Debounce search input
   const debouncedSearch = useDebounce(search, 200);
 
+  const timezoneOptions = React.useMemo(() => {
+    if (!selectedTimezones || selectedTimezones.length === 0) {
+      return timezones;
+    }
+    return timezones.filter(
+      (timezone) =>
+        !selectedTimezones.includes(timezone) &&
+        timezone.toLowerCase().includes(debouncedSearch.toLowerCase()),
+    );
+  }, [debouncedSearch, selectedTimezones]);
+
   // Filtered timezones
   const filteredTimezones = React.useMemo(
     () =>
-      timezones.filter((timezone) =>
+      timezoneOptions.filter((timezone) =>
         timezone.toLowerCase().includes(debouncedSearch.toLowerCase()),
       ),
-    [debouncedSearch],
+    [debouncedSearch, timezoneOptions],
   );
 
   return (
@@ -55,9 +67,7 @@ export default function TimezoneSelect({
           aria-expanded={open}
           className="w-[300px] justify-between"
         >
-          {value
-            ? timezones.find((timezone) => timezone === value)
-            : "Select timezone..."}
+          {value || "Select timezone..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -84,8 +94,8 @@ export default function TimezoneSelect({
                         key={timezone}
                         value={timezone}
                         onSelect={(currentValue) => {
-                          setValue(currentValue === value ? "" : currentValue);
                           onSelect(currentValue);
+                          setSearch("");
                           setOpen(false);
                         }}
                       >

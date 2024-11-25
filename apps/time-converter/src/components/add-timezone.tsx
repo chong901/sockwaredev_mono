@@ -1,27 +1,33 @@
-import TimezoneSelect from '@/components/timezone-select'
-import { Button } from '@/components/ui/button'
-import { useState } from 'react'
+import TimezoneSelect from "@/components/timezone-select";
+import { useState } from "react";
 
 interface AddTimezoneProps {
-  onAddTimezone: (timezone: string) => void
+  onAddTimezone: (timezone: string) => void;
+  selectedTimezones: string[];
 }
 
-export function AddTimezone({ onAddTimezone }: AddTimezoneProps) {
-  const [newTimezone, setNewTimezone] = useState('')
+export function AddTimezone({
+  onAddTimezone,
+  selectedTimezones,
+}: AddTimezoneProps) {
+  const [newTimezone, setNewTimezone] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (newTimezone.trim()) {
-      onAddTimezone(newTimezone.trim())
-      setNewTimezone('')
+      onAddTimezone(newTimezone.trim());
+      setNewTimezone("");
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="flex gap-2">
-      <TimezoneSelect onSelect={onAddTimezone} />
-      <Button type="submit">Add Timezone</Button>
+      <div className="flex items-center">Add Timezone: </div>
+      <TimezoneSelect
+        onSelect={onAddTimezone}
+        value={newTimezone}
+        selectedTimezones={selectedTimezones}
+      />
     </form>
-  )
+  );
 }
-
