@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, Search } from "lucide-react";
 import * as React from "react";
 import { FixedSizeList as List } from "react-window";
 
@@ -9,7 +9,6 @@ import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
@@ -59,7 +58,13 @@ export default function TimezoneSelect({
   );
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover
+      open={open}
+      onOpenChange={(open) => {
+        setOpen(open);
+        if (!open) setSearch("");
+      }}
+    >
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -73,10 +78,15 @@ export default function TimezoneSelect({
       </PopoverTrigger>
       <PopoverContent className="w-[300px] p-0">
         <Command>
-          <CommandInput
-            placeholder="Search timezone..."
-            onValueChange={setSearch}
-          />
+          <div className="flex items-center border-b px-3">
+            <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+            <input
+              className={cn(
+                "flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
+              )}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
           <CommandEmpty>No timezone found.</CommandEmpty>
           <CommandList>
             <CommandGroup>
