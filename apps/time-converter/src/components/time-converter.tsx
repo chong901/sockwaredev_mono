@@ -22,6 +22,10 @@ export function TimeConverter() {
     }
   };
 
+  const removeTimezone = (timezone: string) => {
+    setTimezones(timezones.filter((tz) => tz !== timezone));
+  };
+
   return (
     <Card className="mx-auto w-full max-w-3xl">
       <CardHeader>
@@ -37,6 +41,7 @@ export function TimeConverter() {
         <TimezoneList
           utc={fromZonedTime(mainDateTime, mainTimezone)}
           timezones={timezones}
+          onRemove={removeTimezone}
         />
         <AddTimezone
           onAddTimezone={handleAddTimezone}
