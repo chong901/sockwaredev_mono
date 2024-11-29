@@ -4,6 +4,7 @@ import { Check, ChevronsUpDown, Search } from "lucide-react";
 import * as React from "react";
 import { FixedSizeList as List } from "react-window";
 
+import { allTimezonesAtom } from "@/components/store/timezone";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -19,8 +20,7 @@ import {
 } from "@/components/ui/popover";
 import { useDebounce } from "@/hooks/useDebounce";
 import { cn } from "@/lib/utils";
-
-const timezones = Intl.supportedValuesOf("timeZone");
+import { useAtom } from "jotai";
 
 export default function TimezoneSelect({
   onSelect,
@@ -33,20 +33,22 @@ export default function TimezoneSelect({
 }) {
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
+  const [{ data: timezones }] = useAtom(allTimezonesAtom);
 
   // Debounce search input
   const debouncedSearch = useDebounce(search, 200);
 
   const timezoneOptions = React.useMemo(() => {
+    if (!timezones) return [];
     if (!selectedTimezones || selectedTimezones.length === 0) {
       return timezones;
     }
-    return timezones.filter(
+    return timezones?.filter(
       (timezone) =>
         !selectedTimezones.includes(timezone) &&
         timezone.toLowerCase().includes(debouncedSearch.toLowerCase()),
     );
-  }, [debouncedSearch, selectedTimezones]);
+  }, [debouncedSearch, selectedTimezones, timezones]);
 
   // Filtered timezones
   const filteredTimezones = React.useMemo(
