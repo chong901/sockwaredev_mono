@@ -3,4 +3,26 @@
  * Please do not edit it manually.
  */
 
-export interface DB {}
+import type { ColumnType } from "kysely";
+
+export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
+  ? ColumnType<S, I | undefined, U>
+  : ColumnType<T, T | undefined, T>;
+
+export type Timestamp = ColumnType<Date, Date | string, Date | string>;
+
+export interface City {
+  admin1_code: string | null;
+  admin2_code: string | null;
+  admin3_code: string | null;
+  admin4_code: string | null;
+  country_code: string;
+  id: Generated<string>;
+  modification_date: Timestamp;
+  name: string;
+  timezone: string;
+}
+
+export interface DB {
+  city: City;
+}
