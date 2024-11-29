@@ -23,6 +23,12 @@ export interface City {
   timezone: string;
 }
 
+export interface Country {
+  code: string;
+  name: string;
+}
+
 export interface DB {
   city: City;
+  country: Country;
 }
