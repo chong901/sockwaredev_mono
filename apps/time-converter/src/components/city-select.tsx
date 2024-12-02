@@ -18,6 +18,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useDebounce } from "@/hooks/useDebounce";
+import { CityHelper } from "@/lib/city";
 import { cn } from "@/lib/utils";
 import { useAtom } from "jotai";
 
@@ -79,9 +80,6 @@ export default function CitySelect({
           <CommandList>
             <CommandGroup>
               {searchedCities?.map((city) => {
-                const displayValue = [city?.name, city?.country, city?.timezone]
-                  .filter(Boolean)
-                  .join(", ");
                 return (
                   <CommandItem
                     key={city?.id}
@@ -99,7 +97,7 @@ export default function CitySelect({
                         value === city?.id ? "opacity-100" : "opacity-0",
                       )}
                     />
-                    {displayValue}
+                    {CityHelper.getDisplayName(city)}
                   </CommandItem>
                 );
               })}

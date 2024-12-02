@@ -1,3 +1,4 @@
+import { useCities } from "@/components/store/city";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -7,16 +8,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { CityHelper } from "@/lib/city";
 import { formatInTimeZone } from "date-fns-tz";
 import { X } from "lucide-react";
 
 interface TimezoneListProps {
   utc: Date;
-  timezones: string[];
-  onRemove: (timezone: string) => void;
 }
 
-export function TimezoneList({ utc, timezones, onRemove }: TimezoneListProps) {
+export function CityList({ utc }: TimezoneListProps) {
+  const { removeCity, selectedCities } = useCities();
   return (
     <Table>
       <TableHeader>
@@ -26,13 +27,14 @@ export function TimezoneList({ utc, timezones, onRemove }: TimezoneListProps) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {timezones.map((timezone) => {
+        {selectedCities.map((city) => {
+          const { id, timezone } = city;
           return (
-            <TableRow key={timezone}>
-              <TableCell>{timezone}</TableCell>
+            <TableRow key={id}>
+              <TableCell>{CityHelper.getDisplayName(city)}</TableCell>
               <TableCell>{formatInTimeZone(utc, timezone, "PPP p")}</TableCell>
               <TableCell>
-                <Button variant="ghost" onClick={() => onRemove(timezone)}>
+                <Button variant="ghost" onClick={() => removeCity(city)}>
                   <X className="text-red-500" />
                 </Button>
               </TableCell>

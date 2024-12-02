@@ -5,7 +5,7 @@ import { fromZonedTime } from "date-fns-tz";
 import { useState } from "react";
 import { AddTimezone } from "./add-timezone";
 import { DateTimePicker } from "./date-time-picker";
-import { TimezoneList } from "./timezone-list";
+import { CityList } from "./timezone-list";
 
 export function TimeConverter() {
   const [mainDateTime, setMainDateTime] = useState(new Date());
@@ -24,10 +24,6 @@ export function TimeConverter() {
     }
   };
 
-  const removeTimezone = (timezone: string) => {
-    setTimezones(timezones.filter((tz) => tz !== timezone));
-  };
-
   return (
     <Card className="mx-auto w-full max-w-3xl">
       <CardHeader>
@@ -40,11 +36,7 @@ export function TimeConverter() {
           onDateTimeChange={setMainDateTime}
           onTimezoneChange={setMainTimezone}
         />
-        <TimezoneList
-          utc={fromZonedTime(mainDateTime, mainTimezone)}
-          timezones={timezones}
-          onRemove={removeTimezone}
-        />
+        <CityList utc={fromZonedTime(mainDateTime, mainTimezone)} />
         <AddTimezone
           onAddTimezone={handleAddTimezone}
           selectedTimezones={timezones}
