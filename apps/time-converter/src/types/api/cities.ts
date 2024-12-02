@@ -1,9 +1,11 @@
 export type GetCitiesResponse = {
-  data: {
-    id: string;
-    admin1_code: string | null;
-    name: string;
-    timezone: string;
-    country: string | null;
-  }[];
+  data: City[];
+};
+
+export type City = {
+  id: string;
+  admin1_code: string | null;
+  name: string;
+  timezone: string;
+  country: string | null;
 };
