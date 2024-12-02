@@ -4,8 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { fromZonedTime } from "date-fns-tz";
 import { useState } from "react";
 import { AddCity } from "./add-city";
+import { CityList } from "./city-list";
 import { DateTimePicker } from "./date-time-picker";
-import { CityList } from "./timezone-list";
 
 export function TimeConverter() {
   const [mainDateTime, setMainDateTime] = useState(new Date());
