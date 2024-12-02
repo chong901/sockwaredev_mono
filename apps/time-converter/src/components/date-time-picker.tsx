@@ -1,4 +1,4 @@
-import TimezoneSelect from "@/components/timezone-select";
+import CitySelect from "@/components/city-select";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
@@ -85,7 +85,7 @@ export function DateTimePicker({
       </div>
       <div className="grid gap-2">
         <Label htmlFor="timezone">Timezone</Label>
-        <TimezoneSelect onSelect={onTimezoneChange} value={timezone} />
+        <CitySelect onSelect={onTimezoneChange} value={timezone} />
       </div>
     </div>
   );

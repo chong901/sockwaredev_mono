@@ -1,4 +1,4 @@
-import TimezoneSelect from "@/components/timezone-select";
+import CitySelect from "@/components/city-select";
 import { useState } from "react";
 
 interface AddTimezoneProps {
@@ -23,7 +23,7 @@ export function AddTimezone({
   return (
     <form onSubmit={handleSubmit} className="flex gap-2">
       <div className="flex items-center">Add Timezone: </div>
-      <TimezoneSelect
+      <CitySelect
         onSelect={onAddTimezone}
         value={newTimezone}
         selectedTimezones={selectedTimezones}
