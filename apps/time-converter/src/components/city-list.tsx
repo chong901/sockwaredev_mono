@@ -22,6 +22,7 @@ export function CityList({ utc }: TimezoneListProps) {
     <Table>
       <TableHeader>
         <TableRow>
+          <TableHead>City Name</TableHead>
           <TableHead>Timezone</TableHead>
           <TableHead>Date & Time</TableHead>
         </TableRow>
@@ -31,7 +32,8 @@ export function CityList({ utc }: TimezoneListProps) {
           const { id, timezone } = city;
           return (
             <TableRow key={id}>
-              <TableCell>{CityHelper.getDisplayName(city)}</TableCell>
+              <TableCell>{CityHelper.getCityCountryName(city)}</TableCell>
+              <TableCell>{timezone}</TableCell>
               <TableCell>{formatInTimeZone(utc, timezone, "PPP p")}</TableCell>
               <TableCell>
                 <Button variant="ghost" onClick={() => removeCity(city)}>

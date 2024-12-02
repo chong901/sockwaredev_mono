@@ -6,4 +6,7 @@ export const CityHelper = {
       .filter(Boolean)
       .join(", ");
   },
+  getCityCountryName: (city: City) => {
+    return [city?.name, city?.country].filter(Boolean).join(", ");
+  },
 };
