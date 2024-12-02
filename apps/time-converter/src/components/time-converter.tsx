@@ -9,7 +9,9 @@ import { TimezoneList } from "./timezone-list";
 
 export function TimeConverter() {
   const [mainDateTime, setMainDateTime] = useState(new Date());
-  const [mainTimezone, setMainTimezone] = useState("Europe/London");
+  const [mainTimezone, setMainTimezone] = useState(
+    Intl.DateTimeFormat().resolvedOptions().timeZone,
+  );
   const [timezones, setTimezones] = useState([
     "America/New_York",
     "Europe/London",
