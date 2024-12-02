@@ -3,7 +3,6 @@
 import { Check, ChevronsUpDown, Search } from "lucide-react";
 import * as React from "react";
 
-import { searchCitiesAtom } from "@/components/store/city";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -20,8 +19,9 @@ import {
 import { useDebounce } from "@/hooks/useDebounce";
 import { CityHelper } from "@/lib/city";
 import { cn } from "@/lib/utils";
-import { City } from "@/types/api/cities";
+import { City, GetCitiesResponse } from "@/types/api/cities";
 import { useAtom } from "jotai";
+import { atomWithMutation } from "jotai-tanstack-query";
 
 export default function CitySelect({
   onSelect,
@@ -34,6 +34,17 @@ export default function CitySelect({
 }) {
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
+  const searchCitiesAtom = React.useMemo(
+    () =>
+      atomWithMutation(() => ({
+        mutationKey: ["cities"],
+        mutationFn: async (search: string) => {
+          const response = await fetch(`/api/cities?search=${search}`);
+          return ((await response.json()) as GetCitiesResponse).data;
+        },
+      })),
+    [],
+  );
   const [{ data: searchedCities, mutate: searchCities }] =
     useAtom(searchCitiesAtom);
 
@@ -50,7 +61,6 @@ export default function CitySelect({
       open={open}
       onOpenChange={(open) => {
         setOpen(open);
-        if (!open) setSearch("");
       }}
     >
       <PopoverTrigger asChild>
@@ -72,6 +82,7 @@ export default function CitySelect({
               className={cn(
                 "flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
               )}
+              value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
