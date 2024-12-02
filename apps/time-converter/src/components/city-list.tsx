@@ -1,4 +1,5 @@
 import { useCities } from "@/components/store/city";
+import { useMainTime } from "@/components/store/timezone";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -9,8 +10,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { CityHelper } from "@/lib/city";
-import { formatInTimeZone } from "date-fns-tz";
-import { X } from "lucide-react";
+import { formatInTimeZone, toZonedTime } from "date-fns-tz";
+import { ChevronUp, X } from "lucide-react";
 
 interface TimezoneListProps {
   utc: Date;
@@ -18,6 +19,8 @@ interface TimezoneListProps {
 
 export function CityList({ utc }: TimezoneListProps) {
   const { removeCity, selectedCities } = useCities();
+
+  const { setMainDateTime, setMainTimezone } = useMainTime();
   return (
     <Table>
       <TableHeader>
@@ -36,6 +39,15 @@ export function CityList({ utc }: TimezoneListProps) {
               <TableCell>{timezone}</TableCell>
               <TableCell>{formatInTimeZone(utc, timezone, "PPP p")}</TableCell>
               <TableCell>
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    setMainDateTime(toZonedTime(utc, timezone));
+                    setMainTimezone(timezone);
+                  }}
+                >
+                  <ChevronUp className="text-blue-500" />
+                </Button>
                 <Button variant="ghost" onClick={() => removeCity(city)}>
                   <X className="text-red-500" />
                 </Button>

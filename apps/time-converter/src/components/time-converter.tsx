@@ -1,17 +1,15 @@
 "use client";
 
+import { useMainTime } from "@/components/store/timezone";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { fromZonedTime } from "date-fns-tz";
-import { useState } from "react";
 import { AddCity } from "./add-city";
 import { CityList } from "./city-list";
 import { DateTimePicker } from "./date-time-picker";
 
 export function TimeConverter() {
-  const [mainDateTime, setMainDateTime] = useState(new Date());
-  const [mainTimezone, setMainTimezone] = useState(
-    Intl.DateTimeFormat().resolvedOptions().timeZone,
-  );
+  const { mainDateTime, mainTimezone, setMainDateTime, setMainTimezone } =
+    useMainTime();
 
   return (
     <Card className="mx-auto w-full max-w-3xl">

@@ -1,5 +1,5 @@
 import { GetTimezonesResponse } from "@/types/api/timezones";
-import { atom } from "jotai";
+import { atom, useAtom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";
 
 export const allTimezonesAtom = atomWithQuery(() => ({
@@ -10,6 +10,18 @@ export const allTimezonesAtom = atomWithQuery(() => ({
   },
 }));
 
-export const currentTimezoneAtom = atom(
-  Intl.DateTimeFormat().resolvedOptions().timeZone,
-);
+const mainTimezoneAtom = atom(Intl.DateTimeFormat().resolvedOptions().timeZone);
+
+const mainDateTimeAtom = atom(new Date());
+
+export const useMainTime = () => {
+  const [mainDateTime, setMainDateTime] = useAtom(mainDateTimeAtom);
+  const [mainTimezone, setMainTimezone] = useAtom(mainTimezoneAtom);
+
+  return {
+    mainDateTime,
+    setMainDateTime,
+    mainTimezone,
+    setMainTimezone,
+  };
+};
