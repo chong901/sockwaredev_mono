@@ -20,16 +20,17 @@ import {
 import { useDebounce } from "@/hooks/useDebounce";
 import { CityHelper } from "@/lib/city";
 import { cn } from "@/lib/utils";
+import { City } from "@/types/api/cities";
 import { useAtom } from "jotai";
 
 export default function CitySelect({
   onSelect,
-  selectedTimezones,
-  value,
+  selectedCities,
+  buttonText,
 }: {
-  onSelect: (timezone: string) => void;
-  value: string;
-  selectedTimezones?: string[];
+  onSelect: (city: City) => void;
+  selectedCities?: City[];
+  buttonText?: string;
 }) {
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
@@ -59,7 +60,7 @@ export default function CitySelect({
           aria-expanded={open}
           className="w-[300px] justify-between"
         >
-          {value || "Search cities..."}
+          {buttonText || "Search cities..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -80,21 +81,24 @@ export default function CitySelect({
           <CommandList>
             <CommandGroup>
               {searchedCities?.map((city) => {
+                const isSelectedCity = !!selectedCities?.find(
+                  (selectedCity) => selectedCity.id === city.id,
+                );
                 return (
                   <CommandItem
                     key={city?.id}
                     value={city?.id}
-                    onSelect={(currentValue) => {
-                      onSelect(currentValue);
+                    onSelect={() => {
+                      onSelect(city);
                       setSearch("");
                       setOpen(false);
                     }}
-                    disabled={selectedTimezones?.includes(city!.timezone)}
+                    disabled={isSelectedCity}
                   >
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        value === city?.id ? "opacity-100" : "opacity-0",
+                        isSelectedCity ? "opacity-100" : "opacity-0",
                       )}
                     />
                     {CityHelper.getDisplayName(city)}

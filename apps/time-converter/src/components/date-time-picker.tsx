@@ -85,7 +85,7 @@ export function DateTimePicker({
       </div>
       <div className="grid gap-2">
         <Label htmlFor="timezone">Timezone</Label>
-        <CitySelect onSelect={onTimezoneChange} value={timezone} />
+        <CitySelect onSelect={onTimezoneChange} buttonText={timezone} />
       </div>
     </div>
   );

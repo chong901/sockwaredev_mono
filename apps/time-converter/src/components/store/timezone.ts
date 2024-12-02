@@ -1,4 +1,5 @@
 import { GetTimezonesResponse } from "@/types/api/timezones";
+import { atom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";
 
 export const allTimezonesAtom = atomWithQuery(() => ({
@@ -8,3 +9,7 @@ export const allTimezonesAtom = atomWithQuery(() => ({
     return ((await response.json()) as GetTimezonesResponse).data;
   },
 }));
+
+export const currentTimezoneAtom = atom(
+  Intl.DateTimeFormat().resolvedOptions().timeZone,
+);
