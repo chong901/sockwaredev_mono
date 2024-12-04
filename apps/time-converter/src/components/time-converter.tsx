@@ -14,7 +14,7 @@ export function TimeConverter() {
   return (
     <Card className="mx-auto w-full">
       <CardHeader>
-        <CardTitle>Time Converter</CardTitle>
+        <CardTitle>Global Time Converter</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <DateTimePicker
