@@ -10,12 +10,37 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { CityHelper } from "@/lib/city";
+import { cn } from "@/lib/utils";
 import { formatInTimeZone, toZonedTime } from "date-fns-tz";
 import { ChevronUp, X } from "lucide-react";
+import { ComponentProps } from "react";
 
 interface TimezoneListProps {
   utc: Date;
 }
+
+const TimeCell = ({
+  utc,
+  timezone,
+  className,
+  ...rest
+}: { utc: Date; timezone: string } & ComponentProps<typeof TableCell>) => {
+  const { setMainDateTime } = useMainTime();
+  return (
+    <TableCell
+      {...rest}
+      onClick={() => setMainDateTime(utc)}
+      className={cn("hover:cursor-pointer", className)}
+    >
+      <div className="text-center">
+        {formatInTimeZone(utc, timezone, "MMM, dd")}
+      </div>
+      <div className="text-center">
+        {formatInTimeZone(utc, timezone, "HH:mm")}
+      </div>
+    </TableCell>
+  );
+};
 
 export function CityList({ utc }: TimezoneListProps) {
   const { removeCity, selectedCities } = useCities();
@@ -27,7 +52,9 @@ export function CityList({ utc }: TimezoneListProps) {
         <TableRow>
           <TableHead>City Name</TableHead>
           <TableHead>Timezone</TableHead>
-          <TableHead>Date & Time</TableHead>
+          <TableHead colSpan={11} className="text-center">
+            Date & Time
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -37,7 +64,35 @@ export function CityList({ utc }: TimezoneListProps) {
             <TableRow key={id}>
               <TableCell>{CityHelper.getCityCountryName(city)}</TableCell>
               <TableCell>{timezone}</TableCell>
-              <TableCell>{formatInTimeZone(utc, timezone, "PPP p")}</TableCell>
+              {Array.from({ length: 5 }).map((_, i) => {
+                const dateTime = new Date(
+                  utc.getTime() - (5 - i) * 30 * 60 * 1000,
+                );
+                return (
+                  <TimeCell
+                    key={`time-earlier-${city.id}-${i}`}
+                    utc={dateTime}
+                    timezone={timezone}
+                  />
+                );
+              })}
+              <TimeCell
+                utc={utc}
+                timezone={timezone}
+                className="bg-yellow-400"
+              />
+              {Array.from({ length: 5 }).map((_, i) => {
+                const dateTime = new Date(
+                  utc.getTime() + (i + 1) * 30 * 60 * 1000,
+                );
+                return (
+                  <TimeCell
+                    utc={dateTime}
+                    timezone={timezone}
+                    key={`time-later-${city.id}-${i}`}
+                  />
+                );
+              })}
               <TableCell>
                 <Button
                   variant="ghost"

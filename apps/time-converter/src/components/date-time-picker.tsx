@@ -11,7 +11,6 @@ import {
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { useState } from "react";
 
 interface DateTimePickerProps {
   dateTime: Date;
@@ -26,8 +25,6 @@ export function DateTimePicker({
   onDateTimeChange,
   onTimezoneChange,
 }: DateTimePickerProps) {
-  const [date, setDate] = useState<Date | undefined>(dateTime);
-
   const handleDateSelect = (newDate: Date | undefined) => {
     if (newDate) {
       const newDateTime = new Date(dateTime);
@@ -36,7 +33,6 @@ export function DateTimePicker({
         newDate.getMonth(),
         newDate.getDate(),
       );
-      setDate(newDate);
       onDateTimeChange(newDateTime);
     }
   };
@@ -58,17 +54,17 @@ export function DateTimePicker({
             <Button
               className={cn(
                 "w-full justify-start text-left font-normal",
-                !date && "text-muted-foreground",
+                !dateTime && "text-muted-foreground",
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {date ? format(date, "PPP") : <span>Pick a date</span>}
+              {dateTime ? format(dateTime, "PPP") : <span>Pick a date</span>}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">
             <Calendar
               mode="single"
-              selected={date}
+              selected={dateTime}
               onSelect={handleDateSelect}
             />
           </PopoverContent>

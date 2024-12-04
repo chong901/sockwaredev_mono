@@ -12,7 +12,7 @@ export function TimeConverter() {
     useMainTime();
 
   return (
-    <Card className="mx-auto w-full max-w-3xl">
+    <Card className="mx-auto w-full">
       <CardHeader>
         <CardTitle>Time Converter</CardTitle>
       </CardHeader>
