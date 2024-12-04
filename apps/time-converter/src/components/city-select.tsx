@@ -6,7 +6,6 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
   CommandItem,
   CommandList,
@@ -20,6 +19,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { CityHelper } from "@/lib/city";
 import { cn } from "@/lib/utils";
 import { City, GetCitiesResponse } from "@/types/api/cities";
+import { LoadingSpinner } from "@repo/ui/atoms";
 import { useAtom } from "jotai";
 import { atomWithMutation } from "jotai-tanstack-query";
 
@@ -45,7 +45,7 @@ export default function CitySelect({
       })),
     [],
   );
-  const [{ data: searchedCities, mutate: searchCities }] =
+  const [{ data: searchedCities, mutate: searchCities, isPending }] =
     useAtom(searchCitiesAtom);
 
   // Debounce search input
@@ -86,10 +86,19 @@ export default function CitySelect({
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <CommandEmpty>
-            {search ? "No cities found." : "Start typing to search for cities."}
-          </CommandEmpty>
           <CommandList>
+            {isPending && (
+              <div className="flex items-center justify-center gap-2 px-2 pt-2">
+                Searching for cities... <LoadingSpinner className="h-8 w-8" />
+              </div>
+            )}
+            {!isPending && (searchedCities?.length ?? 0) === 0 && (
+              <div className="px-2 pt-2 text-center">
+                {search && searchedCities?.length === 0
+                  ? "No cities found."
+                  : "Start typing to search for cities."}
+              </div>
+            )}
             <CommandGroup>
               {searchedCities?.map((city) => {
                 const isSelectedCity = !!selectedCities?.find(
