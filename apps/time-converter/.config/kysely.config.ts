@@ -9,6 +9,7 @@ export default defineConfig({
       port: parseInt(process.env.DB_PORT ?? "5432"),
       password: process.env.DB_PASSWORD ?? "1234",
       user: process.env.DB_USER ?? "postgres",
+      database: process.env.DB_NAME ?? "postgres",
     }),
   }),
   migrations: {
