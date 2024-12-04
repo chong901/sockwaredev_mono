@@ -46,7 +46,7 @@ export function DateTimePicker({
   };
 
   return (
-    <div className="grid gap-4">
+    <div className="flex gap-4">
       <div className="grid gap-2">
         <Label htmlFor="date">Date</Label>
         <Popover>
@@ -58,7 +58,11 @@ export function DateTimePicker({
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {dateTime ? format(dateTime, "PPP") : <span>Pick a date</span>}
+              {dateTime ? (
+                format(dateTime, "MMM do, eee, yyyy")
+              ) : (
+                <span>Pick a date</span>
+              )}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">

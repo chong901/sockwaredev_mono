@@ -30,10 +30,10 @@ const TimeCell = ({
     <TableCell
       {...rest}
       onClick={() => setMainDateTime(utc)}
-      className={cn("hover:cursor-pointer", className)}
+      className={cn("w-[86px] min-w-[86px] hover:cursor-pointer", className)}
     >
       <div className="text-center">
-        {formatInTimeZone(utc, timezone, "MMM, dd")}
+        {formatInTimeZone(utc, timezone, "MMM, do eee")}
       </div>
       <div className="text-center">
         {formatInTimeZone(utc, timezone, "HH:mm")}
