@@ -19,6 +19,16 @@ interface TimezoneListProps {
   utc: Date;
 }
 
+const dayColorMap: Record<string, string> = {
+  Mon: "text-blue-500 bg-blue-100", // Blue for Monday
+  Tue: "text-green-500 bg-green-100", // Green for Tuesday
+  Wed: "text-yellow-500 bg-yellow-100", // Yellow for Wednesday
+  Thu: "text-purple-500 bg-purple-100", // Purple for Thursday
+  Fri: "text-red-500 bg-red-100", // Red for Friday
+  Sat: "text-pink-500 bg-pink-100", // Pink for Saturday
+  Sun: "text-orange-500 bg-orange-100", // Orange for Sunday
+};
+
 const TimeCell = ({
   utc,
   timezone,
@@ -79,7 +89,7 @@ export function CityList({ utc }: TimezoneListProps) {
               <TimeCell
                 utc={utc}
                 timezone={timezone}
-                className="bg-yellow-400"
+                className={dayColorMap[formatInTimeZone(utc, timezone, "EEE")]}
               />
               {Array.from({ length: 5 }).map((_, i) => {
                 const dateTime = new Date(
