@@ -15,7 +15,13 @@ pnpm install kysely pg
 pnpm add -D kysely-ctl @types/pg kysely-codegen
 
 echo 'DATABASE_URL=postgres://postgres:1234@localhost:5432/postgres' > .env
+echo 'DB_HOST=' > .env
+echo 'DB_PORT=' > .env
+echo 'DB_USER=' > .env
+echo 'DB_PASSWORD=' > .env
+echo 'DB_NAME=' > .env
 
+mkdir -p "./src/db"
 cp "$kysely_dir/db.ts" ./src/db/db.ts
 cp "$kysely_dir/types.ts" ./src/db/types.ts
 cp "$kysely_dir/kysely.config.ts" ./.config/kysely.config.ts
