@@ -3,4 +3,56 @@
  * Please do not edit it manually.
  */
 
-export interface DB {}
+import type { ColumnType } from "kysely";
+
+export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
+  ? ColumnType<S, I | undefined, U>
+  : ColumnType<T, T | undefined, T>;
+
+export type Numeric = ColumnType<string, number | string, number | string>;
+
+export type Timestamp = ColumnType<Date, Date | string, Date | string>;
+
+export interface GroceryItem {
+  created_at: Generated<Timestamp>;
+  id: Generated<string>;
+  name: string;
+  notes: string | null;
+  price: Numeric;
+  quantity: number;
+  store_id: string;
+  unit: string;
+  updated_at: Generated<Timestamp | null>;
+  url: string | null;
+}
+
+export interface Label {
+  created_at: Generated<Timestamp>;
+  name: string;
+  updated_at: Generated<Timestamp | null>;
+  user_id: string;
+}
+
+export interface Store {
+  created_at: Generated<Timestamp>;
+  id: Generated<string>;
+  name: string;
+  updated_at: Generated<Timestamp | null>;
+  user_id: string;
+}
+
+export interface User {
+  created_at: Generated<Timestamp>;
+  email: string;
+  id: Generated<string>;
+  image: string | null;
+  name: string | null;
+  updated_at: Generated<Timestamp | null>;
+}
+
+export interface DB {
+  grocery_item: GroceryItem;
+  label: Label;
+  store: Store;
+  user: User;
+}
