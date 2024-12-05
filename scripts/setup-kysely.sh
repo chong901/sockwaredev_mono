@@ -32,5 +32,6 @@ jq '.scripts += {
     "codegen:db": "kysely-codegen --out-file src/db/types.ts",
     "db:migrate:add": "kysely migrate:make",
     "db:migrate:up": "kysely migrate up",
-    "db:migrate:down": "kysely migrate down"
+    "db:migrate:down": "kysely migrate down",
+    "db:migrate:latest": "kysely migrate latest"
 }' package.json > tmp.$$.json && mv tmp.$$.json package.json
