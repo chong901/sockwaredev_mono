@@ -8,6 +8,7 @@ const dialect = new PostgresDialect({
     port: parseInt(process.env.DB_PORT ?? "5432"),
     password: process.env.DB_PASSWORD ?? "1234",
     user: process.env.DB_USER ?? "postgres",
+    database: process.env.DB_NAME ?? "postgres",
     max: 10,
   }),
 });
@@ -18,4 +19,13 @@ const dialect = new PostgresDialect({
 // to communicate with your database.
 export const db = new Kysely<DB>({
   dialect,
+  log(event): void {
+    if (event.level === "error") {
+      console.log("=============================");
+      console.log(event.query.sql);
+      console.log(event.query.parameters);
+      console.log(event.queryDurationMillis);
+      console.log("=============================");
+    }
+  },
 });

@@ -24,6 +24,7 @@ export const db = new Kysely<DB>({
       console.log("=============================");
       console.log(event.query.sql);
       console.log(event.query.parameters);
+      console.log(event.queryDurationMillis);
       console.log("=============================");
     }
   },
