@@ -19,14 +19,22 @@ const storeLoader = new Dataloader<string, Store>(async (ids) => {
 });
 
 export class StoreService {
-  static getStores = async (userId: string) => {
-    return e
-      .select(e.Store, (store) => ({
-        id: true,
-        name: true,
-        filter: e.op(store.owner.id, "=", e.uuid(userId)),
-      }))
-      .run(edgedbClient);
+  static getUserStores = async (userId: string) => {
+    return db
+      .selectFrom("store")
+      .selectAll()
+      .where("user_id", "=", userId)
+      .execute();
+  };
+
+  static getStoreByUserId = async (userId: string, storeId: string) => {
+    const data = await db
+      .selectFrom("store")
+      .selectAll()
+      .where("user_id", "=", userId)
+      .where("id", "=", storeId)
+      .execute();
+    return data[0];
   };
 
   static addStore = async (userId: string, name: string) => {

@@ -1,9 +1,10 @@
 import { UserService } from "@/app/api/graphql/(services)/user-service";
+import { db } from "@/db/db";
 import { edgedbClient } from "@/edgedb";
 import e from "@/edgedb/edgeql-js";
 
 export class LabelService {
-  static getLabels = async (userId: string) => {
+  static getUserLabels = async (userId: string) => {
     return await e
       .select(e.Label, (label) => ({
         name: true,
@@ -11,6 +12,15 @@ export class LabelService {
         filter: e.op(label.owner.id, "=", e.uuid(userId)),
       }))
       .run(edgedbClient);
+  };
+
+  static getUserLabelsByIds = async (userId: string, labelIds: string[]) => {
+    return db
+      .selectFrom("label")
+      .selectAll()
+      .where("user_id", "=", userId)
+      .where("id", "in", labelIds)
+      .execute();
   };
 
   static addLabel = async (userId: string, name: string) => {

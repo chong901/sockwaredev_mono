@@ -1,16 +1,12 @@
 import { LabelService } from "@/app/api/graphql/(services)/label-service";
 import { StoreService } from "@/app/api/graphql/(services)/store-service";
-import { UserService } from "@/app/api/graphql/(services)/user-service";
 import { CreateGroceryItemInput } from "@/app/api/graphql/(types)/(inputs)/create-grocery-item";
+import { GroceryItemFilter } from "@/app/api/graphql/(types)/(inputs)/grocery-item-filter";
 import { Label } from "@/app/api/graphql/(types)/(objects)/label";
 import { db } from "@/db/db";
 import { edgedbClient } from "@/edgedb";
 import e from "@/edgedb/edgeql-js";
-import {
-  GroceryItemFilter,
-  PaginationInput,
-  Unit,
-} from "@/graphql-codegen/backend/types";
+import { Unit } from "@/graphql-codegen/frontend/graphql";
 import DataLoader from "dataloader";
 
 const groceryItemLabelDataloader = new DataLoader<string, Label[]>(
@@ -53,8 +49,7 @@ const defaultGroceryItemReturnShape = {
 export class GroceryItemService {
   static getGroceryItems = async (
     userId: string,
-    { labels, stores, keyword }: GroceryItemFilter,
-    { limit, offset }: PaginationInput,
+    { labels, stores, keyword, limit, offset }: GroceryItemFilter,
   ) => {
     const groceryItems = await e
       .select(e.GroceryItem, (item) => {
@@ -95,26 +90,39 @@ export class GroceryItemService {
     userId: string,
     data: CreateGroceryItemInput,
   ) => {
-    const currentUser = UserService.getUserQuery(userId);
-    const store = StoreService.getStoreQuery(userId, data.storeId);
-    const labels = LabelService.getLabelsQuery(userId, data.labels);
-    const grocery = await e
-      .select(
-        e.insert(e.GroceryItem, {
-          amount: data.amount,
+    const store = await StoreService.getStoreByUserId(userId, data.storeId);
+    if (!store) {
+      throw new Error("Store not found");
+    }
+    const labels = await LabelService.getUserLabelsByIds(userId, data.labels);
+    const newGroceryItem = await db.transaction().execute(async (tx) => {
+      const result = await tx
+        .insertInto("grocery_item")
+        .values({
           name: data.itemName,
-          owner: currentUser,
+          user_id: userId,
+          store_id: data.storeId,
           price: data.price,
-          store: store,
-          unit: data.unit as Unit,
+          quantity: data.quantity,
+          unit: data.unit,
           notes: data.notes,
-          labels: labels,
           url: data.url,
-        }),
-        () => defaultGroceryItemReturnShape,
-      )
-      .run(edgedbClient);
-    return grocery;
+        })
+        .returningAll()
+        .execute();
+      const groceryItemId = result[0]!.id;
+      await tx
+        .insertInto("grocery_item_label")
+        .values(
+          labels.map((label) => ({
+            grocery_item_id: groceryItemId,
+            label_id: label.id,
+          })),
+        )
+        .execute();
+      return result[0];
+    });
+    return newGroceryItem;
   };
 
   static updateGroceryItem = async (
@@ -134,7 +142,7 @@ export class GroceryItemService {
             ),
           ),
           set: {
-            amount: data.amount,
+            amount: data.quantity,
             name: data.itemName,
             price: data.price,
             store: store,

@@ -9,10 +9,10 @@ export class CreateGroceryItemInput {
   @Field()
   price: number;
   @Field()
-  amount: number;
+  quantity: number;
   @Field()
   unit: string;
-  @Field()
+  @Field(() => [String])
   labels: string[];
   @Field({ nullable: true })
   notes?: string;
