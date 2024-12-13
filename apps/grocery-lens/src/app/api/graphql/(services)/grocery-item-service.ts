@@ -6,7 +6,6 @@ import { Label } from "@/app/api/graphql/(types)/(objects)/label";
 import { db } from "@/db/db";
 import { edgedbClient } from "@/edgedb";
 import e from "@/edgedb/edgeql-js";
-import { Unit } from "@/graphql-codegen/frontend/graphql";
 import DataLoader from "dataloader";
 import { sql } from "kysely";
 
@@ -126,35 +125,46 @@ export class GroceryItemService {
     userId: string,
     data: CreateGroceryItemInput,
   ) => {
-    const store = StoreService.getStoreQuery(userId, data.storeId);
-    const labels = LabelService.getLabelsQuery(userId, data.labels);
-    const [grocery] = await e
-      .select(
-        e.update(e.GroceryItem, (item) => ({
-          filter: e.all(
-            e.set(
-              e.op(item.id, "=", e.uuid(itemId)),
-              e.op(item.owner.id, "=", e.uuid(userId)),
-            ),
-          ),
-          set: {
-            amount: data.quantity,
-            name: data.itemName,
-            price: data.price,
-            store: store,
-            unit: data.unit as Unit,
-            notes: data.notes,
-            labels: labels,
-            url: data.url,
-          },
-        })),
-        () => defaultGroceryItemReturnShape,
-      )
-      .run(edgedbClient);
-    if (!grocery) {
-      throw new Error("Grocery item not found");
+    const store = await StoreService.getStoreByUserId(userId, data.storeId);
+    if (!store) {
+      throw new Error("Store not found");
     }
-    return grocery;
+    const labels = await LabelService.getUserLabelsByIds(userId, data.labels);
+    const updatedGroceryItem = await db.transaction().execute(async (tx) => {
+      const result = await tx
+        .updateTable("grocery_item")
+        .set({
+          name: data.itemName,
+          store_id: data.storeId,
+          price: data.price,
+          quantity: data.quantity,
+          unit: data.unit,
+          notes: data.notes,
+          url: data.url,
+        })
+        .where("id", "=", itemId)
+        .where("user_id", "=", userId)
+        .returningAll()
+        .execute();
+      if (!result.length) {
+        throw new Error("Grocery item not found");
+      }
+      await tx
+        .deleteFrom("grocery_item_label")
+        .where("grocery_item_id", "=", itemId)
+        .execute();
+      await tx
+        .insertInto("grocery_item_label")
+        .values(
+          labels.map((label) => ({
+            grocery_item_id: itemId,
+            label_id: label.id,
+          })),
+        )
+        .execute();
+      return result[0];
+    });
+    return updatedGroceryItem;
   };
 
   static deleteGroceryItem = async (itemId: string, userId: string) => {
