@@ -1,6 +1,4 @@
-import { UserService } from "@/app/api/graphql/(services)/user-service";
 import { db } from "@/db/db";
-import { edgedbClient } from "@/edgedb";
 import e from "@/edgedb/edgeql-js";
 
 export class LabelService {
@@ -22,18 +20,12 @@ export class LabelService {
   };
 
   static addLabel = async (userId: string, name: string) => {
-    const currentUser = UserService.getUserQuery(userId);
-    const label = await e
-      .select(
-        e.insert(e.Label, {
-          name,
-          owner: currentUser,
-        }),
-        () => ({ id: true, name: true }),
-      )
-      .run(edgedbClient);
-
-    return label;
+    const result = await db
+      .insertInto("label")
+      .values({ name, user_id: userId })
+      .returningAll()
+      .execute();
+    return result[0];
   };
 
   static getLabelsQuery = (userId: string, names: string[]) => {
