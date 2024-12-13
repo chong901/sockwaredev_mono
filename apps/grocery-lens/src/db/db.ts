@@ -20,7 +20,8 @@ const dialect = new PostgresDialect({
 export const db = new Kysely<DB>({
   dialect,
   log(event): void {
-    if (event.level === "error") {
+    const logLevels = (process.env.DB_LOG_LEVELS || "error").split(",");
+    if (logLevels.includes(event.level)) {
       console.log("=============================");
       console.log(event.query.sql);
       console.log(event.query.parameters);
