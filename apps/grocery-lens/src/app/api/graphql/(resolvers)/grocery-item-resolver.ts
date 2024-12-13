@@ -9,6 +9,7 @@ import {
   Arg,
   Ctx,
   FieldResolver,
+  ID,
   Mutation,
   Query,
   Resolver,
@@ -35,7 +36,7 @@ export class GroceryItemResolver {
 
   @Mutation(() => GroceryItem)
   async updateGroceryItem(
-    @Arg("id") id: string,
+    @Arg("id", () => ID) id: string,
     @Arg("input") input: CreateGroceryItemInput,
     @Ctx() { userId }: { userId: string },
   ) {
@@ -44,7 +45,7 @@ export class GroceryItemResolver {
 
   @Mutation(() => GroceryItem)
   async deleteGroceryItem(
-    @Arg("id") id: string,
+    @Arg("id", () => ID) id: string,
     @Ctx() { userId }: { userId: string },
   ) {
     return GroceryItemService.deleteGroceryItem(id, userId);
