@@ -1,8 +1,5 @@
-import { UserService } from "@/app/api/graphql/(services)/user-service";
 import { Store } from "@/app/api/graphql/(types)/(objects)/store";
 import { db } from "@/db/db";
-import { edgedbClient } from "@/edgedb";
-import e from "@/edgedb/edgeql-js";
 import Dataloader from "dataloader";
 
 const storeLoader = new Dataloader<string, Store>(async (ids) => {
@@ -38,28 +35,13 @@ export class StoreService {
   };
 
   static addStore = async (userId: string, name: string) => {
-    {
-      const currentUser = UserService.getUserQuery(userId);
-      const newStore = await e
-        .select(
-          e.insert(e.Store, {
-            name,
-            owner: currentUser,
-          }),
-          () => ({
-            id: true,
-            name: true,
-          }),
-        )
-        .run(edgedbClient);
-      return newStore;
-    }
+    const result = await db
+      .insertInto("store")
+      .values({ name, user_id: userId })
+      .returningAll()
+      .execute();
+    return result[0];
   };
-
-  static getStoreQuery = (userId: string, name: string) =>
-    e.select(e.Store, () => ({
-      filter_single: { name, owner: UserService.getUserQuery(userId) },
-    }));
 
   static getStoreById = async (id: string) => {
     return storeLoader.load(id);
