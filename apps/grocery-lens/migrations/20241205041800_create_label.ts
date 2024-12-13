@@ -1,8 +1,11 @@
-import type { Kysely } from "kysely";
+import { sql, type Kysely } from "kysely";
 import { withCreatedAtUpdatedAtColumns } from "./util/timestamp";
 
 export async function up(db: Kysely<any>): Promise<void> {
   await withCreatedAtUpdatedAtColumns(db.schema.createTable("label"))
+    .addColumn("id", "uuid", (col) =>
+      col.primaryKey().defaultTo(sql`gen_random_uuid()`),
+    )
     .addColumn("name", "varchar", (col) => col.notNull())
     .addColumn("user_id", "uuid", (col) => col.references("user.id").notNull())
     .execute();
