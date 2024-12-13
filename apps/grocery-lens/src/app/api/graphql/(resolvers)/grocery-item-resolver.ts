@@ -48,6 +48,14 @@ export class GroceryItemResolver {
     return GroceryItemService.updateGroceryItem(id, userId, input);
   }
 
+  @Mutation(() => GroceryItem)
+  async deleteGroceryItem(
+    @Arg("id") id: string,
+    @Ctx() { userId }: { userId: string },
+  ) {
+    return GroceryItemService.deleteGroceryItem(id, userId);
+  }
+
   @FieldResolver(() => Store)
   async store(@Root() { storeId }: GroceryItem) {
     return StoreService.getStoreById(storeId);
