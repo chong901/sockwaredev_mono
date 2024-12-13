@@ -24,10 +24,17 @@ export interface GroceryItem {
   unit: string;
   updated_at: Generated<Timestamp | null>;
   url: string | null;
+  user_id: string;
+}
+
+export interface GroceryItemLabel {
+  grocery_item_id: string;
+  label_id: string;
 }
 
 export interface Label {
   created_at: Generated<Timestamp>;
+  id: Generated<string>;
   name: string;
   updated_at: Generated<Timestamp | null>;
   user_id: string;
@@ -52,6 +59,7 @@ export interface User {
 
 export interface DB {
   grocery_item: GroceryItem;
+  grocery_item_label: GroceryItemLabel;
   label: Label;
   store: Store;
   user: User;
