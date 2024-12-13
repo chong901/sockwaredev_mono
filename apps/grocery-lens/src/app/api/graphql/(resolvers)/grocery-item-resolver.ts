@@ -2,6 +2,7 @@ import { GroceryItemService } from "@/app/api/graphql/(services)/grocery-item-se
 import { StoreService } from "@/app/api/graphql/(services)/store-service";
 import { CreateGroceryItemInput } from "@/app/api/graphql/(types)/(inputs)/create-grocery-item";
 import { GroceryItemFilter } from "@/app/api/graphql/(types)/(inputs)/grocery-item-filter";
+import { Pagination } from "@/app/api/graphql/(types)/(inputs)/pagination";
 import { GroceryItem } from "@/app/api/graphql/(types)/(objects)/grocery-item";
 import { Label } from "@/app/api/graphql/(types)/(objects)/label";
 import { Store } from "@/app/api/graphql/(types)/(objects)/store";
@@ -21,9 +22,10 @@ export class GroceryItemResolver {
   @Query(() => [GroceryItem])
   async getGroceryItems(
     @Arg("filter") filter: GroceryItemFilter,
+    @Arg("pagination") pagination: Pagination,
     @Ctx() { userId }: { userId: string },
   ) {
-    return GroceryItemService.getGroceryItems(userId, filter);
+    return GroceryItemService.getGroceryItems(userId, filter, pagination);
   }
 
   @Mutation(() => GroceryItem)
@@ -52,8 +54,8 @@ export class GroceryItemResolver {
   }
 
   @FieldResolver(() => Store)
-  async store(@Root() { storeId }: GroceryItem) {
-    return StoreService.getStoreById(storeId);
+  async store(@Root() { store_id }: GroceryItem) {
+    return StoreService.getStoreById(store_id);
   }
 
   @FieldResolver(() => [Label])

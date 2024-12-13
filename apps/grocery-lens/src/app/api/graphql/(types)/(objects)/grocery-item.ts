@@ -26,5 +26,5 @@ export class GroceryItem {
   @Field({ nullable: true })
   url: string;
 
-  storeId: string;
+  store_id: string;
 }

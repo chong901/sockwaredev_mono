@@ -4,8 +4,8 @@ import gql from "graphql-tag";
 export type GroceryItem = GetGroceryItemsQuery["getGroceryItems"][number];
 
 export const getGroceryItemsQuery = gql`
-  query GetGroceryItems($filter: GroceryItemFilter!) {
-    getGroceryItems(filter: $filter) {
+  query GetGroceryItems($filter: GroceryItemFilter!, $pagination: Pagination!) {
+    getGroceryItems(filter: $filter, pagination: $pagination) {
       id
       name
       store {

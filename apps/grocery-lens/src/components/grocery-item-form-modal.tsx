@@ -42,7 +42,6 @@ import {
   AddStoreMutationVariables,
   GetLabelsQuery,
   GetStoresQuery,
-  Unit,
   UpdateGroceryItemMutation,
   UpdateGroceryItemMutationVariables,
 } from "@/graphql-codegen/frontend/graphql";
@@ -78,14 +77,14 @@ export const isEditModalOpenAtom = atom(false);
 const formSchema = z.object({
   id: z.string().optional(),
   itemName: z.string().min(1, { message: "Item name is required" }),
-  store: z.string().min(1, { message: "Store is required" }),
+  storeId: z.string().min(1, { message: "Store is required" }),
   price: z
     .number({
       required_error: "Price is required",
       invalid_type_error: "Price must be a positive number.",
     })
     .min(0, { message: "Price must be a positive number" }),
-  amount: z
+  quantity: z
     .number({
       required_error: "Price is required",
       invalid_type_error: "Price is required",
@@ -166,9 +165,9 @@ export function GroceryItemFormModal({
     mode: "onChange",
     defaultValues: {
       itemName: "",
-      store: "",
+      storeId: "",
       price: 0,
-      amount: 0,
+      quantity: 0,
       unit: undefined,
       labels: [],
       notes: "",
@@ -184,13 +183,13 @@ export function GroceryItemFormModal({
   const stores = getStoresData?.getStores ?? [];
 
   const handleAddLabel = async () => {
-    const fieldLabels = getValues("labels");
-    if (newLabel && !fieldLabels.includes(newLabel)) {
-      await addLabel({
+    const labelsValue = getValues("labels");
+    if (newLabel && !labels.find((label) => label.name === newLabel)) {
+      const result = await addLabel({
         variables: { name: newLabel },
         refetchQueries: [{ query: getLabelQuery }],
       });
-      setValue("labels", [...fieldLabels, newLabel], {
+      setValue("labels", [...labelsValue, result.data!.addLabel.id], {
         shouldValidate: true,
       });
       setNewLabel("");
@@ -199,11 +198,12 @@ export function GroceryItemFormModal({
 
   const handleAddStore = async () => {
     if (newStore) {
-      await addStore({
+      const result = await addStore({
         variables: { name: newStore },
         refetchQueries: [{ query: getStoresQuery }],
       });
-      setValue("store", newStore, { shouldValidate: true });
+
+      setValue("storeId", result.data!.addStore.id, { shouldValidate: true });
       setNewStore("");
       setOpenStores(false);
     }
@@ -215,12 +215,12 @@ export function GroceryItemFormModal({
     } else {
       reset({
         id: item.id,
-        amount: item.amount,
+        quantity: item.quantity,
         itemName: item.name,
-        labels: item.labels.map((l) => l.name),
+        labels: item.labels.map((l) => l.id),
         notes: item.notes ?? "",
         price: item.price,
-        store: item.store.name,
+        storeId: item.store.id,
         unit: item.unit as FormData["unit"],
       });
     }
@@ -230,11 +230,11 @@ export function GroceryItemFormModal({
     if (data.id) {
       const { id, ...rest } = data;
       await updateGroceryItem({
-        variables: { id, input: { ...rest, unit: rest.unit as Unit } },
+        variables: { id, input: rest },
       });
     } else {
       await addGroceryItem({
-        variables: { input: { ...data, unit: data.unit as Unit } },
+        variables: { input: { ...data, unit: data.unit } },
       });
       await onAfterAddItem?.();
     }
@@ -314,8 +314,8 @@ export function GroceryItemFormModal({
             </Label>
             <Controller
               control={control}
-              name="store"
-              render={({ field: { value: fieldStore } }) => (
+              name="storeId"
+              render={({ field: { value: storeValue } }) => (
                 <Popover open={openStores} onOpenChange={setOpenStores}>
                   <PopoverTrigger asChild>
                     <Button
@@ -324,13 +324,14 @@ export function GroceryItemFormModal({
                       aria-expanded={openStores}
                       className={cn(
                         "w-full justify-between border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500",
-                        errors.store &&
-                          (touchedFields.store || dirtyFields.store)
+                        errors.storeId &&
+                          (touchedFields.storeId || dirtyFields.storeId)
                           ? "border-red-500"
                           : "",
                       )}
                     >
-                      {fieldStore || "Select store..."}
+                      {stores.find((store) => store.id === storeValue)?.name ||
+                        "Select store..."}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
@@ -354,7 +355,7 @@ export function GroceryItemFormModal({
                               <CommandItem
                                 key={id}
                                 onSelect={() => {
-                                  setValue("store", name, {
+                                  setValue("storeId", id, {
                                     shouldValidate: true,
                                     shouldDirty: true,
                                   });
@@ -364,7 +365,7 @@ export function GroceryItemFormModal({
                                 <Check
                                   className={cn(
                                     "mr-2 h-4 w-4",
-                                    fieldStore === name
+                                    storeValue === id
                                       ? "opacity-100"
                                       : "opacity-0",
                                   )}
@@ -404,9 +405,10 @@ export function GroceryItemFormModal({
                 </Popover>
               )}
             />
-            {errors.store && (touchedFields.store || dirtyFields.store) && (
-              <p className="text-sm text-red-500">{errors.store.message}</p>
-            )}
+            {errors.storeId &&
+              (touchedFields.storeId || dirtyFields.storeId) && (
+                <p className="text-sm text-red-500">{errors.storeId.message}</p>
+              )}
           </div>
 
           <div className="space-y-2">
@@ -435,29 +437,29 @@ export function GroceryItemFormModal({
           </div>
 
           <div className="space-y-2">
-            <Label className="text-indigo-700">Amount and Unit *</Label>
+            <Label className="text-indigo-700">Quantity and Unit *</Label>
             <div className="flex space-x-2">
               <div className="flex-1">
                 <Input
-                  id="amount"
+                  id="quantity"
                   type="number"
-                  {...register("amount", {
+                  {...register("quantity", {
                     valueAsNumber: true,
-                    onChange: () => trigger("amount"),
+                    onChange: () => trigger("quantity"),
                   })}
-                  placeholder="Amount"
+                  placeholder="Quantity"
                   className={cn(
                     "border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500",
-                    errors.amount &&
-                      (touchedFields.amount || dirtyFields.amount)
+                    errors.quantity &&
+                      (touchedFields.quantity || dirtyFields.quantity)
                       ? "border-red-500"
                       : "",
                   )}
                 />
-                {errors.amount &&
-                  (touchedFields.amount || dirtyFields.amount) && (
+                {errors.quantity &&
+                  (touchedFields.quantity || dirtyFields.quantity) && (
                     <p className="text-sm text-red-500">
-                      {errors.amount.message}
+                      {errors.quantity.message}
                     </p>
                   )}
               </div>
@@ -509,7 +511,7 @@ export function GroceryItemFormModal({
             <Controller
               control={control}
               name="labels"
-              render={({ field: { value: fieldLabels } }) => (
+              render={({ field: { value: labelsValue } }) => (
                 <Popover open={openLabels} onOpenChange={setOpenLabels}>
                   <PopoverTrigger asChild>
                     <Button
@@ -525,8 +527,11 @@ export function GroceryItemFormModal({
                           : "",
                       )}
                     >
-                      {fieldLabels.length > 0
-                        ? fieldLabels.join(", ")
+                      {labelsValue.length > 0
+                        ? labels
+                            .filter((label) => labelsValue.includes(label.id))
+                            .map((label) => label.name)
+                            .join(", ")
                         : "Select labels..."}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
@@ -553,9 +558,9 @@ export function GroceryItemFormModal({
                                 onSelect={() => {
                                   setValue(
                                     "labels",
-                                    fieldLabels.includes(name)
-                                      ? fieldLabels.filter((l) => l !== name)
-                                      : [...fieldLabels, name],
+                                    labelsValue.includes(id)
+                                      ? labelsValue.filter((l) => l !== id)
+                                      : [...labelsValue, id],
                                     {
                                       shouldValidate: true,
                                       shouldDirty: true,
@@ -567,7 +572,7 @@ export function GroceryItemFormModal({
                                 <Check
                                   className={cn(
                                     "mr-2 h-4 w-4",
-                                    fieldLabels.includes(name)
+                                    labelsValue.includes(id)
                                       ? "opacity-100"
                                       : "opacity-0",
                                   )}

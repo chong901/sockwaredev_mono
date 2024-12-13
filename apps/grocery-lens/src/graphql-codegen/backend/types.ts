@@ -45,8 +45,6 @@ export type GroceryItem = {
 export type GroceryItemFilter = {
   keyword: Scalars['String']['input'];
   labels: Array<Scalars['String']['input']>;
-  limit: Scalars['Int']['input'];
-  offset: Scalars['Int']['input'];
   stores: Array<Scalars['String']['input']>;
 };
 
@@ -91,6 +89,11 @@ export type MutationUpdateGroceryItemArgs = {
   input: CreateGroceryItemInput;
 };
 
+export type Pagination = {
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+};
+
 export type Query = {
   __typename?: 'Query';
   getGroceryItems: Array<GroceryItem>;
@@ -101,6 +104,7 @@ export type Query = {
 
 export type QueryGetGroceryItemsArgs = {
   filter: GroceryItemFilter;
+  pagination: Pagination;
 };
 
 export type Store = {
@@ -190,6 +194,7 @@ export type ResolversTypes = ResolversObject<{
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Label: ResolverTypeWrapper<Label>;
   Mutation: ResolverTypeWrapper<{}>;
+  Pagination: Pagination;
   Query: ResolverTypeWrapper<{}>;
   Store: ResolverTypeWrapper<Store>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -206,6 +211,7 @@ export type ResolversParentTypes = ResolversObject<{
   Int: Scalars['Int']['output'];
   Label: Label;
   Mutation: {};
+  Pagination: Pagination;
   Query: {};
   Store: Store;
   String: Scalars['String']['output'];
@@ -240,7 +246,7 @@ export type MutationResolvers<ContextType = ApolloContext, ParentType extends Re
 }>;
 
 export type QueryResolvers<ContextType = ApolloContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  getGroceryItems?: Resolver<Array<ResolversTypes['GroceryItem']>, ParentType, ContextType, RequireFields<QueryGetGroceryItemsArgs, 'filter'>>;
+  getGroceryItems?: Resolver<Array<ResolversTypes['GroceryItem']>, ParentType, ContextType, RequireFields<QueryGetGroceryItemsArgs, 'filter' | 'pagination'>>;
   getLabels?: Resolver<Array<ResolversTypes['Label']>, ParentType, ContextType>;
   getStores?: Resolver<Array<ResolversTypes['Store']>, ParentType, ContextType>;
 }>;

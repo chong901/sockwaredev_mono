@@ -2,6 +2,7 @@ import { LabelService } from "@/app/api/graphql/(services)/label-service";
 import { StoreService } from "@/app/api/graphql/(services)/store-service";
 import { CreateGroceryItemInput } from "@/app/api/graphql/(types)/(inputs)/create-grocery-item";
 import { GroceryItemFilter } from "@/app/api/graphql/(types)/(inputs)/grocery-item-filter";
+import { Pagination } from "@/app/api/graphql/(types)/(inputs)/pagination";
 import { Label } from "@/app/api/graphql/(types)/(objects)/label";
 import { db } from "@/db/db";
 import DataLoader from "dataloader";
@@ -31,7 +32,8 @@ const groceryItemLabelDataloader = new DataLoader<string, Label[]>(
 export class GroceryItemService {
   static getGroceryItems = async (
     userId: string,
-    { labels, stores, keyword, limit, offset }: GroceryItemFilter,
+    { labels, stores, keyword }: GroceryItemFilter,
+    { limit, offset }: Pagination,
   ) => {
     const query = db
       .selectFrom("grocery_item")
@@ -150,15 +152,23 @@ export class GroceryItemService {
   };
 
   static deleteGroceryItem = async (itemId: string, userId: string) => {
-    const result = await db
-      .deleteFrom("grocery_item")
-      .where("id", "=", itemId)
-      .where("user_id", "=", userId)
-      .returningAll()
-      .execute();
-    if (!result.length) {
-      throw new Error("Grocery item not found");
-    }
-    return result[0];
+    const result = await db.transaction().execute(async (tx) => {
+      await tx
+        .deleteFrom("grocery_item_label")
+        .where("grocery_item_id", "=", itemId)
+        .execute();
+
+      const result = await tx
+        .deleteFrom("grocery_item")
+        .where("id", "=", itemId)
+        .where("user_id", "=", userId)
+        .returningAll()
+        .execute();
+      if (!result.length) {
+        throw new Error("Grocery item not found");
+      }
+      return result[0];
+    });
+    return result;
   };
 }
