@@ -1,5 +1,4 @@
-import { edgedbClient } from "@/edgedb";
-import e from "@/edgedb/edgeql-js";
+import { db } from "@/db/db";
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
@@ -15,28 +14,28 @@ export const nextAuth = NextAuth({
   ],
   callbacks: {
     session: async ({ session }) => {
-      const dbUser = await e
-        .select(e.User, () => ({
-          filter_single: { email: session.user.email },
-        }))
-        .run(edgedbClient);
-      session.userId = dbUser?.id ?? "";
+      const dbUser = await db
+        .selectFrom("user")
+        .selectAll()
+        .where("email", "=", session.user.email)
+        .execute();
+      session.userId = dbUser[0]?.id ?? "";
       return session;
     },
     signIn: async ({ user }) => {
-      const userExists = await e
-        .select(e.User, () => ({
-          filter_single: { email: user.email ?? "" },
-        }))
-        .run(edgedbClient);
-      if (!userExists && user.email) {
-        await e
-          .insert(e.User, {
-            email: user.email,
-            image: user.image,
-            name: user.name,
-          })
-          .run(edgedbClient);
+      if (!user.email) {
+        return false;
+      }
+      const dbUser = await db
+        .selectFrom("user")
+        .where("email", "=", user.email)
+        .selectAll()
+        .execute();
+      if (dbUser.length === 0) {
+        await db
+          .insertInto("user")
+          .values({ email: user.email, name: user.name, image: user.image })
+          .execute();
       }
       return true;
     },
