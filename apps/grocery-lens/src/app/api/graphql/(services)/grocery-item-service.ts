@@ -1,6 +1,8 @@
 import { LabelService } from "@/app/api/graphql/(services)/label-service";
 import { StoreService } from "@/app/api/graphql/(services)/store-service";
 import { UserService } from "@/app/api/graphql/(services)/user-service";
+import { Label } from "@/app/api/graphql/(types)/(objects)/label";
+import { db } from "@/db/db";
 import { edgedbClient } from "@/edgedb";
 import e from "@/edgedb/edgeql-js";
 import {
@@ -8,6 +10,28 @@ import {
   GroceryItemFilter,
   PaginationInput,
 } from "@/graphql-codegen/backend/types";
+import DataLoader from "dataloader";
+
+const groceryItemLabelDataloader = new DataLoader<string, Label[]>(
+  async (groceryItemIds) => {
+    const data = await db
+      .selectFrom("grocery_item_label")
+      .innerJoin("label", "label.id", "grocery_item_label.label_id")
+      .selectAll("label")
+      .select("grocery_item_label.grocery_item_id")
+      .where("grocery_item_label.grocery_item_id", "in", groceryItemIds)
+      .execute();
+    const dataMap = data.reduce(
+      (acc, { id, grocery_item_id, name }) => {
+        acc[grocery_item_id] = acc[grocery_item_id] || [];
+        acc[grocery_item_id].push({ id, name });
+        return acc;
+      },
+      {} as Record<string, Label[]>,
+    );
+    return groceryItemIds.map((id) => dataMap[id] || []);
+  },
+);
 
 const defaultGroceryItemReturnShape = {
   id: true,
@@ -60,6 +84,10 @@ export class GroceryItemService {
       })
       .run(edgedbClient);
     return groceryItems;
+  };
+
+  static getLabelsByGroceryItemId = async (groceryItemId: string) => {
+    return groceryItemLabelDataloader.load(groceryItemId);
   };
 
   static addGroceryItem = async (
