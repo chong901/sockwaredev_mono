@@ -21,6 +21,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "1.0.0",
+    "dataloader": "^2.2.2",
     "edgedb": "^1.5.12",
     "framer-motion": "^11.5.4",
     "graphql": "^16.9.0",
