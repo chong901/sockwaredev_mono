@@ -1,112 +1,23 @@
-import {
-  GroceryItemMutationResolver,
-  GroceryItemQueryResolver,
-} from "@/app/api/graphql/(resolvers)/grocery-item-resolver";
-import {
-  LabelMutationResolver,
-  LabelQueryResolver,
-} from "@/app/api/graphql/(resolvers)/label-resolver";
-import {
-  StoreMutationResolver,
-  StoreQueryResolver,
-} from "@/app/api/graphql/(resolvers)/store-resolver";
+import "reflect-metadata";
+
+import { GroceryItemResolver } from "@/app/api/graphql/(resolvers)/grocery-item-resolver";
+import { LabelResolver } from "@/app/api/graphql/(resolvers)/label-resolver";
+import { StoreResolver } from "@/app/api/graphql/(resolvers)/store-resolver";
 import { nextAuth } from "@/auth";
-import { Resolvers } from "@/graphql-codegen/backend/types";
 import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
-import gql from "graphql-tag";
 import { Session } from "next-auth";
 
-const typeDefs = gql`
-  type Label {
-    id: ID!
-    name: String!
-  }
+import { buildSchema } from "type-graphql";
 
-  type Store {
-    id: ID!
-    name: String!
-  }
-
-  type Query {
-    getLabels: [Label!]!
-    getStores: [Store!]!
-    getGroceryItems(
-      filter: GroceryItemFilter!
-      pagination: PaginationInput!
-    ): [GroceryItem!]!
-  }
-
-  type Mutation {
-    addLabel(name: String!): Label!
-    addStore(name: String!): Store!
-    addGroceryItem(input: CreateGroceryItemInput!): GroceryItem!
-    updateGroceryItem(id: ID!, input: CreateGroceryItemInput!): GroceryItem!
-    deleteGroceryItem(id: ID!): GroceryItem!
-  }
-
-  enum Unit {
-    gram
-    kilogram
-    liter
-    milliliter
-    piece
-    bag
-    box
-  }
-
-  type GroceryItem {
-    id: ID!
-    name: String!
-    store: Store!
-    price: Float!
-    amount: Float!
-    unit: String!
-    notes: String
-    labels: [Label!]!
-    pricePerUnit: Float!
-    url: String
-  }
-
-  input CreateGroceryItemInput {
-    itemName: String!
-    store: String!
-    price: Float!
-    amount: Float!
-    unit: Unit!
-    labels: [String!]!
-    notes: String
-    url: String
-  }
-
-  input GroceryItemFilter {
-    stores: [String!]!
-    labels: [String!]!
-    keyword: String!
-  }
-
-  input PaginationInput {
-    limit: Int!
-    offset: Int!
-  }
-`;
-
-const resolvers: Resolvers = {
-  Query: {
-    ...LabelQueryResolver,
-    ...StoreQueryResolver,
-    ...GroceryItemQueryResolver,
-  },
-  Mutation: {
-    ...LabelMutationResolver,
-    ...StoreMutationResolver,
-    ...GroceryItemMutationResolver,
-  },
-};
+const schema = await buildSchema({
+  resolvers: [GroceryItemResolver, StoreResolver, LabelResolver],
+});
 
 const apolloServer = new ApolloServer({
-  typeDefs,
-  resolvers,
+  // typeDefs,
+  // resolvers,
+  schema,
 });
 
 const handler = startServerAndCreateNextHandler(apolloServer, {
