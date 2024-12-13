@@ -43,7 +43,7 @@ export class GroceryItemService {
       )
       .leftJoin("label", "grocery_item_label.label_id", "label.id")
       .selectAll("grocery_item")
-      .select(sql`price / amount`.as("pricePerUnit"))
+      .select(sql`price / quantity`.as("pricePerUnit"))
       .distinct()
       .where("grocery_item.user_id", "=", userId);
     if (labels.length) {
