@@ -1,14 +1,15 @@
 import { LabelService } from "@/app/api/graphql/(services)/label-service";
 import { StoreService } from "@/app/api/graphql/(services)/store-service";
 import { UserService } from "@/app/api/graphql/(services)/user-service";
+import { CreateGroceryItemInput } from "@/app/api/graphql/(types)/(inputs)/create-grocery-item";
 import { Label } from "@/app/api/graphql/(types)/(objects)/label";
 import { db } from "@/db/db";
 import { edgedbClient } from "@/edgedb";
 import e from "@/edgedb/edgeql-js";
 import {
-  CreateGroceryItemInput,
   GroceryItemFilter,
   PaginationInput,
+  Unit,
 } from "@/graphql-codegen/backend/types";
 import DataLoader from "dataloader";
 
@@ -95,7 +96,7 @@ export class GroceryItemService {
     data: CreateGroceryItemInput,
   ) => {
     const currentUser = UserService.getUserQuery(userId);
-    const store = StoreService.getStoreQuery(userId, data.store);
+    const store = StoreService.getStoreQuery(userId, data.storeId);
     const labels = LabelService.getLabelsQuery(userId, data.labels);
     const grocery = await e
       .select(
@@ -105,7 +106,7 @@ export class GroceryItemService {
           owner: currentUser,
           price: data.price,
           store: store,
-          unit: data.unit,
+          unit: data.unit as Unit,
           notes: data.notes,
           labels: labels,
           url: data.url,
@@ -121,7 +122,7 @@ export class GroceryItemService {
     userId: string,
     data: CreateGroceryItemInput,
   ) => {
-    const store = StoreService.getStoreQuery(userId, data.store);
+    const store = StoreService.getStoreQuery(userId, data.storeId);
     const labels = LabelService.getLabelsQuery(userId, data.labels);
     const [grocery] = await e
       .select(
@@ -137,7 +138,7 @@ export class GroceryItemService {
             name: data.itemName,
             price: data.price,
             store: store,
-            unit: data.unit,
+            unit: data.unit as Unit,
             notes: data.notes,
             labels: labels,
             url: data.url,
