@@ -5,13 +5,11 @@ import e from "@/edgedb/edgeql-js";
 
 export class LabelService {
   static getUserLabels = async (userId: string) => {
-    return await e
-      .select(e.Label, (label) => ({
-        name: true,
-        id: true,
-        filter: e.op(label.owner.id, "=", e.uuid(userId)),
-      }))
-      .run(edgedbClient);
+    return db
+      .selectFrom("label")
+      .selectAll()
+      .where("user_id", "=", userId)
+      .execute();
   };
 
   static getUserLabelsByIds = async (userId: string, labelIds: string[]) => {
