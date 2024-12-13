@@ -8,6 +8,7 @@ import { edgedbClient } from "@/edgedb";
 import e from "@/edgedb/edgeql-js";
 import { Unit } from "@/graphql-codegen/frontend/graphql";
 import DataLoader from "dataloader";
+import { sql } from "kysely";
 
 const groceryItemLabelDataloader = new DataLoader<string, Label[]>(
   async (groceryItemIds) => {
@@ -51,35 +52,30 @@ export class GroceryItemService {
     userId: string,
     { labels, stores, keyword, limit, offset }: GroceryItemFilter,
   ) => {
-    const groceryItems = await e
-      .select(e.GroceryItem, (item) => {
-        const labelFilter = labels.length
-          ? e.any(
-              e.set(
-                ...labels.map((label) => e.op(item.labels.name, "=", label)),
-              ),
-            )
-          : e.bool(true);
-        const storesFilter = stores.length
-          ? e.op(item.store.name, "in", e.set(...stores))
-          : e.bool(true);
-        return {
-          ...defaultGroceryItemReturnShape,
-          filter: e.all(
-            e.set(
-              e.op(item.owner.id, "=", e.uuid(userId)),
-              labelFilter,
-              storesFilter,
-              e.op(item.name, "ilike", `%${keyword}%`),
-            ),
-          ),
-          order_by: { expression: item.created_at, direction: e.DESC },
-          limit,
-          offset,
-        };
-      })
-      .run(edgedbClient);
-    return groceryItems;
+    const query = db
+      .selectFrom("grocery_item")
+      .leftJoin("store", "grocery_item.store_id", "store.id")
+      .leftJoin(
+        "grocery_item_label",
+        "grocery_item.id",
+        "grocery_item_label.grocery_item_id",
+      )
+      .leftJoin("label", "grocery_item_label.label_id", "label.id")
+      .selectAll("grocery_item")
+      .select(sql`price / amount`.as("pricePerUnit"))
+      .distinct()
+      .where("grocery_item.user_id", "=", userId);
+    if (labels.length) {
+      query.where("label.name", "in", labels);
+    }
+    if (stores.length) {
+      query.where("store.name", "in", stores);
+    }
+    if (keyword) {
+      query.where("grocery_item.name", "ilike", `%${keyword}%`);
+    }
+    const data = await query.limit(limit).offset(offset).execute();
+    return data;
   };
 
   static getLabelsByGroceryItemId = async (groceryItemId: string) => {
