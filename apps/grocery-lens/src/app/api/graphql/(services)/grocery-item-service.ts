@@ -4,8 +4,6 @@ import { CreateGroceryItemInput } from "@/app/api/graphql/(types)/(inputs)/creat
 import { GroceryItemFilter } from "@/app/api/graphql/(types)/(inputs)/grocery-item-filter";
 import { Label } from "@/app/api/graphql/(types)/(objects)/label";
 import { db } from "@/db/db";
-import { edgedbClient } from "@/edgedb";
-import e from "@/edgedb/edgeql-js";
 import DataLoader from "dataloader";
 import { sql } from "kysely";
 
@@ -29,22 +27,6 @@ const groceryItemLabelDataloader = new DataLoader<string, Label[]>(
     return groceryItemIds.map((id) => dataMap[id] || []);
   },
 );
-
-const defaultGroceryItemReturnShape = {
-  id: true,
-  name: true,
-  store: { id: true, name: true },
-  price: true,
-  amount: true,
-  unit: true,
-  notes: true,
-  labels: {
-    id: true,
-    name: true,
-  },
-  pricePerUnit: true,
-  url: true,
-} as const;
 
 export class GroceryItemService {
   static getGroceryItems = async (
@@ -168,22 +150,15 @@ export class GroceryItemService {
   };
 
   static deleteGroceryItem = async (itemId: string, userId: string) => {
-    const [grocery] = await e
-      .select(
-        e.delete(e.GroceryItem, (item) => ({
-          filter: e.all(
-            e.set(
-              e.op(item.id, "=", e.uuid(itemId)),
-              e.op(item.owner.id, "=", e.uuid(userId)),
-            ),
-          ),
-        })),
-        () => defaultGroceryItemReturnShape,
-      )
-      .run(edgedbClient);
-    if (!grocery) {
+    const result = await db
+      .deleteFrom("grocery_item")
+      .where("id", "=", itemId)
+      .where("user_id", "=", userId)
+      .returningAll()
+      .execute();
+    if (!result.length) {
       throw new Error("Grocery item not found");
     }
-    return grocery;
+    return result[0];
   };
 }
