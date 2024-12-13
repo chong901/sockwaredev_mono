@@ -41,8 +41,7 @@ export function GroceryListComponent() {
     getGroceryItemsQuery,
     {
       variables: {
-        filter: { labels, stores, keyword },
-        pagination: { limit, offset: 0 },
+        filter: { labels, stores, keyword, limit, offset: 0 },
       },
       fetchPolicy: "cache-and-network",
     },

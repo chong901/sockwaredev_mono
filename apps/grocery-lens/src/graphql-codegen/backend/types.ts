@@ -18,25 +18,25 @@ export type Scalars = {
 };
 
 export type CreateGroceryItemInput = {
-  amount: Scalars['Float']['input'];
   itemName: Scalars['String']['input'];
   labels: Array<Scalars['String']['input']>;
   notes?: InputMaybe<Scalars['String']['input']>;
   price: Scalars['Float']['input'];
-  store: Scalars['String']['input'];
-  unit: Unit;
+  quantity: Scalars['Float']['input'];
+  storeId: Scalars['String']['input'];
+  unit: Scalars['String']['input'];
   url?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type GroceryItem = {
   __typename?: 'GroceryItem';
-  amount: Scalars['Float']['output'];
   id: Scalars['ID']['output'];
   labels: Array<Label>;
   name: Scalars['String']['output'];
   notes?: Maybe<Scalars['String']['output']>;
   price: Scalars['Float']['output'];
   pricePerUnit: Scalars['Float']['output'];
+  quantity: Scalars['Float']['output'];
   store: Store;
   unit: Scalars['String']['output'];
   url?: Maybe<Scalars['String']['output']>;
@@ -45,6 +45,8 @@ export type GroceryItem = {
 export type GroceryItemFilter = {
   keyword: Scalars['String']['input'];
   labels: Array<Scalars['String']['input']>;
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
   stores: Array<Scalars['String']['input']>;
 };
 
@@ -89,11 +91,6 @@ export type MutationUpdateGroceryItemArgs = {
   input: CreateGroceryItemInput;
 };
 
-export type PaginationInput = {
-  limit: Scalars['Int']['input'];
-  offset: Scalars['Int']['input'];
-};
-
 export type Query = {
   __typename?: 'Query';
   getGroceryItems: Array<GroceryItem>;
@@ -104,7 +101,6 @@ export type Query = {
 
 export type QueryGetGroceryItemsArgs = {
   filter: GroceryItemFilter;
-  pagination: PaginationInput;
 };
 
 export type Store = {
@@ -112,16 +108,6 @@ export type Store = {
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
 };
-
-export enum Unit {
-  Bag = 'bag',
-  Box = 'box',
-  Gram = 'gram',
-  Kilogram = 'kilogram',
-  Liter = 'liter',
-  Milliliter = 'milliliter',
-  Piece = 'piece'
-}
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
 export type ResolversObject<TObject> = WithIndex<TObject>;
@@ -204,11 +190,9 @@ export type ResolversTypes = ResolversObject<{
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Label: ResolverTypeWrapper<Label>;
   Mutation: ResolverTypeWrapper<{}>;
-  PaginationInput: PaginationInput;
   Query: ResolverTypeWrapper<{}>;
   Store: ResolverTypeWrapper<Store>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
-  Unit: Unit;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -222,20 +206,19 @@ export type ResolversParentTypes = ResolversObject<{
   Int: Scalars['Int']['output'];
   Label: Label;
   Mutation: {};
-  PaginationInput: PaginationInput;
   Query: {};
   Store: Store;
   String: Scalars['String']['output'];
 }>;
 
 export type GroceryItemResolvers<ContextType = ApolloContext, ParentType extends ResolversParentTypes['GroceryItem'] = ResolversParentTypes['GroceryItem']> = ResolversObject<{
-  amount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   labels?: Resolver<Array<ResolversTypes['Label']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   price?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   pricePerUnit?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  quantity?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   store?: Resolver<ResolversTypes['Store'], ParentType, ContextType>;
   unit?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   url?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -257,7 +240,7 @@ export type MutationResolvers<ContextType = ApolloContext, ParentType extends Re
 }>;
 
 export type QueryResolvers<ContextType = ApolloContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  getGroceryItems?: Resolver<Array<ResolversTypes['GroceryItem']>, ParentType, ContextType, RequireFields<QueryGetGroceryItemsArgs, 'filter' | 'pagination'>>;
+  getGroceryItems?: Resolver<Array<ResolversTypes['GroceryItem']>, ParentType, ContextType, RequireFields<QueryGetGroceryItemsArgs, 'filter'>>;
   getLabels?: Resolver<Array<ResolversTypes['Label']>, ParentType, ContextType>;
   getStores?: Resolver<Array<ResolversTypes['Store']>, ParentType, ContextType>;
 }>;

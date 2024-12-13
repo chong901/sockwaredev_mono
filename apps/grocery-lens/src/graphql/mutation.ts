@@ -27,7 +27,7 @@ export const addGroceryItemMutation = gql`
         name
       }
       price
-      amount
+      quantity
       unit
       labels {
         name
@@ -47,7 +47,7 @@ export const updateGroceryItemMutation = gql`
         name
       }
       price
-      amount
+      quantity
       unit
       labels {
         name
