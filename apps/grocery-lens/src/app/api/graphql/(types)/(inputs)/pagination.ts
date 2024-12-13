@@ -1,6 +1,6 @@
-import { ArgsType, Field, Int } from "type-graphql";
+import { Field, InputType, Int } from "type-graphql";
 
-@ArgsType()
+@InputType()
 export class Pagination {
   @Field(() => Int)
   limit: number;
