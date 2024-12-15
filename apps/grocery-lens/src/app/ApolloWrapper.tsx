@@ -34,7 +34,7 @@ function makeClient() {
         Query: {
           fields: {
             getGroceryItems: {
-              keyArgs: false,
+              keyArgs: ["filter"],
               merge(existing, incoming, { args }) {
                 const offset = args?.pagination.offset;
                 const merged = existing ? existing.slice(0) : [];

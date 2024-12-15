@@ -34,7 +34,7 @@ export class GroceryItemService {
     { labels, stores, keyword }: GroceryItemFilter,
     { limit, offset }: Pagination,
   ) => {
-    const query = db
+    let query = db
       .selectFrom("grocery_item")
       .leftJoin("store", "grocery_item.store_id", "store.id")
       .leftJoin(
@@ -48,13 +48,13 @@ export class GroceryItemService {
       .orderBy("grocery_item.created_at", "desc")
       .where("grocery_item.user_id", "=", userId);
     if (labels.length) {
-      query.where("label.name", "in", labels);
+      query = query.where("label.name", "in", labels);
     }
     if (stores.length) {
-      query.where("store.name", "in", stores);
+      query = query.where("store.name", "in", stores);
     }
     if (keyword) {
-      query.where("grocery_item.name", "ilike", `%${keyword}%`);
+      query = query.where("grocery_item.name", "ilike", `%${keyword}%`);
     }
     const data = await query.limit(limit).offset(offset).execute();
     return data;
