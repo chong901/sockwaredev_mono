@@ -35,8 +35,13 @@ function makeClient() {
           fields: {
             getGroceryItems: {
               keyArgs: false,
-              merge(existing, incoming) {
-                return [...(existing ?? []), ...(incoming ?? [])];
+              merge(existing, incoming, { args }) {
+                const offset = args?.pagination.offset;
+                const merged = existing ? existing.slice(0) : [];
+                for (let i = 0; i < incoming.length; ++i) {
+                  merged[offset + i] = incoming[i];
+                }
+                return merged;
               },
             },
           },

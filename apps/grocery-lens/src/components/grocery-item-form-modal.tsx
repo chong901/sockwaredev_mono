@@ -262,7 +262,7 @@ export function GroceryItemFormModal({
           <PlusIcon className="sm:hidden" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="h-full max-w-full overflow-scroll rounded-lg bg-gradient-to-br from-purple-100 to-indigo-100 p-4 shadow-lg sm:h-fit sm:max-w-[425px] sm:p-6">
+      <DialogContent className="max-h-svh max-w-full overflow-scroll rounded-lg bg-gradient-to-br from-purple-100 to-indigo-100 p-4 shadow-lg sm:h-fit sm:max-w-[425px] sm:p-6">
         <DialogHeader>
           <DialogTitle className="text-center">
             <motion.div

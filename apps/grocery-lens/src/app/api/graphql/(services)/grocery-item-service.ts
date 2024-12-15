@@ -6,7 +6,6 @@ import { Pagination } from "@/app/api/graphql/(types)/(inputs)/pagination";
 import { Label } from "@/app/api/graphql/(types)/(objects)/label";
 import { db } from "@/db/db";
 import DataLoader from "dataloader";
-import { sql } from "kysely";
 
 const groceryItemLabelDataloader = new DataLoader<string, Label[]>(
   async (groceryItemIds) => {
@@ -45,8 +44,8 @@ export class GroceryItemService {
       )
       .leftJoin("label", "grocery_item_label.label_id", "label.id")
       .selectAll("grocery_item")
-      .select(sql`price / quantity`.as("pricePerUnit"))
       .distinct()
+      .orderBy("grocery_item.created_at", "desc")
       .where("grocery_item.user_id", "=", userId);
     if (labels.length) {
       query.where("label.name", "in", labels);

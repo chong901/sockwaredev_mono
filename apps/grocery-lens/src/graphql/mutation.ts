@@ -1,3 +1,4 @@
+import { GroceryItemFragment } from "@/graphql/fragment";
 import gql from "graphql-tag";
 
 export const addLabelMutation = gql`
@@ -21,41 +22,19 @@ export const addStoreMutation = gql`
 export const addGroceryItemMutation = gql`
   mutation AddGroceryItem($input: CreateGroceryItemInput!) {
     addGroceryItem(input: $input) {
-      id
-      name
-      store {
-        name
-      }
-      price
-      quantity
-      unit
-      labels {
-        name
-      }
-      notes
-      url
+      ...GroceryItemFragment
     }
   }
+  ${GroceryItemFragment}
 `;
 
 export const updateGroceryItemMutation = gql`
   mutation UpdateGroceryItem($id: ID!, $input: CreateGroceryItemInput!) {
     updateGroceryItem(id: $id, input: $input) {
-      id
-      name
-      store {
-        name
-      }
-      price
-      quantity
-      unit
-      labels {
-        name
-      }
-      notes
-      url
+      ...GroceryItemFragment
     }
   }
+  ${GroceryItemFragment}
 `;
 
 export const deleteGroceryItemMutation = gql`

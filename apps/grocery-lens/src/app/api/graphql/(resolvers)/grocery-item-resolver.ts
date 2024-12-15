@@ -10,6 +10,7 @@ import {
   Arg,
   Ctx,
   FieldResolver,
+  Float,
   ID,
   Mutation,
   Query,
@@ -61,5 +62,10 @@ export class GroceryItemResolver {
   @FieldResolver(() => [Label])
   labels(@Root() { id }: GroceryItem) {
     return GroceryItemService.getLabelsByGroceryItemId(id);
+  }
+
+  @FieldResolver(() => Float)
+  pricePerUnit(@Root() { price, quantity }: GroceryItem) {
+    return price / quantity;
   }
 }

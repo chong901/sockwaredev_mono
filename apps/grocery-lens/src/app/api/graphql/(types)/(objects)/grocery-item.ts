@@ -20,9 +20,6 @@ export class GroceryItem {
   @Field({ nullable: true })
   notes: string;
 
-  @Field()
-  pricePerUnit: number;
-
   @Field({ nullable: true })
   url: string;
 

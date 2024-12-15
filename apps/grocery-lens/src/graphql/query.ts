@@ -1,4 +1,5 @@
 import { GetGroceryItemsQuery } from "@/graphql-codegen/frontend/graphql";
+import { GroceryItemFragment } from "@/graphql/fragment";
 import gql from "graphql-tag";
 
 export type GroceryItem = GetGroceryItemsQuery["getGroceryItems"][number];
@@ -6,25 +7,10 @@ export type GroceryItem = GetGroceryItemsQuery["getGroceryItems"][number];
 export const getGroceryItemsQuery = gql`
   query GetGroceryItems($filter: GroceryItemFilter!, $pagination: Pagination!) {
     getGroceryItems(filter: $filter, pagination: $pagination) {
-      id
-      name
-      store {
-        id
-        name
-      }
-      price
-      quantity
-      price
-      pricePerUnit
-      unit
-      notes
-      labels {
-        id
-        name
-      }
-      url
+      ...GroceryItemFragment
     }
   }
+  ${GroceryItemFragment}
 `;
 
 export const getStoresQuery = gql`
