@@ -21,7 +21,10 @@ import {
   GetStoresQuery,
 } from "@/graphql-codegen/frontend/graphql";
 import { getLabelQuery, getStoresQuery } from "@/graphql/query";
-import { SortBy, useGroceryListFilter } from "@/hooks/use-grocery-list-filter";
+import {
+  SortByValue,
+  useGroceryListFilter,
+} from "@/hooks/use-grocery-list-filter";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@apollo/client";
 import debounce from "lodash.debounce";
@@ -29,17 +32,17 @@ import { Check, Filter, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
 type SortByOption = {
-  value: SortBy;
+  value: SortByValue;
   label: string;
 };
 
 const sortByValues: SortByOption[] = [
-  { value: "name", label: "Name" },
-  { value: "recency", label: "Recency" },
-  { value: "lowestPrice", label: "Lowest Price" },
-  { value: "highestPrice", label: "Highest Price" },
-  { value: "lowestPricePerUnit", label: "Lowest Price per unit" },
-  { value: "highestPricePerUnit", label: "Highest Price per unit" },
+  { value: "NAME", label: "Name" },
+  { value: "RECENCY", label: "Recency" },
+  { value: "LOWEST_PRICE", label: "Lowest Price" },
+  { value: "HIGHEST_PRICE", label: "Highest Price" },
+  { value: "LOWEST_PRICE_PER_UNIT", label: "Lowest Price per unit" },
+  { value: "HIGHEST_PRICE_PER_UNIT", label: "Highest Price per unit" },
 ];
 
 export function GroceryFilterComponent() {

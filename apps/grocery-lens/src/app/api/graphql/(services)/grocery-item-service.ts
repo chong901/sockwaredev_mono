@@ -6,8 +6,9 @@ import { Pagination } from "@/app/api/graphql/(types)/(inputs)/pagination";
 import { Label } from "@/app/api/graphql/(types)/(objects)/label";
 import { db } from "@/db/db";
 import { DB } from "@/db/types";
+import { SortBy } from "@/enums/sort-by";
 import DataLoader from "dataloader";
-import { Kysely } from "kysely";
+import { Kysely, sql } from "kysely";
 
 const groceryItemLabelDataloader = new DataLoader<string, Label[]>(
   async (groceryItemIds) => {
@@ -34,10 +35,10 @@ const groceryItemLabelDataloader = new DataLoader<string, Label[]>(
 export class GroceryItemService {
   static getGroceryItems = async (
     userId: string,
-    { labels, stores, keyword }: GroceryItemFilter,
+    { labels, stores, keyword, sortBy }: GroceryItemFilter,
     { limit, offset }: Pagination,
   ) => {
-    const query = db
+    let query = db
       .selectFrom("grocery_item")
       .leftJoin("store", "grocery_item.store_id", "store.id")
       .leftJoin(
@@ -48,13 +49,47 @@ export class GroceryItemService {
       .leftJoin("label", "grocery_item_label.label_id", "label.id")
       .selectAll("grocery_item")
       .distinct()
-      .orderBy("grocery_item.created_at", "desc")
       .where("grocery_item.user_id", "=", userId)
       .$if(!!labels.length, (qb) => qb.where("label.name", "in", labels))
       .$if(!!stores.length, (qb) => qb.where("store.name", "in", stores))
       .$if(!!keyword, (qb) =>
         qb.where("grocery_item.name", "ilike", `%${keyword}%`),
       );
+
+    switch (sortBy) {
+      case SortBy.NAME:
+        query = query.orderBy("grocery_item.name", "asc");
+        break;
+      case SortBy.RECENCY:
+        query = query.orderBy("grocery_item.created_at", "desc");
+        break;
+      case SortBy.LOWEST_PRICE:
+        query = query.orderBy("grocery_item.price", "asc");
+        break;
+      case SortBy.HIGHEST_PRICE:
+        query = query.orderBy("grocery_item.price", "desc");
+        break;
+      case SortBy.LOWEST_PRICE_PER_UNIT:
+        query = query
+          .select(
+            sql`grocery_item.price / grocery_item.quantity`.as(
+              "price_per_unit",
+            ),
+          )
+          .orderBy(sql`grocery_item.price / grocery_item.quantity`, "asc");
+        break;
+      case SortBy.HIGHEST_PRICE_PER_UNIT:
+        query = query
+          .select(
+            sql`grocery_item.price / grocery_item.quantity`.as(
+              "price_per_unit",
+            ),
+          )
+          .orderBy(sql`grocery_item.price / grocery_item.quantity`, "desc");
+        break;
+      default:
+        query = query.orderBy("grocery_item.created_at", "desc");
+    }
     const data = await query.limit(limit).offset(offset).execute();
     return data;
   };

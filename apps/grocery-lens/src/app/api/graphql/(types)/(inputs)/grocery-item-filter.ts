@@ -1,4 +1,7 @@
-import { Field, InputType } from "type-graphql";
+import { SortBy } from "@/enums/sort-by";
+import { Field, InputType, registerEnumType } from "type-graphql";
+
+registerEnumType(SortBy, { name: "GroceryItemSortBy" });
 
 @InputType("GroceryItemFilter")
 export class GroceryItemFilter {
@@ -8,4 +11,6 @@ export class GroceryItemFilter {
   labels: string[];
   @Field()
   keyword: string;
+  @Field(() => SortBy)
+  sortBy: SortBy;
 }

@@ -17,6 +17,7 @@ import {
   DeleteGroceryItemMutationVariables,
   GetGroceryItemsQuery,
   GetGroceryItemsQueryVariables,
+  GroceryItemSortBy,
 } from "@/graphql-codegen/frontend/graphql";
 import { deleteGroceryItemMutation } from "@/graphql/mutation";
 import { getGroceryItemsQuery, GroceryItem } from "@/graphql/query";
@@ -29,7 +30,7 @@ import { Loader2 } from "lucide-react";
 const limit = 10;
 
 export function GroceryListComponent() {
-  const { labels, stores, keyword, addLabelFilter, addStoreFilter } =
+  const { labels, stores, keyword, sortBy, addLabelFilter, addStoreFilter } =
     useGroceryListFilter();
   const {
     data: groceryItems,
@@ -41,7 +42,12 @@ export function GroceryListComponent() {
     getGroceryItemsQuery,
     {
       variables: {
-        filter: { labels, stores, keyword },
+        filter: {
+          labels,
+          stores,
+          keyword,
+          sortBy: sortBy as GroceryItemSortBy,
+        },
         pagination: { limit, offset: 0 },
       },
       fetchPolicy: "cache-and-network",

@@ -44,8 +44,18 @@ export type GroceryItem = {
 export type GroceryItemFilter = {
   keyword: Scalars['String']['input'];
   labels: Array<Scalars['String']['input']>;
+  sortBy: GroceryItemSortBy;
   stores: Array<Scalars['String']['input']>;
 };
+
+export enum GroceryItemSortBy {
+  HighestPrice = 'HIGHEST_PRICE',
+  HighestPricePerUnit = 'HIGHEST_PRICE_PER_UNIT',
+  LowestPrice = 'LOWEST_PRICE',
+  LowestPricePerUnit = 'LOWEST_PRICE_PER_UNIT',
+  Name = 'NAME',
+  Recency = 'RECENCY'
+}
 
 export type Label = {
   __typename?: 'Label';

@@ -1,13 +1,8 @@
+import { GroceryItemSortBy } from "@/graphql-codegen/frontend/graphql";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef } from "react";
 
-export type SortBy =
-  | "name"
-  | "recency"
-  | "lowestPrice"
-  | "highestPrice"
-  | "lowestPricePerUnit"
-  | "highestPricePerUnit";
+export type SortByValue = `${GroceryItemSortBy}`;
 
 export const useGroceryListFilter = () => {
   const router = useRouter();
@@ -18,7 +13,9 @@ export const useGroceryListFilter = () => {
   const stores = searchParams.get("stores")?.split(",") ?? [];
   const labels = searchParams.get("labels")?.split(",") ?? [];
   const keyword = searchParams.get("keyword") ?? "";
-  const sortBy: SortBy = (searchParams.get("sortBy") as SortBy) ?? "recency";
+  const sortBy: GroceryItemSortBy =
+    (searchParams.get("sortBy") as GroceryItemSortBy) ??
+    GroceryItemSortBy.Recency;
 
   useEffect(() => {
     searchParamsRef.current = searchParams;
