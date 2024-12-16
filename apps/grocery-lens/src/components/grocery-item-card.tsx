@@ -170,7 +170,6 @@ export function GroceryItemCard({
               </div>
             </div>
           </div>
-          <div className="h-1 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
         </CardContent>
       </Card>
     </motion.div>

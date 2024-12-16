@@ -53,9 +53,7 @@ export function Header() {
                 >
                   <Avatar className="h-8 w-8">
                     <AvatarImage
-                      src={
-                        session.data?.user?.image ?? "/placeholder-avatar.jpg"
-                      }
+                      src={session.data?.user?.image ?? undefined}
                       alt="@username"
                     />
                     <AvatarFallback>
