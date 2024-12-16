@@ -62,8 +62,8 @@ export function GroceryItemCard({
     >
       <Card className="w-full overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 shadow-lg transition-all duration-300 hover:shadow-xl">
         <CardContent className="p-0">
-          <div className="relative p-4">
-            <div className="mb-2 flex items-center justify-between">
+          <div className="relative flex flex-col gap-2 p-4">
+            <div className="flex items-center justify-between">
               <h3 className="flex items-center gap-2 text-xl font-bold capitalize text-indigo-800 sm:text-2xl">
                 {item.name}
                 {item.url && (
@@ -130,14 +130,51 @@ export function GroceryItemCard({
               </div>
             </div>
             <div
-              className="mb-2 flex w-fit cursor-pointer items-center text-indigo-600"
+              className="flex w-fit cursor-pointer items-center text-indigo-600"
               onClick={() => onStoreClick?.(item.store.name)}
             >
               <ShoppingBag className="mr-2 h-4 w-4" />
               <span className="text-sm">{item.store.name}</span>
             </div>
-            <div className="mb-2 flex items-center justify-between">
-              <div className="flex items-center">
+            <div className="flex justify-between">
+              <div className="flex flex-col justify-end gap-2">
+                <div className="flex items-baseline">
+                  <span className="text-2xl font-bold text-indigo-700">
+                    {item.quantity}
+                  </span>
+                  <span className="ml-1 text-indigo-600">{item.unit}</span>
+                </div>
+                <div className="text-sm text-indigo-600">
+                  Price per {item.unit}: ~${item.pricePerUnit.toFixed(2)}/
+                  {item.unit}
+                </div>
+              </div>
+              <div className="flex flex-col justify-end gap-2">
+                <div className="flex items-center justify-end">
+                  <DollarSign className="h-5 w-5 text-green-600" />
+                  <span className="text-3xl font-bold text-green-700">
+                    {item.price}
+                  </span>
+                </div>
+                {item.labels.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {item.labels.map(({ id, name }) => (
+                      <Badge
+                        key={id}
+                        variant="secondary"
+                        className="cursor-pointer bg-indigo-200 text-indigo-800"
+                        onClick={() => onLabelClick?.(name)}
+                      >
+                        <Tag className="mr-1 h-3 w-3" />
+                        {name}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+            {/* <div className="mb-2 flex items-center justify-between">
+              <div className="flex items-baseline">
                 <span className="text-2xl font-bold text-indigo-700">
                   {item.quantity}
                 </span>
@@ -152,7 +189,7 @@ export function GroceryItemCard({
             </div>
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="text-sm text-indigo-600">
-                Price per {item.unit}: ${item.pricePerUnit.toFixed(2)}/
+                Price per {item.unit}: ~${item.pricePerUnit.toFixed(2)}/
                 {item.unit}
               </div>
               <div className="flex flex-wrap gap-2">
@@ -168,7 +205,7 @@ export function GroceryItemCard({
                   </Badge>
                 ))}
               </div>
-            </div>
+            </div> */}
           </div>
         </CardContent>
       </Card>
