@@ -7,7 +7,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { GroceryItem } from "@/graphql/query";
@@ -75,42 +74,38 @@ export function GroceryItemCard({
                 )}
               </h3>
               <div className="flex space-x-2">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => onEdit(item)}
-                        className="text-indigo-600 hover:bg-indigo-200 hover:text-indigo-800"
-                      >
-                        <Edit2 className="h-4 w-4" />
-                        <span className="sr-only">Edit item</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Edit item</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => onDelete(item.id)}
-                        className="text-red-500 hover:bg-red-100 hover:text-red-700"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                        <span className="sr-only">Delete item</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Delete item</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onEdit(item)}
+                      className="text-indigo-600 hover:bg-indigo-200 hover:text-indigo-800"
+                    >
+                      <Edit2 className="h-4 w-4" />
+                      <span className="sr-only">Edit item</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Edit item</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onDelete(item.id)}
+                      className="text-red-500 hover:bg-red-100 hover:text-red-700"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      <span className="sr-only">Delete item</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Delete item</p>
+                  </TooltipContent>
+                </Tooltip>
               </div>
             </div>
             <div
