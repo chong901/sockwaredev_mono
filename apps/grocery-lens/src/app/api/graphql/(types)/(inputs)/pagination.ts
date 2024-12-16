@@ -1,6 +1,6 @@
 import { Field, InputType, Int } from "type-graphql";
 
-@InputType()
+@InputType("Pagination")
 export class Pagination {
   @Field(() => Int)
   limit: number;

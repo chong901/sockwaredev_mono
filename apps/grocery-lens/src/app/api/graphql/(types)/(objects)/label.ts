@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from "type-graphql";
 
-@ObjectType()
+@ObjectType("Label")
 export class Label {
   @Field(() => ID)
   id: string;

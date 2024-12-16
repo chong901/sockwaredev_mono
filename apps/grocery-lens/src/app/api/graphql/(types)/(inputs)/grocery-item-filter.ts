@@ -1,6 +1,6 @@
 import { Field, InputType } from "type-graphql";
 
-@InputType()
+@InputType("GroceryItemFilter")
 export class GroceryItemFilter {
   @Field(() => [String])
   stores: string[];
