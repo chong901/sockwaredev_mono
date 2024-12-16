@@ -12,6 +12,7 @@ import {
 import { GroceryItem } from "@/graphql/query";
 import { motion } from "framer-motion";
 import {
+  Copy,
   DollarSign,
   Edit2,
   ExternalLink,
@@ -31,6 +32,16 @@ const shimmer = `
   }
 `;
 
+type GroceryItemCardProps = {
+  item: GroceryItem;
+  onEdit: (item: GroceryItem) => void;
+  onDelete: (id: string) => void;
+  className?: string;
+  onLabelClick?: (label: string) => void;
+  onStoreClick?: (store: string) => void;
+  onCopy?: (item: GroceryItem) => void;
+};
+
 export function GroceryItemCard({
   item,
   onEdit,
@@ -38,14 +49,8 @@ export function GroceryItemCard({
   className,
   onLabelClick,
   onStoreClick,
-}: {
-  item: GroceryItem;
-  onEdit: (item: GroceryItem) => void;
-  onDelete: (id: string) => void;
-  className?: string;
-  onLabelClick?: (label: string) => void;
-  onStoreClick?: (store: string) => void;
-}) {
+  onCopy,
+}: GroceryItemCardProps) {
   return (
     <motion.div
       layout
@@ -88,6 +93,22 @@ export function GroceryItemCard({
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>Edit item</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onCopy?.(item)}
+                      className="text-indigo-600 hover:bg-indigo-200 hover:text-indigo-800"
+                    >
+                      <Copy className="h-4 w-4" />
+                      <span className="sr-only">Copy item</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Copy item</p>
                   </TooltipContent>
                 </Tooltip>
                 <Tooltip>

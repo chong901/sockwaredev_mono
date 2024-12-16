@@ -71,27 +71,30 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 
-export const editingItemAtom = atom<GroceryItem | undefined>(undefined);
+export const editingItemAtom = atom<
+  (Omit<GroceryItem, "id"> & { id?: string }) | undefined
+>(undefined);
 export const isEditModalOpenAtom = atom(false);
 
 const formSchema = z.object({
   id: z.string().optional(),
   itemName: z.string().min(1, { message: "Item name is required" }),
-  storeId: z.string().min(1, { message: "Store is required" }),
+  storeId: z
+    .string({ message: "Store is required" })
+    .min(1, { message: "Store is required" }),
   price: z
     .number({
-      required_error: "Price is required",
-      invalid_type_error: "Price must be a positive number.",
+      message: "Price is required",
     })
-    .min(0, { message: "Price must be a positive number" }),
+    .gt(0, { message: "Price must be a positive number" }),
   quantity: z
     .number({
-      required_error: "Price is required",
-      invalid_type_error: "Price is required",
+      message: "Quantity is required",
     })
-    .min(0, { message: "quentity must be a positive number" }),
+    .gt(0, { message: "Quantity must be a positive number" }),
   unit: z.enum(["gram", "bag", "kilogram", "piece", "liter", "box"], {
     required_error: "Unit is required",
+    message: "Unit is required",
   }),
   labels: z.array(z.string()),
   url: z.string().url().optional(),
@@ -148,14 +151,7 @@ export function GroceryItemFormModal({
     register,
     control,
     handleSubmit,
-    formState: {
-      errors,
-      isValid,
-      touchedFields,
-      dirtyFields,
-      isDirty,
-      isSubmitting,
-    },
+    formState: { errors, touchedFields, dirtyFields, isSubmitting },
     setValue,
     getValues,
     trigger,
@@ -174,8 +170,8 @@ export function GroceryItemFormModal({
     },
   });
 
-  const isSubmitButtonEnable = isValid && isDirty && !isSubmitting;
-  const isEditing = !!item;
+  const isSubmitButtonEnable = !isSubmitting;
+  const isEditing = !!item?.id;
 
   const unitOptions = ["gram", "bag", "kilogram", "piece", "liter", "box"];
 
@@ -405,10 +401,9 @@ export function GroceryItemFormModal({
                 </Popover>
               )}
             />
-            {errors.storeId &&
-              (touchedFields.storeId || dirtyFields.storeId) && (
-                <p className="text-sm text-red-500">{errors.storeId.message}</p>
-              )}
+            {errors.storeId && (
+              <p className="text-sm text-red-500">{errors.storeId.message}</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -431,7 +426,7 @@ export function GroceryItemFormModal({
                   : "",
               )}
             />
-            {errors.price && (touchedFields.price || dirtyFields.price) && (
+            {errors.price && (
               <p className="text-sm text-red-500">{errors.price.message}</p>
             )}
           </div>
@@ -456,12 +451,11 @@ export function GroceryItemFormModal({
                       : "",
                   )}
                 />
-                {errors.quantity &&
-                  (touchedFields.quantity || dirtyFields.quantity) && (
-                    <p className="text-sm text-red-500">
-                      {errors.quantity.message}
-                    </p>
-                  )}
+                {errors.quantity && (
+                  <p className="text-sm text-red-500">
+                    {errors.quantity.message}
+                  </p>
+                )}
               </div>
               <div className="flex-1">
                 <Controller
@@ -497,7 +491,7 @@ export function GroceryItemFormModal({
                     </Select>
                   )}
                 />
-                {errors.unit && (touchedFields.unit || dirtyFields.unit) && (
+                {errors.unit && (
                   <p className="text-sm text-red-500">{errors.unit.message}</p>
                 )}
               </div>
@@ -612,7 +606,7 @@ export function GroceryItemFormModal({
                 </Popover>
               )}
             />
-            {errors.labels && (touchedFields.labels || dirtyFields.labels) && (
+            {errors.labels && (
               <p className="text-sm text-red-500">{errors.labels.message}</p>
             )}
           </div>
@@ -630,11 +624,9 @@ export function GroceryItemFormModal({
                   placeholder="Enter the link to the item"
                   className="border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500"
                 />
-                {errors.url &&
-                  field.value &&
-                  (touchedFields.url || dirtyFields.url) && (
-                    <p className="text-sm text-red-500">{errors.url.message}</p>
-                  )}
+                {errors.url && (
+                  <p className="text-sm text-red-500">{errors.url.message}</p>
+                )}
               </div>
             )}
           />

@@ -68,6 +68,11 @@ export function GroceryListComponent() {
     setEditItemModalOpen(true);
   };
 
+  const handleCopy = (item: GroceryItem) => {
+    setEditingItem({ ...item, id: undefined });
+    setEditItemModalOpen(true);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -145,6 +150,7 @@ export function GroceryListComponent() {
                   item={item}
                   onDelete={handleDelete}
                   onEdit={handleEdit}
+                  onCopy={handleCopy}
                   className="mb-4"
                   onLabelClick={addLabelFilter}
                   onStoreClick={addStoreFilter}
