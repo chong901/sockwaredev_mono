@@ -10,16 +10,37 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   GetLabelsQuery,
   GetStoresQuery,
 } from "@/graphql-codegen/frontend/graphql";
 import { getLabelQuery, getStoresQuery } from "@/graphql/query";
-import { useGroceryListFilter } from "@/hooks/use-grocery-list-filter";
+import { SortBy, useGroceryListFilter } from "@/hooks/use-grocery-list-filter";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@apollo/client";
 import debounce from "lodash.debounce";
 import { Check, Filter, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+
+type SortByOption = {
+  value: SortBy;
+  label: string;
+};
+
+const sortByValues: SortByOption[] = [
+  { value: "name", label: "Name" },
+  { value: "recency", label: "Recency" },
+  { value: "lowestPrice", label: "Lowest Price" },
+  { value: "highestPrice", label: "Highest Price" },
+  { value: "lowestPricePerUnit", label: "Lowest Price per unit" },
+  { value: "highestPricePerUnit", label: "Highest Price per unit" },
+];
 
 export function GroceryFilterComponent() {
   const { data: storeData } = useQuery<GetStoresQuery>(getStoresQuery);
@@ -31,12 +52,15 @@ export function GroceryFilterComponent() {
     labels: appliedLabels,
     stores: appliedStores,
     keyword,
+    sortBy,
+    onSortByChange,
     onSearchChange,
     onFilterChange,
     resetFilters,
   } = useGroceryListFilter();
   const [search, setSearch] = useState(keyword);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isSortByOpen, setIsSortByOpen] = useState(false);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedHandleSearchChange = useCallback(
@@ -68,7 +92,7 @@ export function GroceryFilterComponent() {
 
   const applyFilters = () => {
     onFilterChange({ stores: selectedStores, labels: selectedLabels });
-    setIsOpen(false);
+    setIsFilterOpen(false);
   };
 
   const removeFilter = (type: "store" | "label", value: string) => {
@@ -111,13 +135,36 @@ export function GroceryFilterComponent() {
         onClear={handleClearSearch}
         placeholder="Search groceries"
       />
-      <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <Label>Sort By</Label>
+      <Select
+        open={isSortByOpen}
+        onOpenChange={setIsSortByOpen}
+        onValueChange={onSortByChange}
+        value={sortBy}
+      >
+        <SelectTrigger
+          className={cn(
+            "w-fit border-purple-300 bg-white text-purple-600 hover:bg-purple-100 hover:text-black",
+            isSortByOpen ? "border-purple-500" : "",
+          )}
+        >
+          <SelectValue placeholder="Sort By" />
+        </SelectTrigger>
+        <SelectContent>
+          {sortByValues.map(({ value, label }) => (
+            <SelectItem key={value} value={value}>
+              {label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
             className={cn(
               "border-purple-300 bg-white text-purple-600 hover:bg-purple-100",
-              isOpen ? "border-purple-500" : "",
+              isFilterOpen ? "border-purple-500" : "",
             )}
           >
             <Filter className="mr-2 h-4 w-4" />

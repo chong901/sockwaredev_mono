@@ -1,6 +1,14 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef } from "react";
 
+export type SortBy =
+  | "name"
+  | "recency"
+  | "lowestPrice"
+  | "highestPrice"
+  | "lowestPricePerUnit"
+  | "highestPricePerUnit";
+
 export const useGroceryListFilter = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -10,6 +18,7 @@ export const useGroceryListFilter = () => {
   const stores = searchParams.get("stores")?.split(",") ?? [];
   const labels = searchParams.get("labels")?.split(",") ?? [];
   const keyword = searchParams.get("keyword") ?? "";
+  const sortBy: SortBy = (searchParams.get("sortBy") as SortBy) ?? "recency";
 
   useEffect(() => {
     searchParamsRef.current = searchParams;
@@ -30,6 +39,15 @@ export const useGroceryListFilter = () => {
         params.delete("labels");
       }
 
+      router.push(`?${params.toString()}`);
+    },
+    [router],
+  );
+
+  const onSortByChange = useCallback(
+    (sortBy: string) => {
+      const params = new URLSearchParams(searchParamsRef.current.toString());
+      params.set("sortBy", sortBy);
       router.push(`?${params.toString()}`);
     },
     [router],
@@ -85,6 +103,8 @@ export const useGroceryListFilter = () => {
     stores,
     labels,
     keyword,
+    sortBy,
+    onSortByChange,
     onFilterChange,
     onSearchChange,
     addLabelFilter,
