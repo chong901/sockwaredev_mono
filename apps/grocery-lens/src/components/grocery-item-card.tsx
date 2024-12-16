@@ -123,7 +123,7 @@ export function GroceryItemCard({
             <div className="mb-2 flex items-center justify-between">
               <div className="flex items-center">
                 <span className="text-2xl font-bold text-indigo-700">
-                  {item.amount}
+                  {item.quantity}
                 </span>
                 <span className="ml-1 text-indigo-600">{item.unit}</span>
               </div>

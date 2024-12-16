@@ -89,7 +89,7 @@ const formSchema = z.object({
       required_error: "Price is required",
       invalid_type_error: "Price is required",
     })
-    .min(0, { message: "Amount must be a positive number" }),
+    .min(0, { message: "quentity must be a positive number" }),
   unit: z.enum(["gram", "bag", "kilogram", "piece", "liter", "box"], {
     required_error: "Unit is required",
   }),
@@ -104,7 +104,7 @@ const defaultFormData = {
   itemName: "",
   store: "",
   price: 0,
-  amount: 0,
+  quantity: 0,
   unit: undefined,
   labels: [],
   notes: "",
