@@ -1,3 +1,2 @@
-src/edgedb/edgeql-js/
 src/graphql-codegen/**/*
 migrations/*
