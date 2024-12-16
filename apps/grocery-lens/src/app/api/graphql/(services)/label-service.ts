@@ -10,6 +10,9 @@ export class LabelService {
   };
 
   static getUserLabelsByIds = async (userId: string, labelIds: string[]) => {
+    if (labelIds.length === 0) {
+      return [];
+    }
     return db
       .selectFrom("label")
       .selectAll()

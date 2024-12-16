@@ -5,7 +5,9 @@ import { GroceryItemFilter } from "@/app/api/graphql/(types)/(inputs)/grocery-it
 import { Pagination } from "@/app/api/graphql/(types)/(inputs)/pagination";
 import { Label } from "@/app/api/graphql/(types)/(objects)/label";
 import { db } from "@/db/db";
+import { DB } from "@/db/types";
 import DataLoader from "dataloader";
+import { Kysely } from "kysely";
 
 const groceryItemLabelDataloader = new DataLoader<string, Label[]>(
   async (groceryItemIds) => {
@@ -26,6 +28,7 @@ const groceryItemLabelDataloader = new DataLoader<string, Label[]>(
     );
     return groceryItemIds.map((id) => dataMap[id] || []);
   },
+  { cache: false },
 );
 
 export class GroceryItemService {
@@ -85,15 +88,7 @@ export class GroceryItemService {
         .returningAll()
         .execute();
       const groceryItemId = result[0]!.id;
-      await tx
-        .insertInto("grocery_item_label")
-        .values(
-          labels.map((label) => ({
-            grocery_item_id: groceryItemId,
-            label_id: label.id,
-          })),
-        )
-        .execute();
+      await this.addGroceryItemLabel(groceryItemId, labels, tx);
       return result[0];
     });
     return newGroceryItem;
@@ -132,15 +127,7 @@ export class GroceryItemService {
         .deleteFrom("grocery_item_label")
         .where("grocery_item_id", "=", itemId)
         .execute();
-      await tx
-        .insertInto("grocery_item_label")
-        .values(
-          labels.map((label) => ({
-            grocery_item_id: itemId,
-            label_id: label.id,
-          })),
-        )
-        .execute();
+      await this.addGroceryItemLabel(itemId, labels, tx);
       return result[0];
     });
     return updatedGroceryItem;
@@ -165,5 +152,23 @@ export class GroceryItemService {
       return result[0];
     });
     return result;
+  };
+
+  private static addGroceryItemLabel = async (
+    groceryItemId: string,
+    labels: Label[],
+    tx: Kysely<DB>,
+  ) => {
+    if (labels.length === 0) return [];
+    return tx
+      .insertInto("grocery_item_label")
+      .values(
+        labels.map((label) => ({
+          grocery_item_id: groceryItemId,
+          label_id: label.id,
+        })),
+      )
+      .returningAll()
+      .execute();
   };
 }

@@ -2,18 +2,21 @@ import { Store } from "@/app/api/graphql/(types)/(objects)/store";
 import { db } from "@/db/db";
 import Dataloader from "dataloader";
 
-const storeLoader = new Dataloader<string, Store>(async (ids) => {
-  const data = await db
-    .selectFrom("store")
-    .selectAll()
-    .where("id", "in", ids)
-    .execute();
-  const dataMap = data.reduce<Record<string, Store>>((acc, store) => {
-    acc[store.id] = store;
-    return acc;
-  }, {});
-  return ids.map((id) => dataMap[id]!);
-});
+const storeLoader = new Dataloader<string, Store>(
+  async (ids) => {
+    const data = await db
+      .selectFrom("store")
+      .selectAll()
+      .where("id", "in", ids)
+      .execute();
+    const dataMap = data.reduce<Record<string, Store>>((acc, store) => {
+      acc[store.id] = store;
+      return acc;
+    }, {});
+    return ids.map((id) => dataMap[id]!);
+  },
+  { cache: false },
+);
 
 export class StoreService {
   static getUserStores = async (userId: string) => {
