@@ -22,7 +22,6 @@
     "clsx": "^2.1.1",
     "cmdk": "1.0.0",
     "dataloader": "^2.2.2",
-    "edgedb": "^1.5.12",
     "framer-motion": "^11.5.4",
     "graphql": "^16.9.0",
     "graphql-tag": "^2.12.6",
@@ -44,7 +43,6 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@edgedb/generate": "^0.5.6",
     "@graphql-codegen/cli": "^5.0.2",
     "@graphql-codegen/typescript": "^4.0.9",
     "@graphql-codegen/typescript-resolvers": "^4.2.1",
@@ -69,7 +67,6 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "db:generate": "npx @edgedb/generate interfaces && npx @edgedb/generate edgeql-js --out src/edgedb/edgeql-js",
     "dev": "next dev",
     "graphql:codegen": "pnpm graphql:codegen:be && pnpm graphql:codegen:fe",
     "graphql:codegen:be": "graphql-codegen --config codegen-backend.ts",
