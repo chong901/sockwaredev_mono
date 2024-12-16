@@ -15,8 +15,6 @@ const schema = await buildSchema({
 });
 
 const apolloServer = new ApolloServer({
-  // typeDefs,
-  // resolvers,
   schema,
 });
 
