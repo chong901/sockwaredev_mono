@@ -140,6 +140,10 @@ export function GroceryFilterComponent() {
 
   const totalAppliedFilters = appliedStores.length + appliedLabels.length;
 
+  const hasFilterData =
+    (storeData?.getStores?.length ?? 0) > 0 ||
+    (labelData?.getLabels?.length ?? 0) > 0;
+
   return (
     <div className="flex flex-wrap items-center gap-2">
       <SearchInput
@@ -189,55 +193,64 @@ export function GroceryFilterComponent() {
         </PopoverTrigger>
         <PopoverContent className="w-80" align="start">
           <div className="grid gap-4">
-            <div className="space-y-2">
-              <h4 className="font-medium leading-none">Stores</h4>
-              <div className="grid grid-cols-2 gap-2">
-                {storeData?.getStores?.map(({ id, name }) => (
-                  <Label
-                    key={id}
-                    className={`flex cursor-pointer items-center space-x-2 rounded-md border p-2 ${
-                      selectedStores.includes(name)
-                        ? "border-blue-600 bg-blue-100"
-                        : ""
-                    }`}
-                  >
-                    <Input
-                      type="checkbox"
-                      checked={selectedStores.includes(name)}
-                      onChange={() => handleStoreChange(name)}
-                      className="sr-only"
-                    />
-                    <span>{name}</span>
-                    {selectedStores.includes(name) && (
-                      <Check className="h-4 w-4 text-blue-600" />
-                    )}
-                  </Label>
-                ))}
+            {!hasFilterData && (
+              <div>
+                <p className="text-gray-600">No filter data available.</p>
               </div>
-            </div>
-            <div className="space-y-2">
-              <h4 className="font-medium leading-none">Labels</h4>
-              <div className="flex flex-wrap gap-2">
-                {labelData?.getLabels?.map(({ id, name }) => (
-                  <Label
-                    key={id}
-                    className={`flex cursor-pointer items-center space-x-2 rounded-full px-3 py-1 text-sm ${
-                      selectedLabels.includes(name)
-                        ? "bg-purple-600 text-white"
-                        : "bg-gray-200 text-gray-800"
-                    }`}
-                  >
-                    <Input
-                      type="checkbox"
-                      checked={selectedLabels.includes(name)}
-                      onChange={() => handleLabelChange(name)}
-                      className="sr-only"
-                    />
-                    <span>{name}</span>
-                  </Label>
-                ))}
+            )}
+            {(storeData?.getStores?.length ?? 0) > 0 && (
+              <div className="space-y-2">
+                <h4 className="font-medium leading-none">Stores</h4>
+                <div className="grid grid-cols-2 gap-2">
+                  {storeData?.getStores?.map(({ id, name }) => (
+                    <Label
+                      key={id}
+                      className={`flex cursor-pointer items-center space-x-2 rounded-md border p-2 ${
+                        selectedStores.includes(name)
+                          ? "border-blue-600 bg-blue-100"
+                          : ""
+                      }`}
+                    >
+                      <Input
+                        type="checkbox"
+                        checked={selectedStores.includes(name)}
+                        onChange={() => handleStoreChange(name)}
+                        className="sr-only"
+                      />
+                      <span>{name}</span>
+                      {selectedStores.includes(name) && (
+                        <Check className="h-4 w-4 text-blue-600" />
+                      )}
+                    </Label>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
+            {(labelData?.getLabels?.length ?? 0) > 0 && (
+              <div className="space-y-2">
+                <h4 className="font-medium leading-none">Labels</h4>
+                <div className="flex flex-wrap gap-2">
+                  {labelData?.getLabels?.map(({ id, name }) => (
+                    <Label
+                      key={id}
+                      className={`flex cursor-pointer items-center space-x-2 rounded-full px-3 py-1 text-sm ${
+                        selectedLabels.includes(name)
+                          ? "bg-purple-600 text-white"
+                          : "bg-gray-200 text-gray-800"
+                      }`}
+                    >
+                      <Input
+                        type="checkbox"
+                        checked={selectedLabels.includes(name)}
+                        onChange={() => handleLabelChange(name)}
+                        className="sr-only"
+                      />
+                      <span>{name}</span>
+                    </Label>
+                  ))}
+                </div>
+              </div>
+            )}
             <Button
               onClick={applyFilters}
               className="w-full bg-purple-600 text-white hover:bg-purple-700"
