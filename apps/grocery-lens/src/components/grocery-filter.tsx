@@ -1,19 +1,10 @@
 "use client";
 
 import { SearchInput } from "@/components/search-input";
-import { StoreLabelFilter } from "@/components/store-label-filter";
+import StoreLabelFilter from "@/components/store-label-filter";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  SortByValue,
-  useGroceryListFilter,
-} from "@/hooks/use-grocery-list-filter";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SortByValue, useGroceryListFilter } from "@/hooks/use-grocery-list-filter";
 import { cn } from "@/lib/utils";
 import debounce from "lodash.debounce";
 import { useCallback, useEffect, useState } from "react";
@@ -32,8 +23,7 @@ const sortByValues: SortByOption[] = [
 ];
 
 export function GroceryFilterComponent() {
-  const { keyword, sortBy, onSortByChange, onSearchChange } =
-    useGroceryListFilter();
+  const { keyword, sortBy, onSortByChange, onSearchChange } = useGroceryListFilter();
   const [search, setSearch] = useState(keyword);
 
   const [isSortByOpen, setIsSortByOpen] = useState(false);
@@ -66,27 +56,11 @@ export function GroceryFilterComponent() {
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <SearchInput
-        value={search}
-        onChange={handleSearchChange}
-        className="bg-white"
-        onClear={handleClearSearch}
-        placeholder="Search groceries"
-      />
+      <SearchInput value={search} onChange={handleSearchChange} className="bg-white" onClear={handleClearSearch} placeholder="Search groceries" />
       <div className="flex items-center gap-2">
         <Label>Sort By</Label>
-        <Select
-          open={isSortByOpen}
-          onOpenChange={setIsSortByOpen}
-          onValueChange={onSortByChange}
-          value={sortBy}
-        >
-          <SelectTrigger
-            className={cn(
-              "w-fit border-purple-300 bg-white text-purple-600 hover:bg-purple-100 hover:text-black",
-              isSortByOpen ? "border-purple-500" : "",
-            )}
-          >
+        <Select open={isSortByOpen} onOpenChange={setIsSortByOpen} onValueChange={onSortByChange} value={sortBy}>
+          <SelectTrigger className={cn("w-fit border-purple-300 bg-white text-purple-600 hover:bg-purple-100 hover:text-black", isSortByOpen ? "border-purple-500" : "")}>
             <SelectValue placeholder="Sort By" />
           </SelectTrigger>
           <SelectContent>
