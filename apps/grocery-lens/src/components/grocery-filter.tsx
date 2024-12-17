@@ -149,29 +149,31 @@ export function GroceryFilterComponent() {
         onClear={handleClearSearch}
         placeholder="Search groceries"
       />
-      <Label>Sort By</Label>
-      <Select
-        open={isSortByOpen}
-        onOpenChange={setIsSortByOpen}
-        onValueChange={onSortByChange}
-        value={sortBy}
-      >
-        <SelectTrigger
-          className={cn(
-            "w-fit border-purple-300 bg-white text-purple-600 hover:bg-purple-100 hover:text-black",
-            isSortByOpen ? "border-purple-500" : "",
-          )}
+      <div className="flex items-center gap-2">
+        <Label>Sort By</Label>
+        <Select
+          open={isSortByOpen}
+          onOpenChange={setIsSortByOpen}
+          onValueChange={onSortByChange}
+          value={sortBy}
         >
-          <SelectValue placeholder="Sort By" />
-        </SelectTrigger>
-        <SelectContent>
-          {sortByValues.map(({ value, label }) => (
-            <SelectItem key={value} value={value}>
-              {label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+          <SelectTrigger
+            className={cn(
+              "w-fit border-purple-300 bg-white text-purple-600 hover:bg-purple-100 hover:text-black",
+              isSortByOpen ? "border-purple-500" : "",
+            )}
+          >
+            <SelectValue placeholder="Sort By" />
+          </SelectTrigger>
+          <SelectContent>
+            {sortByValues.map(({ value, label }) => (
+              <SelectItem key={value} value={value}>
+                {label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
       <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
         <PopoverTrigger asChild>
           <Button
