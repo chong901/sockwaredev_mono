@@ -83,6 +83,9 @@ importers:
       dataloader:
         specifier: ^2.2.2
         version: 2.2.2
+      date-fns:
+        specifier: ^3.6.0
+        version: 3.6.0
       framer-motion:
         specifier: ^11.5.4
         version: 11.5.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)

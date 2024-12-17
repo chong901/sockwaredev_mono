@@ -10,6 +10,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { GroceryItem } from "@/graphql/query";
+import { format } from "date-fns";
 import { motion } from "framer-motion";
 import {
   Copy,
@@ -145,8 +146,15 @@ export function GroceryItemCard({
                   <span className="ml-1 text-indigo-600">{item.unit}</span>
                 </div>
                 <div className="text-sm text-indigo-600">
-                  Price per {item.unit}: ~${item.pricePerUnit.toFixed(2)}/
-                  {item.unit}
+                  Price per {item.unit}: ~
+                  <span className="font-bold">
+                    ${item.pricePerUnit.toFixed(2)}
+                  </span>
+                  /{item.unit}
+                </div>
+                <div className="text-sm text-indigo-600">
+                  Created At:{" "}
+                  {format(new Date(item.created_at), "MMM dd, yyyy")}
                 </div>
               </div>
               <div className="flex flex-col justify-end gap-2">
@@ -173,39 +181,6 @@ export function GroceryItemCard({
                 )}
               </div>
             </div>
-            {/* <div className="mb-2 flex items-center justify-between">
-              <div className="flex items-baseline">
-                <span className="text-2xl font-bold text-indigo-700">
-                  {item.quantity}
-                </span>
-                <span className="ml-1 text-indigo-600">{item.unit}</span>
-              </div>
-              <div className="flex items-center">
-                <DollarSign className="h-5 w-5 text-green-600" />
-                <span className="text-3xl font-bold text-green-700">
-                  {item.price}
-                </span>
-              </div>
-            </div>
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="text-sm text-indigo-600">
-                Price per {item.unit}: ~${item.pricePerUnit.toFixed(2)}/
-                {item.unit}
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {item.labels.map(({ id, name }) => (
-                  <Badge
-                    key={id}
-                    variant="secondary"
-                    className="cursor-pointer bg-indigo-200 text-indigo-800"
-                    onClick={() => onLabelClick?.(name)}
-                  >
-                    <Tag className="mr-1 h-3 w-3" />
-                    {name}
-                  </Badge>
-                ))}
-              </div>
-            </div> */}
           </div>
         </CardContent>
       </Card>

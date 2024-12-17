@@ -23,5 +23,8 @@ export class GroceryItem {
   @Field({ nullable: true })
   url: string;
 
+  @Field()
+  created_at: Date;
+
   store_id: string;
 }
