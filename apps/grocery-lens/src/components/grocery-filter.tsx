@@ -248,7 +248,7 @@ export function GroceryFilterComponent() {
         </PopoverContent>
       </Popover>
 
-      {(appliedStores.length > 0 || appliedLabels.length > 0) && (
+      {totalAppliedFilters > 0 && (
         <div className="flex flex-wrap items-center gap-2">
           {appliedStores.map((store) => (
             <Button
@@ -274,7 +274,7 @@ export function GroceryFilterComponent() {
               <X className="ml-2 h-3 w-3" />
             </Button>
           ))}
-          {(appliedStores.length > 0 || appliedLabels.length > 0) && (
+          {totalAppliedFilters > 0 && (
             <Button
               variant="ghost"
               size="sm"
