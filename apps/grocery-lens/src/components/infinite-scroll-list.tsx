@@ -25,7 +25,7 @@ export function InfiniteScrollList<T>({
     const observer = new IntersectionObserver(
       (entries) => {
         const first = entries[0];
-        if (first?.isIntersecting && !loading) {
+        if (first?.isIntersecting && !loading && items.length > 0) {
           loadMoreItems();
         }
       },
@@ -42,7 +42,7 @@ export function InfiniteScrollList<T>({
         observer.unobserve(currentLoaderRef);
       }
     };
-  }, [loadMoreItems, loading]);
+  }, [items.length, loadMoreItems, loading]);
 
   return (
     <>
