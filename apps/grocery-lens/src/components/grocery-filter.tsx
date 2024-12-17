@@ -49,8 +49,6 @@ export function GroceryFilterComponent() {
   const { data: storeData } = useQuery<GetStoresQuery>(getStoresQuery);
   const { data: labelData } = useQuery<GetLabelsQuery>(getLabelQuery);
 
-  const [selectedStores, setSelectedStores] = useState<string[]>([]);
-  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   const {
     labels: appliedLabels,
     stores: appliedStores,
@@ -62,6 +60,12 @@ export function GroceryFilterComponent() {
     resetFilters,
   } = useGroceryListFilter();
   const [search, setSearch] = useState(keyword);
+  const [selectedLabels, setSelectedLabels] = useState<string[]>(
+    appliedLabels ?? [],
+  );
+  const [selectedStores, setSelectedStores] = useState<string[]>(
+    appliedStores ?? [],
+  );
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isSortByOpen, setIsSortByOpen] = useState(false);
 
@@ -72,6 +76,13 @@ export function GroceryFilterComponent() {
     }, 300),
     [onSearchChange],
   );
+
+  useEffect(() => {
+    if (isFilterOpen) {
+      setSelectedLabels(appliedLabels);
+      setSelectedStores(appliedStores);
+    }
+  }, [appliedLabels, appliedStores, isFilterOpen]);
 
   useEffect(() => {
     return () => debouncedHandleSearchChange.cancel();
