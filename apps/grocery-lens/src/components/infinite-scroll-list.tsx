@@ -8,6 +8,7 @@ type InfiniteScrollListProps<T> = {
   loading: boolean;
   children: (item: T) => React.ReactNode;
   loadingComponent?: React.ReactNode;
+  emptyComponent?: React.ReactNode;
 };
 
 export function InfiniteScrollList<T>({
@@ -16,6 +17,7 @@ export function InfiniteScrollList<T>({
   loading,
   children,
   loadingComponent = <p className="text-gray-500">Loading more items...</p>,
+  emptyComponent,
 }: InfiniteScrollListProps<T>) {
   const loaderRef = useRef(null);
 
@@ -44,7 +46,7 @@ export function InfiniteScrollList<T>({
 
   return (
     <>
-      {items.map(children)}
+      {items.length === 0 ? emptyComponent : items.map(children)}
       <div ref={loaderRef} className="flex items-center justify-center">
         {loading && loadingComponent}
       </div>

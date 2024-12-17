@@ -1,5 +1,6 @@
 "use client";
 
+import EmptyGroceryList from "@/components/empty-grocery-list";
 import { GroceryFilterComponent } from "@/components/grocery-filter";
 import {
   GroceryItemCard,
@@ -133,6 +134,11 @@ export function GroceryListComponent() {
             </>
           ) : (
             <InfiniteScrollList
+              emptyComponent={
+                <EmptyGroceryList
+                  onCreateNewItem={() => setEditItemModalOpen(true)}
+                />
+              }
               items={
                 groceryItems?.getGroceryItems ??
                 previousData?.getGroceryItems ??
