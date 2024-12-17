@@ -125,10 +125,10 @@ export function Header() {
               </div>
               <div className="ml-3">
                 <div className="text-base font-medium leading-none">
-                  Username
+                  {session.data?.user?.name ?? ""}
                 </div>
                 <div className="text-sm font-medium leading-none text-purple-200">
-                  user@example.com
+                  {session.data?.user?.email ?? ""}
                 </div>
               </div>
             </div>

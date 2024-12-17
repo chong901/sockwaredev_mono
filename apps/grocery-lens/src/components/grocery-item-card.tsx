@@ -136,7 +136,7 @@ export function GroceryItemCard({
               <ShoppingBag className="mr-2 h-4 w-4" />
               <span className="text-sm">{item.store.name}</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-2">
               <div className="flex flex-col justify-end gap-2">
                 <div className="flex items-baseline">
                   <span className="text-2xl font-bold text-indigo-700">
@@ -157,7 +157,7 @@ export function GroceryItemCard({
                   </span>
                 </div>
                 {item.labels.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap justify-end gap-2">
                     {item.labels.map(({ id, name }) => (
                       <Badge
                         key={id}
