@@ -25,75 +25,83 @@ export const useGroceryListFilter = () => {
     searchParamsRef.current = searchParams;
   }, [searchParams]);
 
-  const onFilterChange = useCallback(
-    (filters: { stores: string[]; labels: string[] }) => {
+  const updateSearchParams = useCallback(
+    (callback: (params: URLSearchParams) => void) => {
       const params = new URLSearchParams(searchParamsRef.current.toString());
-      params.delete("stores");
-      if (filters.stores.length > 0) {
-        filters.stores.forEach((store) => params.append("stores", store));
-      }
-
-      params.delete("labels");
-      if (filters.labels.length > 0) {
-        filters.labels.forEach((label) => params.append("labels", label));
-      }
-
+      callback(params);
       router.push(`?${params.toString()}`);
     },
     [router],
+  );
+
+  const onFilterChange = useCallback(
+    (filters: { stores: string[]; labels: string[] }) => {
+      updateSearchParams((params) => {
+        params.delete("stores");
+        if (filters.stores.length > 0) {
+          filters.stores.forEach((store) => params.append("stores", store));
+        }
+        params.delete("labels");
+        if (filters.labels.length > 0) {
+          filters.labels.forEach((label) => params.append("labels", label));
+        }
+      });
+    },
+    [updateSearchParams],
   );
 
   const onSortByChange = useCallback(
     (sortBy: string) => {
-      const params = new URLSearchParams(searchParamsRef.current.toString());
-      params.set("sortBy", sortBy);
-      router.push(`?${params.toString()}`);
+      updateSearchParams((params) => {
+        params.set("sortBy", sortBy);
+      });
     },
-    [router],
+    [updateSearchParams],
   );
 
   const onSearchChange = useCallback(
     (keyword: string) => {
-      const params = new URLSearchParams(searchParamsRef.current.toString());
-      if (keyword) {
-        params.set("keyword", keyword);
-      } else {
-        params.delete("keyword");
-      }
-
-      router.push(`?${params.toString()}`);
+      updateSearchParams((params) => {
+        if (keyword) {
+          params.set("keyword", keyword);
+        } else {
+          params.delete("keyword");
+        }
+      });
     },
-    [router],
+    [updateSearchParams],
   );
 
   const resetFilters = useCallback(() => {
-    const params = new URLSearchParams(searchParamsRef.current.toString());
-    params.delete("stores");
-    params.delete("labels");
-    params.delete("keyword");
-    router.push(`?${params.toString()}`);
-  }, [router]);
+    updateSearchParams((params) => {
+      params.delete("stores");
+      params.delete("labels");
+      params.delete("keyword");
+    });
+  }, [updateSearchParams]);
 
   const addLabelFilter = useCallback(
     (label: string) => {
-      const params = new URLSearchParams(searchParamsRef.current.toString());
-      const labels = params.getAll("labels") ?? [];
-      if (labels.includes(label)) return;
-      params.append("labels", label);
-      router.push(`?${params.toString()}`);
+      updateSearchParams((params) => {
+        const labels = params.getAll("labels") ?? [];
+        if (!labels.includes(label)) {
+          params.append("labels", label);
+        }
+      });
     },
-    [router],
+    [updateSearchParams],
   );
 
   const addStoreFilter = useCallback(
     (store: string) => {
-      const params = new URLSearchParams(searchParamsRef.current.toString());
-      const stores = params.getAll("stores") ?? [];
-      if (stores.includes(store)) return;
-      params.append("stores", store);
-      router.push(`?${params.toString()}`);
+      updateSearchParams((params) => {
+        const stores = params.getAll("stores") ?? [];
+        if (!stores.includes(store)) {
+          params.append("stores", store);
+        }
+      });
     },
-    [router],
+    [updateSearchParams],
   );
 
   return {

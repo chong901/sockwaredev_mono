@@ -102,15 +102,7 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     mode: "onChange",
-    defaultValues: {
-      itemName: "",
-      storeId: "",
-      price: 0,
-      quantity: 0,
-      unit: undefined,
-      labels: [],
-      notes: "",
-    },
+    defaultValues: defaultFormData,
   });
 
   const isSubmitButtonEnable = !isSubmitting;
