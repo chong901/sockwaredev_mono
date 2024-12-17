@@ -10,23 +10,25 @@ export const useGroceryListFilter = () => {
   // use ref to avoid recreating those callbacks
   const searchParamsRef = useRef(searchParams);
 
+  // if we use searchParams directly in the useMemo, it causes unnecessary re-renders since as long as one of the params changes, the searchParams object will be recreated
+  // so instead of using searchParams in the dependency array, we extract the values we need from it and use them in the dependency array
+  const storesSearchParam = searchParams.get("stores");
+  const labelsSearchParam = searchParams.get("labels");
+  const keywordSearchParam = searchParams.get("keyword");
+  const sortBySearchParam = searchParams.get("sortBy");
+
   const stores = useMemo(
-    () => searchParams.get("stores")?.split(",") ?? [],
-    [searchParams],
+    () => storesSearchParam?.split(",") ?? [],
+    [storesSearchParam],
   );
   const labels = useMemo(
-    () => searchParams.get("labels")?.split(",") ?? [],
-    [searchParams],
+    () => labelsSearchParam?.split(",") ?? [],
+    [labelsSearchParam],
   );
-  const keyword = useMemo(
-    () => searchParams.get("keyword") ?? "",
-    [searchParams],
-  );
+  const keyword = useMemo(() => keywordSearchParam ?? "", [keywordSearchParam]);
   const sortBy: GroceryItemSortBy = useMemo(
-    () =>
-      (searchParams.get("sortBy") as GroceryItemSortBy) ??
-      GroceryItemSortBy.Recency,
-    [searchParams],
+    () => (sortBySearchParam as GroceryItemSortBy) ?? GroceryItemSortBy.Recency,
+    [sortBySearchParam],
   );
 
   useEffect(() => {
