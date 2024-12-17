@@ -5,21 +5,12 @@ export async function up(db: Kysely<any>): Promise<void> {
   await withCreatedAtUpdatedAtColumns(
     db.schema
       .createTable("store")
-      .addColumn("id", "uuid", (col) =>
-        col.primaryKey().defaultTo(sql`gen_random_uuid()`),
-      )
+      .addColumn("id", "uuid", (col) => col.primaryKey().defaultTo(sql`gen_random_uuid()`))
       .addColumn("name", "varchar", (col) => col.notNull())
-      .addColumn("user_id", "uuid", (col) =>
-        col.references("user.id").notNull(),
-      ),
+      .addColumn("user_id", "uuid", (col) => col.references("user.id").notNull()),
   ).execute();
 
-  await db.schema
-    .createIndex("store_user_id_name_uniq")
-    .on("store")
-    .columns(["user_id", "name"])
-    .unique()
-    .execute();
+  await db.schema.createIndex("store_user_id_name_uniq").on("store").columns(["user_id", "name"]).unique().execute();
   // up migration code goes here...
   // note: up migrations are mandatory. you must implement this function.
   // For more info, see: https://kysely.dev/docs/migrations

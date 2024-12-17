@@ -2,11 +2,7 @@
 // ^ this file needs the "use client" pragma
 
 import { HttpLink } from "@apollo/client";
-import {
-  ApolloClient,
-  ApolloNextAppProvider,
-  InMemoryCache,
-} from "@apollo/experimental-nextjs-app-support";
+import { ApolloClient, ApolloNextAppProvider, InMemoryCache } from "@apollo/experimental-nextjs-app-support";
 import { getApolloUri } from "@repo/frontend-util/apollo";
 
 // have a function to create a client for you
@@ -53,12 +49,6 @@ function makeClient() {
 }
 
 // you need to create a component to wrap your app in
-export function ApolloWrapper({
-  children,
-}: React.PropsWithChildren): JSX.Element {
-  return (
-    <ApolloNextAppProvider makeClient={makeClient}>
-      {children}
-    </ApolloNextAppProvider>
-  );
+export function ApolloWrapper({ children }: React.PropsWithChildren): JSX.Element {
+  return <ApolloNextAppProvider makeClient={makeClient}>{children}</ApolloNextAppProvider>;
 }

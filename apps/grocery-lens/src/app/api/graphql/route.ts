@@ -22,9 +22,7 @@ const handler = startServerAndCreateNextHandler(apolloServer, {
   context: async () => {
     // can set ENABLE_AUTH as false in local development to bypass auth (for codegen tool)
     const enabledAuth = (process.env.ENABLE_AUTH ?? "true") === "true";
-    const session = (await nextAuth.auth()) as
-      | (Session & { userId: string })
-      | null;
+    const session = (await nextAuth.auth()) as (Session & { userId: string }) | null;
     if (!session && enabledAuth) {
       throw new Error("Unauthorized");
     }

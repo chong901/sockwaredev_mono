@@ -19,10 +19,7 @@ export const useGroceryListFilter = () => {
   const stores = searchParams.getAll("stores") ?? [];
   const labels = searchParams.getAll("labels") ?? [];
   const keyword = useMemo(() => keywordSearchParam ?? "", [keywordSearchParam]);
-  const sortBy: GroceryItemSortBy = useMemo(
-    () => (sortBySearchParam as GroceryItemSortBy) ?? GroceryItemSortBy.Recency,
-    [sortBySearchParam],
-  );
+  const sortBy: GroceryItemSortBy = useMemo(() => (sortBySearchParam as GroceryItemSortBy) ?? GroceryItemSortBy.Recency, [sortBySearchParam]);
 
   useEffect(() => {
     searchParamsRef.current = searchParams;

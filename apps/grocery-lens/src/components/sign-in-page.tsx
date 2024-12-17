@@ -5,11 +5,7 @@ import { getProviders, signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 
-export const SignInPage = ({
-  providers,
-}: {
-  providers: Awaited<ReturnType<typeof getProviders>>;
-}) => {
+export const SignInPage = ({ providers }: { providers: Awaited<ReturnType<typeof getProviders>> }) => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
 
@@ -19,12 +15,8 @@ export const SignInPage = ({
         <div className="mb-6 flex justify-center">
           <GroceryLensLogo className="w-28" />
         </div>
-        <h1 className="mb-6 text-center text-3xl font-bold text-gray-800">
-          Welcome to Grocery Lens!
-        </h1>
-        <p className="mb-8 text-center text-gray-600">
-          Sign in or sign up to continue to your account
-        </p>
+        <h1 className="mb-6 text-center text-3xl font-bold text-gray-800">Welcome to Grocery Lens!</h1>
+        <p className="mb-8 text-center text-gray-600">Sign in or sign up to continue to your account</p>
         {Object.values(providers!).map((provider) => (
           <div key={provider.name} className="mb-4">
             <Button

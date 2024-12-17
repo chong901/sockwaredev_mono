@@ -1,36 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -45,12 +22,7 @@ import {
   UpdateGroceryItemMutation,
   UpdateGroceryItemMutationVariables,
 } from "@/graphql-codegen/frontend/graphql";
-import {
-  addGroceryItemMutation,
-  addLabelMutation,
-  addStoreMutation,
-  updateGroceryItemMutation,
-} from "@/graphql/mutation";
+import { addGroceryItemMutation, addLabelMutation, addStoreMutation, updateGroceryItemMutation } from "@/graphql/mutation";
 import { getLabelQuery, getStoresQuery, GroceryItem } from "@/graphql/query";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -59,29 +31,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CommandList } from "cmdk";
 import { motion } from "framer-motion";
 import { atom, useAtom } from "jotai";
-import {
-  Check,
-  ChevronsUpDown,
-  Loader2,
-  PlusCircle,
-  PlusIcon,
-  ShoppingCart,
-} from "lucide-react";
+import { Check, ChevronsUpDown, Loader2, PlusCircle, PlusIcon, ShoppingCart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 
-export const editingItemAtom = atom<
-  (Omit<GroceryItem, "id"> & { id?: string }) | undefined
->(undefined);
+export const editingItemAtom = atom<(Omit<GroceryItem, "id"> & { id?: string }) | undefined>(undefined);
 export const isEditModalOpenAtom = atom(false);
 
 const formSchema = z.object({
   id: z.string().optional(),
   itemName: z.string().min(1, { message: "Item name is required" }),
-  storeId: z
-    .string({ message: "Store is required" })
-    .min(1, { message: "Store is required" }),
+  storeId: z.string({ message: "Store is required" }).min(1, { message: "Store is required" }),
   price: z
     .number({
       message: "Price is required",
@@ -113,11 +74,7 @@ const defaultFormData = {
   notes: "",
 };
 
-export function GroceryItemFormModal({
-  onAfterAddItem,
-}: {
-  onAfterAddItem?: () => void;
-}) {
+export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () => void }) {
   const [item, setItem] = useAtom(editingItemAtom);
   const [isOpen, setIsOpen] = useAtom(isEditModalOpenAtom);
   const [openLabels, setOpenLabels] = useState(false);
@@ -125,27 +82,13 @@ export function GroceryItemFormModal({
   const [newLabel, setNewLabel] = useState("");
   const [newStore, setNewStore] = useState("");
   const { toast } = useToast();
-  const { data: getLabelsData, loading: getLabelsLoading } =
-    useQuery<GetLabelsQuery>(getLabelQuery);
-  const { data: getStoresData, loading: getStoresLoading } =
-    useQuery<GetStoresQuery>(getStoresQuery);
+  const { data: getLabelsData, loading: getLabelsLoading } = useQuery<GetLabelsQuery>(getLabelQuery);
+  const { data: getStoresData, loading: getStoresLoading } = useQuery<GetStoresQuery>(getStoresQuery);
 
-  const [addLabel, { loading: addLabelLoading }] = useMutation<
-    AddLabelMutation,
-    AddLabelMutationVariables
-  >(addLabelMutation);
-  const [addStore, { loading: addStoreLoading }] = useMutation<
-    AddStoreMutation,
-    AddStoreMutationVariables
-  >(addStoreMutation);
-  const [addGroceryItem] = useMutation<
-    AddGroceryItemMutation,
-    AddGroceryItemMutationVariables
-  >(addGroceryItemMutation);
-  const [updateGroceryItem] = useMutation<
-    UpdateGroceryItemMutation,
-    UpdateGroceryItemMutationVariables
-  >(updateGroceryItemMutation);
+  const [addLabel, { loading: addLabelLoading }] = useMutation<AddLabelMutation, AddLabelMutationVariables>(addLabelMutation);
+  const [addStore, { loading: addStoreLoading }] = useMutation<AddStoreMutation, AddStoreMutationVariables>(addStoreMutation);
+  const [addGroceryItem] = useMutation<AddGroceryItemMutation, AddGroceryItemMutationVariables>(addGroceryItemMutation);
+  const [updateGroceryItem] = useMutation<UpdateGroceryItemMutation, UpdateGroceryItemMutationVariables>(updateGroceryItemMutation);
 
   const {
     register,
@@ -250,10 +193,7 @@ export function GroceryItemFormModal({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button
-          className="bg-indigo-600 text-white hover:bg-indigo-700"
-          onClick={handleAddGroceryItemClick}
-        >
+        <Button className="bg-indigo-600 text-white hover:bg-indigo-700" onClick={handleAddGroceryItemClick}>
           <p className="hidden sm:block">Add Grocery Item</p>
           <PlusIcon className="sm:hidden" />
         </Button>
@@ -261,21 +201,13 @@ export function GroceryItemFormModal({
       <DialogContent className="max-h-svh max-w-full overflow-scroll rounded-lg bg-gradient-to-br from-purple-100 to-indigo-100 p-4 shadow-lg sm:h-fit sm:max-w-[425px] sm:p-6">
         <DialogHeader>
           <DialogTitle className="text-center">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 260, damping: 20 }}
-            >
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 260, damping: 20 }}>
               <ShoppingCart className="mx-auto mb-2 h-16 w-16 text-indigo-600" />
             </motion.div>
-            <h3 className="mb-2 mt-4 text-3xl font-bold text-indigo-800">
-              {isEditing ? "Edit" : "Add"} Grocery Item
-            </h3>
+            <h3 className="mb-2 mt-4 text-3xl font-bold text-indigo-800">{isEditing ? "Edit" : "Add"} Grocery Item</h3>
           </DialogTitle>
           <DialogDescription className="text-center text-indigo-600">
-            {isEditing
-              ? "Update the details of the grocery item you want to modify."
-              : "Fill in the details of the grocery item you want to add."}
+            {isEditing ? "Update the details of the grocery item you want to modify." : "Fill in the details of the grocery item you want to add."}
           </DialogDescription>
         </DialogHeader>
 
@@ -292,18 +224,10 @@ export function GroceryItemFormModal({
               placeholder="Enter item name"
               className={cn(
                 "border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500",
-                errors.itemName &&
-                  (touchedFields.itemName || dirtyFields.itemName)
-                  ? "border-red-500"
-                  : "",
+                errors.itemName && (touchedFields.itemName || dirtyFields.itemName) ? "border-red-500" : "",
               )}
             />
-            {errors.itemName &&
-              (touchedFields.itemName || dirtyFields.itemName) && (
-                <p className="text-sm text-red-500">
-                  {errors.itemName.message}
-                </p>
-              )}
+            {errors.itemName && (touchedFields.itemName || dirtyFields.itemName) && <p className="text-sm text-red-500">{errors.itemName.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -322,23 +246,16 @@ export function GroceryItemFormModal({
                       aria-expanded={openStores}
                       className={cn(
                         "w-full justify-between border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500",
-                        errors.storeId &&
-                          (touchedFields.storeId || dirtyFields.storeId)
-                          ? "border-red-500"
-                          : "",
+                        errors.storeId && (touchedFields.storeId || dirtyFields.storeId) ? "border-red-500" : "",
                       )}
                     >
-                      {stores.find((store) => store.id === storeValue)?.name ||
-                        "Select store..."}
+                      {stores.find((store) => store.id === storeValue)?.name || "Select store..."}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-full p-0">
                     <Command>
-                      <CommandInput
-                        placeholder="Search store..."
-                        className="h-9"
-                      />
+                      <CommandInput placeholder="Search store..." className="h-9" />
                       <CommandEmpty>No store found.</CommandEmpty>
                       <CommandList>
                         <CommandGroup>
@@ -360,14 +277,7 @@ export function GroceryItemFormModal({
                                   setOpenStores(false);
                                 }}
                               >
-                                <Check
-                                  className={cn(
-                                    "mr-2 h-4 w-4",
-                                    storeValue === id
-                                      ? "opacity-100"
-                                      : "opacity-0",
-                                  )}
-                                />
+                                <Check className={cn("mr-2 h-4 w-4", storeValue === id ? "opacity-100" : "opacity-0")} />
                                 {name}
                               </CommandItem>
                             ))
@@ -376,36 +286,16 @@ export function GroceryItemFormModal({
                       </CommandList>
                     </Command>
                     <div className="flex items-center border-t p-2">
-                      <Input
-                        placeholder="Add new store"
-                        value={newStore}
-                        onChange={(e) => setNewStore(e.target.value)}
-                        className="flex-grow"
-                      />
-                      <Button
-                        disabled={
-                          !!stores.find((s) => s.name === newStore) ||
-                          !newStore ||
-                          addStoreLoading
-                        }
-                        type="button"
-                        onClick={handleAddStore}
-                        className="ml-2"
-                      >
-                        {addStoreLoading ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <PlusCircle className="h-4 w-4" />
-                        )}
+                      <Input placeholder="Add new store" value={newStore} onChange={(e) => setNewStore(e.target.value)} className="flex-grow" />
+                      <Button disabled={!!stores.find((s) => s.name === newStore) || !newStore || addStoreLoading} type="button" onClick={handleAddStore} className="ml-2">
+                        {addStoreLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <PlusCircle className="h-4 w-4" />}
                       </Button>
                     </div>
                   </PopoverContent>
                 </Popover>
               )}
             />
-            {errors.storeId && (
-              <p className="text-sm text-red-500">{errors.storeId.message}</p>
-            )}
+            {errors.storeId && <p className="text-sm text-red-500">{errors.storeId.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -423,14 +313,10 @@ export function GroceryItemFormModal({
               step="0.01"
               className={cn(
                 "border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500",
-                errors.price && (touchedFields.price || dirtyFields.price)
-                  ? "border-red-500"
-                  : "",
+                errors.price && (touchedFields.price || dirtyFields.price) ? "border-red-500" : "",
               )}
             />
-            {errors.price && (
-              <p className="text-sm text-red-500">{errors.price.message}</p>
-            )}
+            {errors.price && <p className="text-sm text-red-500">{errors.price.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -447,17 +333,10 @@ export function GroceryItemFormModal({
                   placeholder="Quantity"
                   className={cn(
                     "border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500",
-                    errors.quantity &&
-                      (touchedFields.quantity || dirtyFields.quantity)
-                      ? "border-red-500"
-                      : "",
+                    errors.quantity && (touchedFields.quantity || dirtyFields.quantity) ? "border-red-500" : "",
                   )}
                 />
-                {errors.quantity && (
-                  <p className="text-sm text-red-500">
-                    {errors.quantity.message}
-                  </p>
-                )}
+                {errors.quantity && <p className="text-sm text-red-500">{errors.quantity.message}</p>}
               </div>
               <div className="flex-1">
                 <Controller
@@ -475,10 +354,7 @@ export function GroceryItemFormModal({
                         id="unit"
                         className={cn(
                           "border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500",
-                          errors.unit &&
-                            (touchedFields.unit || dirtyFields.unit)
-                            ? "border-red-500"
-                            : "",
+                          errors.unit && (touchedFields.unit || dirtyFields.unit) ? "border-red-500" : "",
                         )}
                       >
                         <SelectValue placeholder="Unit" />
@@ -493,9 +369,7 @@ export function GroceryItemFormModal({
                     </Select>
                   )}
                 />
-                {errors.unit && (
-                  <p className="text-sm text-red-500">{errors.unit.message}</p>
-                )}
+                {errors.unit && <p className="text-sm text-red-500">{errors.unit.message}</p>}
               </div>
             </div>
           </div>
@@ -517,10 +391,7 @@ export function GroceryItemFormModal({
                       aria-expanded={openLabels}
                       className={cn(
                         "w-full justify-between border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500",
-                        errors.labels &&
-                          (touchedFields.labels || dirtyFields.labels)
-                          ? "border-red-500"
-                          : "",
+                        errors.labels && (touchedFields.labels || dirtyFields.labels) ? "border-red-500" : "",
                       )}
                     >
                       {labelsValue.length > 0
@@ -534,10 +405,7 @@ export function GroceryItemFormModal({
                   </PopoverTrigger>
                   <PopoverContent className="w-full p-0">
                     <Command>
-                      <CommandInput
-                        placeholder="Search label..."
-                        className="h-9"
-                      />
+                      <CommandInput placeholder="Search label..." className="h-9" />
                       <CommandEmpty>No label found.</CommandEmpty>
                       <CommandList>
                         <CommandGroup>
@@ -552,27 +420,14 @@ export function GroceryItemFormModal({
                               <CommandItem
                                 key={id}
                                 onSelect={() => {
-                                  setValue(
-                                    "labels",
-                                    labelsValue.includes(id)
-                                      ? labelsValue.filter((l) => l !== id)
-                                      : [...labelsValue, id],
-                                    {
-                                      shouldValidate: true,
-                                      shouldDirty: true,
-                                    },
-                                  );
+                                  setValue("labels", labelsValue.includes(id) ? labelsValue.filter((l) => l !== id) : [...labelsValue, id], {
+                                    shouldValidate: true,
+                                    shouldDirty: true,
+                                  });
                                   trigger("labels");
                                 }}
                               >
-                                <Check
-                                  className={cn(
-                                    "mr-2 h-4 w-4",
-                                    labelsValue.includes(id)
-                                      ? "opacity-100"
-                                      : "opacity-0",
-                                  )}
-                                />
+                                <Check className={cn("mr-2 h-4 w-4", labelsValue.includes(id) ? "opacity-100" : "opacity-0")} />
                                 {name}
                               </CommandItem>
                             ))
@@ -581,36 +436,16 @@ export function GroceryItemFormModal({
                       </CommandList>
                     </Command>
                     <div className="flex items-center border-t p-2">
-                      <Input
-                        placeholder="Add new label"
-                        value={newLabel}
-                        onChange={(e) => setNewLabel(e.target.value)}
-                        className="flex-grow"
-                      />
-                      <Button
-                        type="button"
-                        disabled={
-                          !!labels.find((l) => l.name === newLabel) ||
-                          !newLabel ||
-                          addLabelLoading
-                        }
-                        onClick={handleAddLabel}
-                        className="ml-2"
-                      >
-                        {addLabelLoading ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <PlusCircle className="h-4 w-4" />
-                        )}
+                      <Input placeholder="Add new label" value={newLabel} onChange={(e) => setNewLabel(e.target.value)} className="flex-grow" />
+                      <Button type="button" disabled={!!labels.find((l) => l.name === newLabel) || !newLabel || addLabelLoading} onClick={handleAddLabel} className="ml-2">
+                        {addLabelLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <PlusCircle className="h-4 w-4" />}
                       </Button>
                     </div>
                   </PopoverContent>
                 </Popover>
               )}
             />
-            {errors.labels && (
-              <p className="text-sm text-red-500">{errors.labels.message}</p>
-            )}
+            {errors.labels && <p className="text-sm text-red-500">{errors.labels.message}</p>}
           </div>
           <Controller
             control={control}
@@ -620,15 +455,8 @@ export function GroceryItemFormModal({
                 <Label htmlFor="url" className="text-indigo-700">
                   Url
                 </Label>
-                <Input
-                  id="url"
-                  {...field}
-                  placeholder="Enter the link to the item"
-                  className="border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500"
-                />
-                {errors.url && (
-                  <p className="text-sm text-red-500">{errors.url.message}</p>
-                )}
+                <Input id="url" {...field} placeholder="Enter the link to the item" className="border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500" />
+                {errors.url && <p className="text-sm text-red-500">{errors.url.message}</p>}
               </div>
             )}
           />
@@ -654,20 +482,13 @@ export function GroceryItemFormModal({
             >
               Cancel
             </Button>
-            <motion.div
-              whileHover={!isSubmitButtonEnable ? undefined : { scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
+            <motion.div whileHover={!isSubmitButtonEnable ? undefined : { scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
                 type="submit"
                 disabled={!isSubmitButtonEnable}
                 className="rounded-full bg-indigo-600 px-4 py-2 font-bold text-white transition-colors duration-300 hover:bg-indigo-700"
               >
-                {isSubmitting ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  `${isEditing ? "Save" : "Add"} Item`
-                )}
+                {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : `${isEditing ? "Save" : "Add"} Item`}
               </Button>
             </motion.div>
           </div>

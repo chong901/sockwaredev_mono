@@ -7,9 +7,7 @@ export async function up(db: Kysely<any>): Promise<void> {
   await withCreatedAtUpdatedAtColumns(
     db.schema
       .createTable("user")
-      .addColumn("id", "uuid", (col) =>
-        col.primaryKey().defaultTo(sql`gen_random_uuid()`),
-      )
+      .addColumn("id", "uuid", (col) => col.primaryKey().defaultTo(sql`gen_random_uuid()`))
       .addColumn("email", "varchar", (col) => col.notNull().unique())
       .addColumn("name", "varchar")
       .addColumn("image", "varchar"),

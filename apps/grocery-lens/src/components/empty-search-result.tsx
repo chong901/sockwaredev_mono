@@ -8,9 +8,7 @@ interface EmptySearchResultsProps {
   onReset: () => void;
 }
 
-export default function EmptySearchResult({
-  onReset,
-}: EmptySearchResultsProps) {
+export default function EmptySearchResult({ onReset }: EmptySearchResultsProps) {
   return (
     <Card className="flex h-full min-h-fit w-full flex-col justify-center p-12">
       <div className="flex flex-col items-center justify-center space-y-6 text-center">
@@ -19,13 +17,8 @@ export default function EmptySearchResult({
         </div>
 
         <div className="space-y-2">
-          <h3 className="text-2xl font-semibold tracking-tight">
-            No results found
-          </h3>
-          <p className="max-w-sm text-muted-foreground">
-            We couldn&apos;t find any items matching the filters. Try checking
-            for typos or using different filters.
-          </p>
+          <h3 className="text-2xl font-semibold tracking-tight">No results found</h3>
+          <p className="max-w-sm text-muted-foreground">We couldn&apos;t find any items matching the filters. Try checking for typos or using different filters.</p>
         </div>
 
         <Button variant="outline" size="lg" onClick={onReset} className="gap-2">

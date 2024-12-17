@@ -33,28 +33,18 @@ const groceryItemLabelDataloader = new DataLoader<string, Label[]>(
 );
 
 export class GroceryItemService {
-  static getGroceryItems = async (
-    userId: string,
-    { labels, stores, keyword, sortBy }: GroceryItemFilter,
-    { limit, offset }: Pagination,
-  ) => {
+  static getGroceryItems = async (userId: string, { labels, stores, keyword, sortBy }: GroceryItemFilter, { limit, offset }: Pagination) => {
     let query = db
       .selectFrom("grocery_item")
       .leftJoin("store", "grocery_item.store_id", "store.id")
-      .leftJoin(
-        "grocery_item_label",
-        "grocery_item.id",
-        "grocery_item_label.grocery_item_id",
-      )
+      .leftJoin("grocery_item_label", "grocery_item.id", "grocery_item_label.grocery_item_id")
       .leftJoin("label", "grocery_item_label.label_id", "label.id")
       .selectAll("grocery_item")
       .distinct()
       .where("grocery_item.user_id", "=", userId)
       .$if(!!labels.length, (qb) => qb.where("label.name", "in", labels))
       .$if(!!stores.length, (qb) => qb.where("store.name", "in", stores))
-      .$if(!!keyword, (qb) =>
-        qb.where("grocery_item.name", "ilike", `%${keyword}%`),
-      );
+      .$if(!!keyword, (qb) => qb.where("grocery_item.name", "ilike", `%${keyword}%`));
 
     switch (sortBy) {
       case SortBy.NAME:
@@ -70,22 +60,10 @@ export class GroceryItemService {
         query = query.orderBy("grocery_item.price", "desc");
         break;
       case SortBy.LOWEST_PRICE_PER_UNIT:
-        query = query
-          .select(
-            sql`grocery_item.price / grocery_item.quantity`.as(
-              "price_per_unit",
-            ),
-          )
-          .orderBy(sql`grocery_item.price / grocery_item.quantity`, "asc");
+        query = query.select(sql`grocery_item.price / grocery_item.quantity`.as("price_per_unit")).orderBy(sql`grocery_item.price / grocery_item.quantity`, "asc");
         break;
       case SortBy.HIGHEST_PRICE_PER_UNIT:
-        query = query
-          .select(
-            sql`grocery_item.price / grocery_item.quantity`.as(
-              "price_per_unit",
-            ),
-          )
-          .orderBy(sql`grocery_item.price / grocery_item.quantity`, "desc");
+        query = query.select(sql`grocery_item.price / grocery_item.quantity`.as("price_per_unit")).orderBy(sql`grocery_item.price / grocery_item.quantity`, "desc");
         break;
       default:
         query = query.orderBy("grocery_item.created_at", "desc");
@@ -98,10 +76,7 @@ export class GroceryItemService {
     return groceryItemLabelDataloader.load(groceryItemId);
   };
 
-  static addGroceryItem = async (
-    userId: string,
-    data: CreateGroceryItemInput,
-  ) => {
+  static addGroceryItem = async (userId: string, data: CreateGroceryItemInput) => {
     const store = await StoreService.getStoreByUserId(userId, data.storeId);
     if (!store) {
       throw new Error("Store not found");
@@ -129,11 +104,7 @@ export class GroceryItemService {
     return newGroceryItem;
   };
 
-  static updateGroceryItem = async (
-    itemId: string,
-    userId: string,
-    data: CreateGroceryItemInput,
-  ) => {
+  static updateGroceryItem = async (itemId: string, userId: string, data: CreateGroceryItemInput) => {
     const store = await StoreService.getStoreByUserId(userId, data.storeId);
     if (!store) {
       throw new Error("Store not found");
@@ -158,10 +129,7 @@ export class GroceryItemService {
       if (!result.length) {
         throw new Error("Grocery item not found");
       }
-      await tx
-        .deleteFrom("grocery_item_label")
-        .where("grocery_item_id", "=", itemId)
-        .execute();
+      await tx.deleteFrom("grocery_item_label").where("grocery_item_id", "=", itemId).execute();
       await this.addGroceryItemLabel(itemId, labels, tx);
       return result[0];
     });
@@ -170,17 +138,9 @@ export class GroceryItemService {
 
   static deleteGroceryItem = async (itemId: string, userId: string) => {
     const result = await db.transaction().execute(async (tx) => {
-      await tx
-        .deleteFrom("grocery_item_label")
-        .where("grocery_item_id", "=", itemId)
-        .execute();
+      await tx.deleteFrom("grocery_item_label").where("grocery_item_id", "=", itemId).execute();
 
-      const result = await tx
-        .deleteFrom("grocery_item")
-        .where("id", "=", itemId)
-        .where("user_id", "=", userId)
-        .returningAll()
-        .execute();
+      const result = await tx.deleteFrom("grocery_item").where("id", "=", itemId).where("user_id", "=", userId).returningAll().execute();
       if (!result.length) {
         throw new Error("Grocery item not found");
       }
@@ -189,11 +149,7 @@ export class GroceryItemService {
     return result;
   };
 
-  private static addGroceryItemLabel = async (
-    groceryItemId: string,
-    labels: Label[],
-    tx: Kysely<DB>,
-  ) => {
+  private static addGroceryItemLabel = async (groceryItemId: string, labels: Label[], tx: Kysely<DB>) => {
     if (labels.length === 0) return [];
     return tx
       .insertInto("grocery_item_label")

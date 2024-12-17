@@ -10,10 +10,7 @@ export class LabelResolver {
   }
 
   @Mutation(() => Label)
-  async addLabel(
-    @Ctx() { userId }: { userId: string },
-    @Arg("name") name: string,
-  ) {
+  async addLabel(@Ctx() { userId }: { userId: string }, @Arg("name") name: string) {
     return LabelService.addLabel(userId, name);
   }
 }

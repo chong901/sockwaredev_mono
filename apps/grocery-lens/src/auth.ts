@@ -14,11 +14,7 @@ export const nextAuth = NextAuth({
   ],
   callbacks: {
     session: async ({ session }) => {
-      const dbUser = await db
-        .selectFrom("user")
-        .selectAll()
-        .where("email", "=", session.user.email)
-        .execute();
+      const dbUser = await db.selectFrom("user").selectAll().where("email", "=", session.user.email).execute();
       session.userId = dbUser[0]?.id ?? "";
       return session;
     },
@@ -26,16 +22,9 @@ export const nextAuth = NextAuth({
       if (!user.email) {
         return false;
       }
-      const dbUser = await db
-        .selectFrom("user")
-        .where("email", "=", user.email)
-        .selectAll()
-        .execute();
+      const dbUser = await db.selectFrom("user").where("email", "=", user.email).selectAll().execute();
       if (dbUser.length === 0) {
-        await db
-          .insertInto("user")
-          .values({ email: user.email, name: user.name, image: user.image })
-          .execute();
+        await db.insertInto("user").values({ email: user.email, name: user.name, image: user.image }).execute();
       }
       return true;
     },

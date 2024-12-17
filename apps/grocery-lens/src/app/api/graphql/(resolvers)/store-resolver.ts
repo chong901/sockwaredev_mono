@@ -10,10 +10,7 @@ export class StoreResolver {
   }
 
   @Mutation(() => Store)
-  async addStore(
-    @Ctx() { userId }: { userId: string },
-    @Arg("name") name: string,
-  ) {
+  async addStore(@Ctx() { userId }: { userId: string }, @Arg("name") name: string) {
     return StoreService.addStore(userId, name);
   }
 }

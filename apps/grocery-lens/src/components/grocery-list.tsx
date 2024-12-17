@@ -3,15 +3,8 @@
 import EmptyGroceryList from "@/components/empty-grocery-list";
 import EmptySearchResult from "@/components/empty-search-result";
 import { GroceryFilterComponent } from "@/components/grocery-filter";
-import {
-  GroceryItemCard,
-  GroceryItemCardSkeleton,
-} from "@/components/grocery-item-card";
-import {
-  editingItemAtom,
-  GroceryItemFormModal,
-  isEditModalOpenAtom,
-} from "@/components/grocery-item-form-modal";
+import { GroceryItemCard, GroceryItemCardSkeleton } from "@/components/grocery-item-card";
+import { editingItemAtom, GroceryItemFormModal, isEditModalOpenAtom } from "@/components/grocery-item-form-modal";
 import { GroceryLensLogo } from "@/components/grocery-lens";
 import { InfiniteScrollList } from "@/components/infinite-scroll-list";
 import {
@@ -32,15 +25,7 @@ import { Loader2 } from "lucide-react";
 const limit = 10;
 
 export function GroceryListComponent() {
-  const {
-    labels,
-    stores,
-    keyword,
-    sortBy,
-    addLabelFilter,
-    addStoreFilter,
-    resetFilters,
-  } = useGroceryListFilter();
+  const { labels, stores, keyword, sortBy, addLabelFilter, addStoreFilter, resetFilters } = useGroceryListFilter();
 
   const {
     data: groceryItems,
@@ -48,27 +33,21 @@ export function GroceryListComponent() {
     previousData,
     refetch,
     fetchMore,
-  } = useQuery<GetGroceryItemsQuery, GetGroceryItemsQueryVariables>(
-    getGroceryItemsQuery,
-    {
-      variables: {
-        filter: {
-          labels,
-          stores,
-          keyword,
-          sortBy: sortBy as GroceryItemSortBy,
-        },
-        pagination: { limit, offset: 0 },
+  } = useQuery<GetGroceryItemsQuery, GetGroceryItemsQueryVariables>(getGroceryItemsQuery, {
+    variables: {
+      filter: {
+        labels,
+        stores,
+        keyword,
+        sortBy: sortBy as GroceryItemSortBy,
       },
-      fetchPolicy: "cache-and-network",
+      pagination: { limit, offset: 0 },
     },
-  );
+    fetchPolicy: "cache-and-network",
+  });
   const setEditingItem = useSetAtom(editingItemAtom);
   const setEditItemModalOpen = useSetAtom(isEditModalOpenAtom);
-  const [deleteGroceryItem] = useMutation<
-    DeleteGroceryItemMutation,
-    DeleteGroceryItemMutationVariables
-  >(deleteGroceryItemMutation, {
+  const [deleteGroceryItem] = useMutation<DeleteGroceryItemMutation, DeleteGroceryItemMutationVariables>(deleteGroceryItemMutation, {
     update(cache, { data }) {
       cache.evict({ id: cache.identify(data!.deleteGroceryItem) });
       cache.gc();
@@ -98,22 +77,13 @@ export function GroceryListComponent() {
       transition={{ duration: 0.5 }}
       className="container mx-auto flex h-full flex-col rounded-lg bg-gradient-to-br from-purple-100 to-indigo-100 p-6 shadow-lg"
     >
-      <motion.div
-        initial={{ y: -20 }}
-        animate={{ y: 0 }}
-        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        className="mb-4 flex flex-col gap-4"
-      >
+      <motion.div initial={{ y: -20 }} animate={{ y: 0 }} transition={{ type: "spring", stiffness: 300, damping: 20 }} className="mb-4 flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h1 className="flex items-center gap-2 text-2xl font-bold text-indigo-800 sm:text-4xl">
             {loading ? (
               <Loader2 className="h-10 w-10 animate-spin" />
             ) : (
-              <motion.div
-                initial={{ rotate: -20 }}
-                animate={{ rotate: 0 }}
-                transition={{ type: "spring", stiffness: 300, damping: 10 }}
-              >
+              <motion.div initial={{ rotate: -20 }} animate={{ rotate: 0 }} transition={{ type: "spring", stiffness: 300, damping: 10 }}>
                 <GroceryLensLogo className="h-10 w-10 text-indigo-600" />
               </motion.div>
             )}
@@ -145,20 +115,8 @@ export function GroceryListComponent() {
             </>
           ) : (
             <InfiniteScrollList
-              emptyComponent={
-                hasFilterApplied ? (
-                  <EmptySearchResult onReset={resetFilters} />
-                ) : (
-                  <EmptyGroceryList
-                    onCreateNewItem={() => setEditItemModalOpen(true)}
-                  />
-                )
-              }
-              items={
-                groceryItems?.getGroceryItems ??
-                previousData?.getGroceryItems ??
-                []
-              }
+              emptyComponent={hasFilterApplied ? <EmptySearchResult onReset={resetFilters} /> : <EmptyGroceryList onCreateNewItem={() => setEditItemModalOpen(true)} />}
+              items={groceryItems?.getGroceryItems ?? previousData?.getGroceryItems ?? []}
               loadMoreItems={() => {
                 fetchMore({
                   variables: {
