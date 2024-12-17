@@ -9,6 +9,7 @@ const dialect = new PostgresDialect({
     password: process.env.DB_PASSWORD || "1234",
     user: process.env.DB_USER || "postgres",
     database: process.env.DB_NAME || "postgres",
+    ssl: process.env.DB_SSL === "true",
     max: 10,
   }),
 });
