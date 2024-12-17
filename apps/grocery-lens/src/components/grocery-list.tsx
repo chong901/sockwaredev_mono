@@ -1,6 +1,7 @@
 "use client";
 
 import EmptyGroceryList from "@/components/empty-grocery-list";
+import EmptySearchResult from "@/components/empty-search-result";
 import { GroceryFilterComponent } from "@/components/grocery-filter";
 import {
   GroceryItemCard,
@@ -31,8 +32,16 @@ import { Loader2 } from "lucide-react";
 const limit = 10;
 
 export function GroceryListComponent() {
-  const { labels, stores, keyword, sortBy, addLabelFilter, addStoreFilter } =
-    useGroceryListFilter();
+  const {
+    labels,
+    stores,
+    keyword,
+    sortBy,
+    addLabelFilter,
+    addStoreFilter,
+    onSearchChange,
+  } = useGroceryListFilter();
+
   const {
     data: groceryItems,
     loading,
@@ -135,9 +144,16 @@ export function GroceryListComponent() {
           ) : (
             <InfiniteScrollList
               emptyComponent={
-                <EmptyGroceryList
-                  onCreateNewItem={() => setEditItemModalOpen(true)}
-                />
+                keyword ? (
+                  <EmptySearchResult
+                    searchTerm={keyword}
+                    onReset={() => onSearchChange("")}
+                  />
+                ) : (
+                  <EmptyGroceryList
+                    onCreateNewItem={() => setEditItemModalOpen(true)}
+                  />
+                )
               }
               items={
                 groceryItems?.getGroceryItems ??
