@@ -12,19 +12,12 @@ export const useGroceryListFilter = () => {
 
   // if we use searchParams directly in the useMemo, it causes unnecessary re-renders since as long as one of the params changes, the searchParams object will be recreated
   // so instead of using searchParams in the dependency array, we extract the values we need from it and use them in the dependency array
-  const storesSearchParam = searchParams.get("stores");
-  const labelsSearchParam = searchParams.get("labels");
   const keywordSearchParam = searchParams.get("keyword");
   const sortBySearchParam = searchParams.get("sortBy");
 
-  const stores = useMemo(
-    () => storesSearchParam?.split(",") ?? [],
-    [storesSearchParam],
-  );
-  const labels = useMemo(
-    () => labelsSearchParam?.split(",") ?? [],
-    [labelsSearchParam],
-  );
+  // getAll return array, useMemo will always recalculate so it's the same as using searchParams.getAll("stores") directly
+  const stores = searchParams.getAll("stores") ?? [];
+  const labels = searchParams.getAll("labels") ?? [];
   const keyword = useMemo(() => keywordSearchParam ?? "", [keywordSearchParam]);
   const sortBy: GroceryItemSortBy = useMemo(
     () => (sortBySearchParam as GroceryItemSortBy) ?? GroceryItemSortBy.Recency,
@@ -38,16 +31,14 @@ export const useGroceryListFilter = () => {
   const onFilterChange = useCallback(
     (filters: { stores: string[]; labels: string[] }) => {
       const params = new URLSearchParams(searchParamsRef.current.toString());
+      params.delete("stores");
       if (filters.stores.length > 0) {
-        params.set("stores", filters.stores.join(","));
-      } else {
-        params.delete("stores");
+        filters.stores.forEach((store) => params.append("stores", store));
       }
 
+      params.delete("labels");
       if (filters.labels.length > 0) {
-        params.set("labels", filters.labels.join(","));
-      } else {
-        params.delete("labels");
+        filters.labels.forEach((label) => params.append("labels", label));
       }
 
       router.push(`?${params.toString()}`);
@@ -89,10 +80,9 @@ export const useGroceryListFilter = () => {
   const addLabelFilter = useCallback(
     (label: string) => {
       const params = new URLSearchParams(searchParamsRef.current.toString());
-      const labels = params.get("labels")?.split(",") ?? [];
+      const labels = params.getAll("labels") ?? [];
       if (labels.includes(label)) return;
-      labels.push(label);
-      params.set("labels", labels.join(","));
+      params.append("labels", label);
       router.push(`?${params.toString()}`);
     },
     [router],
@@ -101,10 +91,9 @@ export const useGroceryListFilter = () => {
   const addStoreFilter = useCallback(
     (store: string) => {
       const params = new URLSearchParams(searchParamsRef.current.toString());
-      const stores = params.get("stores")?.split(",") ?? [];
+      const stores = params.getAll("stores") ?? [];
       if (stores.includes(store)) return;
-      stores.push(store);
-      params.set("stores", stores.join(","));
+      params.append("stores", store);
       router.push(`?${params.toString()}`);
     },
     [router],

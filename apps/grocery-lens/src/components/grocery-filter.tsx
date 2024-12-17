@@ -30,7 +30,7 @@ import { useQuery } from "@apollo/client";
 import debounce from "lodash.debounce";
 import { Check, Filter, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-
+import { useDeepCompareEffect } from "react-use";
 type SortByOption = {
   value: SortByValue;
   label: string;
@@ -77,7 +77,7 @@ export function GroceryFilterComponent() {
     [onSearchChange],
   );
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (isFilterOpen) {
       setSelectedLabels(appliedLabels);
       setSelectedStores(appliedStores);
