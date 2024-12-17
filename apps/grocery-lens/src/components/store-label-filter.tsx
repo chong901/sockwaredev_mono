@@ -14,13 +14,16 @@ import { getLabelQuery, getStoresQuery } from "@/graphql/query";
 import { useGroceryListFilter } from "@/hooks/use-grocery-list-filter";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@apollo/client";
+import { LoadingSpinner } from "@repo/ui/atoms";
 import { Filter, X } from "lucide-react";
 import { useState } from "react";
 import { useDeepCompareEffect } from "react-use";
 
 export const StoreLabelFilter = () => {
-  const { data: storeData } = useQuery<GetStoresQuery>(getStoresQuery);
-  const { data: labelData } = useQuery<GetLabelsQuery>(getLabelQuery);
+  const { data: storeData, loading: storeLoading } =
+    useQuery<GetStoresQuery>(getStoresQuery);
+  const { data: labelData, loading: labelLoading } =
+    useQuery<GetLabelsQuery>(getLabelQuery);
 
   const {
     labels: appliedLabels,
@@ -97,69 +100,75 @@ export const StoreLabelFilter = () => {
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-80" align="start">
-          <div className="grid gap-4">
-            {!hasFilterData && (
-              <div>
-                <p className="text-gray-600">No filter data available.</p>
-              </div>
-            )}
-            {(storeData?.getStores?.length ?? 0) > 0 && (
-              <div className="space-y-2">
-                <h4 className="font-medium leading-none">Stores</h4>
-                <div className="flex flex-wrap gap-2">
-                  {storeData?.getStores?.map(({ id, name }) => (
-                    <Label
-                      key={id}
-                      className={`flex cursor-pointer items-center rounded-md border p-2 ${
-                        selectedStores.includes(name)
-                          ? "border-blue-600 bg-blue-100"
-                          : ""
-                      }`}
-                    >
-                      <Input
-                        type="checkbox"
-                        checked={selectedStores.includes(name)}
-                        onChange={() => handleStoreChange(name)}
-                        className="sr-only"
-                      />
-                      <span>{name}</span>
-                    </Label>
-                  ))}
+          {storeLoading || labelLoading ? (
+            <div className="flex items-center justify-center">
+              <LoadingSpinner />
+            </div>
+          ) : (
+            <div className="grid gap-4">
+              {!hasFilterData && (
+                <div>
+                  <p className="text-gray-600">No filter data available.</p>
                 </div>
-              </div>
-            )}
-            {(labelData?.getLabels?.length ?? 0) > 0 && (
-              <div className="space-y-2">
-                <h4 className="font-medium leading-none">Labels</h4>
-                <div className="flex flex-wrap gap-2">
-                  {labelData?.getLabels?.map(({ id, name }) => (
-                    <Label
-                      key={id}
-                      className={`flex cursor-pointer items-center rounded-full px-3 py-1 text-sm ${
-                        selectedLabels.includes(name)
-                          ? "bg-purple-600 text-white"
-                          : "bg-gray-200 text-gray-800"
-                      }`}
-                    >
-                      <Input
-                        type="checkbox"
-                        checked={selectedLabels.includes(name)}
-                        onChange={() => handleLabelChange(name)}
-                        className="sr-only"
-                      />
-                      <span>{name}</span>
-                    </Label>
-                  ))}
+              )}
+              {(storeData?.getStores?.length ?? 0) > 0 && (
+                <div className="space-y-2">
+                  <h4 className="font-medium leading-none">Stores</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {storeData?.getStores?.map(({ id, name }) => (
+                      <Label
+                        key={id}
+                        className={`flex cursor-pointer items-center rounded-md border p-2 ${
+                          selectedStores.includes(name)
+                            ? "border-blue-600 bg-blue-100"
+                            : ""
+                        }`}
+                      >
+                        <Input
+                          type="checkbox"
+                          checked={selectedStores.includes(name)}
+                          onChange={() => handleStoreChange(name)}
+                          className="sr-only"
+                        />
+                        <span>{name}</span>
+                      </Label>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
-            <Button
-              onClick={applyFilters}
-              className="w-full bg-purple-600 text-white hover:bg-purple-700"
-            >
-              Apply Filters
-            </Button>
-          </div>
+              )}
+              {(labelData?.getLabels?.length ?? 0) > 0 && (
+                <div className="space-y-2">
+                  <h4 className="font-medium leading-none">Labels</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {labelData?.getLabels?.map(({ id, name }) => (
+                      <Label
+                        key={id}
+                        className={`flex cursor-pointer items-center rounded-full px-3 py-1 text-sm ${
+                          selectedLabels.includes(name)
+                            ? "bg-purple-600 text-white"
+                            : "bg-gray-200 text-gray-800"
+                        }`}
+                      >
+                        <Input
+                          type="checkbox"
+                          checked={selectedLabels.includes(name)}
+                          onChange={() => handleLabelChange(name)}
+                          className="sr-only"
+                        />
+                        <span>{name}</span>
+                      </Label>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <Button
+                onClick={applyFilters}
+                className="w-full bg-purple-600 text-white hover:bg-purple-700"
+              >
+                Apply Filters
+              </Button>
+            </div>
+          )}
         </PopoverContent>
       </Popover>
 
