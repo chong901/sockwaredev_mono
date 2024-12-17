@@ -5,12 +5,10 @@ import { Card } from "@/components/ui/card";
 import { RefreshCw, Search } from "lucide-react";
 
 interface EmptySearchResultsProps {
-  searchTerm: string;
   onReset: () => void;
 }
 
 export default function EmptySearchResult({
-  searchTerm,
   onReset,
 }: EmptySearchResultsProps) {
   return (
@@ -25,8 +23,8 @@ export default function EmptySearchResult({
             No results found
           </h3>
           <p className="max-w-sm text-muted-foreground">
-            We couldn&apos;t find any items matching &quot;{searchTerm}&quot;.
-            Try checking for typos or using different keywords.
+            We couldn&apos;t find any items matching the filters. Try checking
+            for typos or using different filters.
           </p>
         </div>
 

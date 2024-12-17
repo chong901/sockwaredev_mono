@@ -39,7 +39,7 @@ export function GroceryListComponent() {
     sortBy,
     addLabelFilter,
     addStoreFilter,
-    onSearchChange,
+    resetFilters,
   } = useGroceryListFilter();
 
   const {
@@ -88,6 +88,8 @@ export function GroceryListComponent() {
     setEditingItem({ ...item, id: undefined });
     setEditItemModalOpen(true);
   };
+
+  const hasFilterApplied = labels.length > 0 || stores.length > 0 || keyword;
 
   return (
     <motion.div
@@ -144,11 +146,8 @@ export function GroceryListComponent() {
           ) : (
             <InfiniteScrollList
               emptyComponent={
-                keyword ? (
-                  <EmptySearchResult
-                    searchTerm={keyword}
-                    onReset={() => onSearchChange("")}
-                  />
+                hasFilterApplied ? (
+                  <EmptySearchResult onReset={resetFilters} />
                 ) : (
                   <EmptyGroceryList
                     onCreateNewItem={() => setEditItemModalOpen(true)}
