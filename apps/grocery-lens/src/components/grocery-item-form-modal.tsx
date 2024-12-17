@@ -273,7 +273,9 @@ export function GroceryItemFormModal({
             </h3>
           </DialogTitle>
           <DialogDescription className="text-center text-indigo-600">
-            Fill in the details of the grocery item you want to add.
+            {isEditing
+              ? "Update the details of the grocery item you want to modify."
+              : "Fill in the details of the grocery item you want to add."}
           </DialogDescription>
         </DialogHeader>
 

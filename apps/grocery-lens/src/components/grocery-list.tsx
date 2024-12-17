@@ -105,7 +105,7 @@ export function GroceryListComponent() {
                 <GroceryLensLogo className="h-10 w-10 text-indigo-600" />
               </motion.div>
             )}
-            Grocery List
+            Grocery History
           </h1>
           <GroceryItemFormModal onAfterAddItem={refetch} />
         </div>
