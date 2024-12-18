@@ -128,16 +128,17 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
   };
 
   const handleAddStore = async () => {
-    if (storeSearch) {
-      const result = await addStore({
-        variables: { name: storeSearch },
-        refetchQueries: [{ query: getStoresQuery }],
-      });
+    if (!storeSearch) return;
+    if (stores.find((store) => store.name === storeSearch)) return;
 
-      setValue("storeId", result.data!.addStore.id, { shouldValidate: true });
-      setStoreSearch("");
-      setOpenStores(false);
-    }
+    const result = await addStore({
+      variables: { name: storeSearch },
+      refetchQueries: [{ query: getStoresQuery }],
+    });
+
+    setValue("storeId", result.data!.addStore.id, { shouldValidate: true });
+    setStoreSearch("");
+    setOpenStores(false);
   };
 
   useEffect(() => {
@@ -230,7 +231,8 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
               control={control}
               name="storeId"
               render={({ field: { value: storeValue } }) => (
-                <Popover open={openStores} onOpenChange={setOpenStores}>
+                // weird behavior that needs to add `modal` to make PopoverContent scrollable, ref: https://github.com/shadcn-ui/ui/issues/542#issuecomment-1587142689
+                <Popover open={openStores} onOpenChange={setOpenStores} modal>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
@@ -247,10 +249,20 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
                   </PopoverTrigger>
                   <PopoverContent className="w-full p-0">
                     <Command>
-                      <CommandInput placeholder="Search store..." value={storeSearch} onValueChange={setStoreSearch} className="h-9" />
+                      <CommandInput
+                        placeholder="Search store..."
+                        value={storeSearch}
+                        onValueChange={setStoreSearch}
+                        onKeyDown={async (e) => {
+                          if (e.key === "Enter" && storeSearch) {
+                            await handleAddStore();
+                          }
+                        }}
+                        className="h-9"
+                      />
                       <CommandEmpty>No store found.</CommandEmpty>
                       <CommandList>
-                        <CommandGroup>
+                        <CommandGroup className="max-h-40 overflow-scroll">
                           {getStoresLoading ? (
                             <>
                               <Skeleton className="mb-2 h-8 w-full" />
@@ -278,7 +290,13 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
                       </CommandList>
                     </Command>
                     <div className="flex items-center border-t p-2">
-                      <Button disabled={!!stores.find((s) => s.name === storeSearch) || !storeSearch || addStoreLoading} type="button" onClick={handleAddStore} className="ml-auto">
+                      <Button
+                        size="sm"
+                        disabled={!!stores.find((s) => s.name === storeSearch) || !storeSearch || addStoreLoading}
+                        type="button"
+                        onClick={handleAddStore}
+                        className="ml-auto"
+                      >
                         {addStoreLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <PlusCircle className="h-4 w-4" />}
                       </Button>
                     </div>
