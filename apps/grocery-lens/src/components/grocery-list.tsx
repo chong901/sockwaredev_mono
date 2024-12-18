@@ -71,13 +71,8 @@ export function GroceryListComponent() {
   const hasFilterApplied = labels.length > 0 || stores.length > 0 || keyword;
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="container mx-auto flex h-full flex-col rounded-lg bg-gradient-to-br from-purple-100 to-indigo-100 p-6 shadow-lg"
-    >
-      <motion.div initial={{ y: -20 }} animate={{ y: 0 }} transition={{ type: "spring", stiffness: 300, damping: 20 }} className="mb-4 flex flex-col gap-4">
+    <div className="flex h-full flex-col">
+      <div className="mb-4 flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h1 className="flex items-center gap-2 text-2xl font-bold text-indigo-800 sm:text-4xl">
             {loading ? (
@@ -95,7 +90,7 @@ export function GroceryListComponent() {
         <div className="w-full md:w-auto">
           <GroceryFilterComponent />
         </div>
-      </motion.div>
+      </div>
       <div className="flex-1 overflow-scroll">
         <AnimatePresence>
           {loading && !previousData ? (
@@ -145,6 +140,6 @@ export function GroceryListComponent() {
           )}
         </AnimatePresence>
       </div>
-    </motion.div>
+    </div>
   );
 }
