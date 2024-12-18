@@ -7,9 +7,9 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
+import { units } from "@/const/unit";
 import {
   AddGroceryItemMutation,
   AddGroceryItemMutationVariables,
@@ -53,7 +53,7 @@ const formSchema = z.object({
       message: "Quantity is required",
     })
     .gt(0, { message: "Quantity must be a positive number" }),
-  unit: z.enum(["gram", "bag", "kilogram", "piece", "liter", "box"], {
+  unit: z.enum(units, {
     required_error: "Unit is required",
     message: "Unit is required",
   }),
@@ -79,8 +79,10 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
   const [isOpen, setIsOpen] = useAtom(isEditModalOpenAtom);
   const [openLabels, setOpenLabels] = useState(false);
   const [openStores, setOpenStores] = useState(false);
+  const [openUnits, setOpenUnits] = useState(false);
   const [newLabel, setNewLabel] = useState("");
   const [storeSearch, setStoreSearch] = useState("");
+  const [unitSearch, setUnitSearch] = useState("");
   const { toast } = useToast();
   const { data: getLabelsData, loading: getLabelsLoading } = useQuery<GetLabelsQuery>(getLabelQuery);
   const { data: getStoresData, loading: getStoresLoading } = useQuery<GetStoresQuery>(getStoresQuery);
@@ -108,10 +110,9 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
   const isSubmitButtonEnable = !isSubmitting;
   const isEditing = !!item?.id;
 
-  const unitOptions = ["gram", "bag", "kilogram", "piece", "liter", "box"];
-
   const labels = getLabelsData?.getLabels ?? [];
   const stores = getStoresData?.getStores ?? [];
+  const filteredUnits = units.filter((unit) => unit.toLowerCase().includes(unitSearch.toLowerCase()));
 
   const handleAddLabel = async (labelName: string) => {
     const labelsValue = getValues("labels");
@@ -243,14 +244,14 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
                         errors.storeId && (touchedFields.storeId || dirtyFields.storeId) ? "border-red-500" : "",
                       )}
                     >
-                      {stores.find((store) => store.id === storeValue)?.name || "Select store..."}
+                      {stores.find((store) => store.id === storeValue)?.name || "Select store"}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-full p-0" style={{ width: "var(--radix-popover-trigger-width)" }}>
                     <Command>
                       <CommandInput
-                        placeholder="Search store..."
+                        placeholder="Search or create store"
                         value={storeSearch}
                         onValueChange={setStoreSearch}
                         onKeyDown={async (e) => {
@@ -352,30 +353,44 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
                   name="unit"
                   control={control}
                   render={({ field }) => (
-                    <Select
-                      onValueChange={(value) => {
-                        field.onChange(value);
-                        trigger("unit");
-                      }}
-                      value={field.value}
-                    >
-                      <SelectTrigger
-                        id="unit"
-                        className={cn(
-                          "border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500",
-                          errors.unit && (touchedFields.unit || dirtyFields.unit) ? "border-red-500" : "",
-                        )}
-                      >
-                        <SelectValue placeholder="Unit" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {unitOptions.map((option) => (
-                          <SelectItem key={option} value={option}>
-                            {option}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Popover open={openUnits} onOpenChange={setOpenUnits} modal>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={openUnits}
+                          className={cn(
+                            "w-full justify-between border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500",
+                            errors.unit && (touchedFields.unit || dirtyFields.unit) ? "border-red-500" : "",
+                          )}
+                        >
+                          {field.value || "Select unit"}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-full p-0" style={{ width: "var(--radix-popover-trigger-width)" }}>
+                        <Command>
+                          <CommandInput placeholder="Search unit" value={unitSearch} onValueChange={setUnitSearch} className="h-9" />
+                          <CommandEmpty>No unit found.</CommandEmpty>
+                          <CommandList>
+                            <CommandGroup className="max-h-40 overflow-y-auto">
+                              {filteredUnits.map((option) => (
+                                <CommandItem
+                                  key={option}
+                                  onSelect={() => {
+                                    field.onChange(option);
+                                    setOpenUnits(false);
+                                    setUnitSearch("");
+                                  }}
+                                >
+                                  {option}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
                   )}
                 />
                 {errors.unit && <p className="text-sm text-red-500">{errors.unit.message}</p>}
@@ -408,7 +423,7 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
                             .filter((label) => labelsValue.includes(label.id))
                             .map((label) => label.name)
                             .join(", ")
-                        : "Select labels..."}
+                        : "Select labels"}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
