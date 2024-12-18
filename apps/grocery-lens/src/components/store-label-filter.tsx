@@ -115,7 +115,7 @@ const StoreLabelFilter = () => {
 
 const NoFilterDataMessage = () => (
   <div>
-    <p className="text-gray-600">No filter data available.</p>
+    <p className="text-gray-600">No filter is created yet.</p>
   </div>
 );
 
