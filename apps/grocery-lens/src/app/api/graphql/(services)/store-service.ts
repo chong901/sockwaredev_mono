@@ -1,6 +1,7 @@
 import { Store } from "@/app/api/graphql/(types)/(objects)/store";
 import { db } from "@/db/db";
 import Dataloader from "dataloader";
+import { sql } from "kysely";
 
 const storeLoader = new Dataloader<string, Store>(
   async (ids) => {
@@ -10,6 +11,24 @@ const storeLoader = new Dataloader<string, Store>(
       return acc;
     }, {});
     return ids.map((id) => dataMap[id]!);
+  },
+  { cache: false },
+);
+
+const groceryItemsCountLoader = new Dataloader<string, number>(
+  async (storeIds) => {
+    const data = await db
+      .selectFrom("grocery_item")
+      .select("store_id")
+      .select(sql<number>`count(*)`.as("count"))
+      .where("store_id", "in", storeIds)
+      .groupBy("store_id")
+      .execute();
+    const dataMap = data.reduce<Record<string, number>>((acc, { store_id, count }) => {
+      acc[store_id] = count;
+      return acc;
+    }, {});
+    return storeIds.map((id) => dataMap[id] || 0);
   },
   { cache: false },
 );
@@ -31,5 +50,9 @@ export class StoreService {
 
   static getStoreById = async (id: string) => {
     return storeLoader.load(id);
+  };
+
+  static getGroceryItemsCount = async (storeId: string) => {
+    return groceryItemsCountLoader.load(storeId);
   };
 }

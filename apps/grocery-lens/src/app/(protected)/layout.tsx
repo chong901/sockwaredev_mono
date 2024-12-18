@@ -17,7 +17,7 @@ export default async function ProtectedLayout({
     <SessionProvider session={session}>
       <ApolloWrapper>
         <Header />
-        <div className="container mx-auto mt-4 w-full flex-1 overflow-scroll rounded-lg bg-gradient-to-br from-purple-100 to-indigo-100 p-6 shadow-lg">{children}</div>
+        <div className="container mx-auto my-4 w-full flex-1 overflow-scroll rounded-lg bg-gradient-to-br from-purple-100 to-indigo-100 p-6 shadow-lg">{children}</div>
       </ApolloWrapper>
     </SessionProvider>
   );

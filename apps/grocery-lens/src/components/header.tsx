@@ -8,11 +8,14 @@ import { Menu, X } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 
+const navItems = [
+  { name: "Home", href: "/" },
+  { name: "Your Stores", href: "/stores" },
+];
+
 export function Header() {
   const session = useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const navItems = [{ name: "Home", href: "#" }];
 
   return (
     <header className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg">

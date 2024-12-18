@@ -18,6 +18,7 @@ export const getStoresQuery = gql`
     getStores {
       id
       name
+      groceryItemsCount
     }
   }
 `;
