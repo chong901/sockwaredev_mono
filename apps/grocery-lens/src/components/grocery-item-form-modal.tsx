@@ -80,7 +80,7 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
   const [openLabels, setOpenLabels] = useState(false);
   const [openStores, setOpenStores] = useState(false);
   const [newLabel, setNewLabel] = useState("");
-  const [newStore, setNewStore] = useState("");
+  const [storeSearch, setStoreSearch] = useState("");
   const { toast } = useToast();
   const { data: getLabelsData, loading: getLabelsLoading } = useQuery<GetLabelsQuery>(getLabelQuery);
   const { data: getStoresData, loading: getStoresLoading } = useQuery<GetStoresQuery>(getStoresQuery);
@@ -128,14 +128,14 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
   };
 
   const handleAddStore = async () => {
-    if (newStore) {
+    if (storeSearch) {
       const result = await addStore({
-        variables: { name: newStore },
+        variables: { name: storeSearch },
         refetchQueries: [{ query: getStoresQuery }],
       });
 
       setValue("storeId", result.data!.addStore.id, { shouldValidate: true });
-      setNewStore("");
+      setStoreSearch("");
       setOpenStores(false);
     }
   };
@@ -247,7 +247,7 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
                   </PopoverTrigger>
                   <PopoverContent className="w-full p-0">
                     <Command>
-                      <CommandInput placeholder="Search store..." className="h-9" />
+                      <CommandInput placeholder="Search store..." value={storeSearch} onValueChange={setStoreSearch} className="h-9" />
                       <CommandEmpty>No store found.</CommandEmpty>
                       <CommandList>
                         <CommandGroup>
@@ -278,8 +278,7 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
                       </CommandList>
                     </Command>
                     <div className="flex items-center border-t p-2">
-                      <Input placeholder="Add new store" value={newStore} onChange={(e) => setNewStore(e.target.value)} className="flex-grow" />
-                      <Button disabled={!!stores.find((s) => s.name === newStore) || !newStore || addStoreLoading} type="button" onClick={handleAddStore} className="ml-2">
+                      <Button disabled={!!stores.find((s) => s.name === storeSearch) || !storeSearch || addStoreLoading} type="button" onClick={handleAddStore} className="ml-auto">
                         {addStoreLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <PlusCircle className="h-4 w-4" />}
                       </Button>
                     </div>
