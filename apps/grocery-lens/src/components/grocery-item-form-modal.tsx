@@ -217,7 +217,7 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
               })}
               placeholder="Enter item name"
               className={cn(
-                "border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500",
+                "border-indigo-300 bg-white/50 text-sm focus:border-indigo-500 focus:ring-indigo-500",
                 errors.itemName && (touchedFields.itemName || dirtyFields.itemName) ? "border-red-500" : "",
               )}
             />
@@ -322,7 +322,7 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
               placeholder="Enter price"
               step="0.01"
               className={cn(
-                "border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500",
+                "border-indigo-300 bg-white/50 text-sm focus:border-indigo-500 focus:ring-indigo-500",
                 errors.price && (touchedFields.price || dirtyFields.price) ? "border-red-500" : "",
               )}
             />
@@ -342,7 +342,7 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
                   })}
                   placeholder="Quantity"
                   className={cn(
-                    "border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500",
+                    "border-indigo-300 bg-white/50 text-sm focus:border-indigo-500 focus:ring-indigo-500",
                     errors.quantity && (touchedFields.quantity || dirtyFields.quantity) ? "border-red-500" : "",
                   )}
                 />
@@ -499,7 +499,12 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
                 <Label htmlFor="url" className="text-indigo-700">
                   Url
                 </Label>
-                <Input id="url" {...field} placeholder="Enter the link to the item" className="border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500" />
+                <Input
+                  id="url"
+                  {...field}
+                  placeholder="Enter the link to the item"
+                  className="border-indigo-300 bg-white/50 text-sm focus:border-indigo-500 focus:ring-indigo-500"
+                />
                 {errors.url && <p className="text-sm text-red-500">{errors.url.message}</p>}
               </div>
             )}
@@ -514,7 +519,7 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
               {...register("notes")}
               placeholder="Enter any additional notes"
               rows={3}
-              className="border-indigo-300 bg-white/50 focus:border-indigo-500 focus:ring-indigo-500"
+              className="border-indigo-300 bg-white/50 text-sm focus:border-indigo-500 focus:ring-indigo-500"
             />
           </div>
           <div className="flex justify-end space-x-2">
