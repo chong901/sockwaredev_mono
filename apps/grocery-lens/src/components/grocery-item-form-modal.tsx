@@ -113,11 +113,11 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
   const labels = getLabelsData?.getLabels ?? [];
   const stores = getStoresData?.getStores ?? [];
 
-  const handleAddLabel = async () => {
+  const handleAddLabel = async (labelName: string) => {
     const labelsValue = getValues("labels");
-    if (newLabel && !labels.find((label) => label.name === newLabel)) {
+    if (labelName && !labels.find((label) => label.name === labelName)) {
       const result = await addLabel({
-        variables: { name: newLabel },
+        variables: { name: labelName },
         refetchQueries: [{ query: getLabelQuery }],
       });
       setValue("labels", [...labelsValue, result.data!.addLabel.id], {
@@ -373,7 +373,7 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
               control={control}
               name="labels"
               render={({ field: { value: labelsValue } }) => (
-                <Popover open={openLabels} onOpenChange={setOpenLabels}>
+                <Popover open={openLabels} onOpenChange={setOpenLabels} modal>
                   <PopoverTrigger asChild>
                     <Button
                       type="button"
@@ -394,12 +394,27 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-full p-0">
-                    <Command>
-                      <CommandInput placeholder="Search label..." className="h-9" />
+                  <PopoverContent className="w-full p-0" style={{ width: "var(--radix-popover-trigger-width)" }}>
+                    <Command
+                      filter={(value, search) => {
+                        if (value.toLowerCase().includes(search.toLowerCase())) return 1;
+                        return 0;
+                      }}
+                    >
+                      <CommandInput
+                        placeholder="Search or create label"
+                        value={newLabel}
+                        onValueChange={setNewLabel}
+                        onKeyDown={async (e) => {
+                          if (e.key === "Enter" && newLabel) {
+                            await handleAddLabel(newLabel);
+                          }
+                        }}
+                        className="h-9"
+                      />
                       <CommandEmpty>No label found.</CommandEmpty>
                       <CommandList>
-                        <CommandGroup>
+                        <CommandGroup className="max-h-40 overflow-y-auto">
                           {getLabelsLoading ? (
                             <>
                               <Skeleton className="mb-2 h-8 w-full" />
@@ -427,8 +442,13 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
                       </CommandList>
                     </Command>
                     <div className="flex items-center border-t p-2">
-                      <Input placeholder="Add new label" value={newLabel} onChange={(e) => setNewLabel(e.target.value)} className="flex-grow" />
-                      <Button type="button" disabled={!!labels.find((l) => l.name === newLabel) || !newLabel || addLabelLoading} onClick={handleAddLabel} className="ml-2">
+                      <Button
+                        type="button"
+                        size="sm"
+                        disabled={!!labels.find((l) => l.name === newLabel) || !newLabel || addLabelLoading}
+                        onClick={() => handleAddLabel(newLabel)}
+                        className="ml-auto"
+                      >
                         {addLabelLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <PlusCircle className="h-4 w-4" />}
                       </Button>
                     </div>
