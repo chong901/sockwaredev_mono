@@ -93,7 +93,7 @@ export function GroceryListComponent() {
       </div>
       <div className="flex-1 overflow-scroll">
         <AnimatePresence>
-          {loading && !previousData ? (
+          {loading && !previousData && !groceryItems ? (
             <>
               {[1, 2, 3].map((index) => (
                 <motion.div

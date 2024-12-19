@@ -35,7 +35,7 @@ export function GroceryItemCard({ item, onEdit, onDelete, className, onLabelClic
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 50 }}
+      initial={{ opacity: 0, y: 0 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -50 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
