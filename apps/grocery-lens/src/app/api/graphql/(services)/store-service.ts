@@ -55,4 +55,16 @@ export class StoreService {
   static getGroceryItemsCount = async (storeId: string) => {
     return groceryItemsCountLoader.load(storeId);
   };
+
+  static updateStore = (userId: string) => async (id: string, name: string) => {
+    return db.updateTable("store").set({ name }).where("id", "=", id).where("user_id", "=", userId).returningAll().executeTakeFirst();
+  };
+
+  static deleteStore = (userId: string) => async (id: string) => {
+    const groceryItemsCount = await this.getGroceryItemsCount(id);
+    if (groceryItemsCount > 0) {
+      throw new Error("Cannot delete store with associated grocery items.");
+    }
+    return db.deleteFrom("store").where("id", "=", id).where("user_id", "=", userId).returningAll().executeTakeFirst();
+  };
 }

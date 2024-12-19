@@ -72,7 +72,9 @@ export type Mutation = {
   addLabel: Label;
   addStore: Store;
   deleteGroceryItem: GroceryItem;
+  deleteStore: Store;
   updateGroceryItem: GroceryItem;
+  updateStore: Store;
 };
 
 
@@ -96,9 +98,20 @@ export type MutationDeleteGroceryItemArgs = {
 };
 
 
+export type MutationDeleteStoreArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationUpdateGroceryItemArgs = {
   id: Scalars['ID']['input'];
   input: CreateGroceryItemInput;
+};
+
+
+export type MutationUpdateStoreArgs = {
+  id: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
 };
 
 export type Pagination = {
@@ -263,7 +276,9 @@ export type MutationResolvers<ContextType = ApolloContext, ParentType extends Re
   addLabel?: Resolver<ResolversTypes['Label'], ParentType, ContextType, RequireFields<MutationAddLabelArgs, 'name'>>;
   addStore?: Resolver<ResolversTypes['Store'], ParentType, ContextType, RequireFields<MutationAddStoreArgs, 'name'>>;
   deleteGroceryItem?: Resolver<ResolversTypes['GroceryItem'], ParentType, ContextType, RequireFields<MutationDeleteGroceryItemArgs, 'id'>>;
+  deleteStore?: Resolver<ResolversTypes['Store'], ParentType, ContextType, RequireFields<MutationDeleteStoreArgs, 'id'>>;
   updateGroceryItem?: Resolver<ResolversTypes['GroceryItem'], ParentType, ContextType, RequireFields<MutationUpdateGroceryItemArgs, 'id' | 'input'>>;
+  updateStore?: Resolver<ResolversTypes['Store'], ParentType, ContextType, RequireFields<MutationUpdateStoreArgs, 'id' | 'name'>>;
 }>;
 
 export type QueryResolvers<ContextType = ApolloContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{

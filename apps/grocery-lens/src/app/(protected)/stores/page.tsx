@@ -1,52 +1,32 @@
 "use client";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { GetStoresQuery } from "@/graphql-codegen/frontend/graphql";
+import { DeleteStoreMutation, GetStoresQuery } from "@/graphql-codegen/frontend/graphql";
+import { DELETE_STORE, UPDATE_STORE } from "@/graphql/mutation";
 import { getStoresQuery } from "@/graphql/query";
-import { gql, useMutation, useQuery } from "@apollo/client";
-import { Check, Pencil, Plus, Store, Trash2 } from "lucide-react";
+import { useMutation, useQuery } from "@apollo/client";
+import { Check, Loader, Pencil, Plus, Store, Trash2 } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
-
-const DELETE_STORE = gql`
-  mutation DeleteStore($id: ID!) {
-    deleteStore(id: $id) {
-      id
-    }
-  }
-`;
-
-const UPDATE_STORE = gql`
-  mutation UpdateStore($id: ID!, $name: String!) {
-    updateStore(id: $id, name: $name) {
-      id
-      name
-    }
-  }
-`;
 
 const StoresPage: React.FC = () => {
   const { loading, error, data } = useQuery<GetStoresQuery>(getStoresQuery);
-  const [deleteStore] = useMutation(DELETE_STORE);
-  const [updateStore] = useMutation(UPDATE_STORE);
+  const [deleteStore, { loading: isDeleting }] = useMutation<DeleteStoreMutation>(DELETE_STORE, {
+    update(cache, { data }) {
+      cache.evict({ id: cache.identify(data!.deleteStore) });
+      cache.gc();
+    },
+  });
+  const [updateStore, { loading: isSaving }] = useMutation(UPDATE_STORE);
   const [editingStoreId, setEditingStoreId] = useState<string | null>(null);
   const [storeName, setStoreName] = useState<string>("");
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [selectedStore, setSelectedStore] = useState<{ id: string; name: string; groceryItemsCount: number } | null>(null);
+  const cardRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
+      if (cardRef.current && !cardRef.current.contains(event.target as Node)) {
         setEditingStoreId(null);
       }
     };
@@ -55,10 +35,11 @@ const StoresPage: React.FC = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [inputRef]);
+  }, [cardRef]);
 
-  const handleDelete = (id: string) => {
-    deleteStore({ variables: { id } });
+  const handleDelete = async (id: string) => {
+    await deleteStore({ variables: { id } });
+    setSelectedStore(null);
   };
 
   const handleEdit = (store: { id: string; name: string }) => {
@@ -66,8 +47,9 @@ const StoresPage: React.FC = () => {
     setStoreName(store.name);
   };
 
-  const handleSave = (id: string) => {
-    updateStore({ variables: { id, name: storeName } });
+  const handleSave = async (id: string) => {
+    const trimmedName = storeName.trim();
+    await updateStore({ variables: { id, name: trimmedName } });
     setEditingStoreId(null);
   };
 
@@ -89,14 +71,14 @@ const StoresPage: React.FC = () => {
 
       <div className="grid gap-4">
         {data?.getStores.map((store) => (
-          <Card key={store.id} className="group">
+          <Card key={store.id} ref={editingStoreId === store.id ? cardRef : null}>
             <CardContent className="flex items-center p-4">
               <div className="mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
                 <Store className="h-5 w-5 text-primary" />
               </div>
               <div className="min-w-0 flex-1">
                 {editingStoreId === store.id ? (
-                  <Input ref={inputRef} value={storeName} onChange={(e) => setStoreName(e.target.value)} className="truncate font-medium" />
+                  <Input value={storeName} onChange={(e) => setStoreName(e.target.value)} className="truncate font-medium" disabled={isSaving} />
                 ) : (
                   <>
                     <h3 className="truncate font-medium">{store.name}</h3>
@@ -104,10 +86,10 @@ const StoresPage: React.FC = () => {
                   </>
                 )}
               </div>
-              <div className="ml-4 flex items-center gap-2 opacity-0 transition-opacity group-hover:opacity-100">
+              <div className="ml-4 flex items-center gap-2">
                 {editingStoreId === store.id ? (
-                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleSave(store.id)}>
-                    <Check className="h-4 w-4" />
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleSave(store.id)} disabled={isSaving}>
+                    {isSaving ? <Loader className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
                     <span className="sr-only">Save {store.name}</span>
                   </Button>
                 ) : (
@@ -116,31 +98,48 @@ const StoresPage: React.FC = () => {
                     <span className="sr-only">Edit {store.name}</span>
                   </Button>
                 )}
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="ghost" size="icon" className={`relative h-8 w-8 text-destructive hover:text-destructive`} onClick={() => setSelectedStore(store)}>
                       <Trash2 className="h-4 w-4" />
                       <span className="sr-only">Delete {store.name}</span>
                     </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Delete store</AlertDialogTitle>
-                      <AlertDialogDescription>Are you sure you want to delete {store.name}? This action cannot be undone.</AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={() => handleDelete(store.id)}>
-                        Delete
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                  </DialogTrigger>
+                </Dialog>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
+
+      {selectedStore && (
+        <Dialog open={!!selectedStore} onOpenChange={() => setSelectedStore(null)}>
+          <DialogContent className="rounded-lg bg-white p-6 shadow-lg">
+            <DialogHeader>
+              <DialogTitle>Delete store</DialogTitle>
+              {selectedStore.groceryItemsCount > 0 ? (
+                <DialogDescription>You cannot delete {selectedStore.name} because it has associated grocery items.</DialogDescription>
+              ) : (
+                <DialogDescription>
+                  Are you sure you want to delete <strong>{selectedStore.name}</strong>? This action cannot be undone.
+                </DialogDescription>
+              )}
+            </DialogHeader>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="ghost">Cancel</Button>
+              </DialogClose>
+              <Button
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                onClick={() => handleDelete(selectedStore.id)}
+                disabled={selectedStore.groceryItemsCount > 0 || isDeleting}
+              >
+                {isDeleting ? <Loader className="h-4 w-4 animate-spin" /> : "Delete"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };

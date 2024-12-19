@@ -44,3 +44,21 @@ export const deleteGroceryItemMutation = gql`
     }
   }
 `;
+
+export const DELETE_STORE = gql`
+  mutation DeleteStore($id: ID!) {
+    deleteStore(id: $id) {
+      id
+    }
+  }
+`;
+
+export const UPDATE_STORE = gql`
+  mutation UpdateStore($id: ID!, $name: String!) {
+    updateStore(id: $id, name: $name) {
+      id
+      name
+      groceryItemsCount
+    }
+  }
+`;
