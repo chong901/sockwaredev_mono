@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { DeleteStoreMutation, GetStoresQuery } from "@/graphql-codegen/frontend/graphql";
 import { DELETE_STORE, UPDATE_STORE } from "@/graphql/mutation";
@@ -115,14 +115,10 @@ const StoresPage: React.FC = () => {
                     <span className="sr-only">Edit {store.name}</span>
                   </Button>
                 )}
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="ghost" size="icon" className={`relative h-8 w-8 text-destructive hover:text-destructive`} onClick={() => setSelectedStore(store)}>
-                      <Trash2 className="h-4 w-4" />
-                      <span className="sr-only">Delete {store.name}</span>
-                    </Button>
-                  </DialogTrigger>
-                </Dialog>
+                <Button variant="ghost" size="icon" className={`relative h-8 w-8 text-destructive hover:text-destructive`} onClick={() => setSelectedStore(store)}>
+                  <Trash2 className="h-4 w-4" />
+                  <span className="sr-only">Delete {store.name}</span>
+                </Button>
               </div>
             </CardContent>
           </Card>
