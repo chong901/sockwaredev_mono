@@ -23,11 +23,13 @@ const StoresPage: React.FC = () => {
   const [storeName, setStoreName] = useState<string>("");
   const [selectedStore, setSelectedStore] = useState<{ id: string; name: string; groceryItemsCount: number } | null>(null);
   const cardRef = useRef<HTMLDivElement | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (cardRef.current && !cardRef.current.contains(event.target as Node)) {
         setEditingStoreId(null);
+        setErrorMessage(null);
       }
     };
 
@@ -51,6 +53,18 @@ const StoresPage: React.FC = () => {
     const trimmedName = storeName.trim();
     await updateStore({ variables: { id, name: trimmedName } });
     setEditingStoreId(null);
+  };
+
+  const handleStoreNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newName = e.target.value;
+    setStoreName(newName);
+    if (!newName.trim()) {
+      setErrorMessage("Store name cannot be empty");
+    } else if (data?.getStores.some((store) => store.name === newName && store.id !== editingStoreId)) {
+      setErrorMessage("Store name already exists.");
+    } else {
+      setErrorMessage(null);
+    }
   };
 
   if (loading) return <p>Loading...</p>;
@@ -78,7 +92,10 @@ const StoresPage: React.FC = () => {
               </div>
               <div className="min-w-0 flex-1">
                 {editingStoreId === store.id ? (
-                  <Input value={storeName} onChange={(e) => setStoreName(e.target.value)} className="truncate font-medium" disabled={isSaving} />
+                  <>
+                    <Input value={storeName} onChange={handleStoreNameChange} className={`truncate font-medium ${errorMessage ? "border-red-500" : ""}`} disabled={isSaving} />
+                    {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+                  </>
                 ) : (
                   <>
                     <h3 className="break-words font-medium">{store.name}</h3>
@@ -88,7 +105,7 @@ const StoresPage: React.FC = () => {
               </div>
               <div className="ml-4 flex items-center gap-2">
                 {editingStoreId === store.id ? (
-                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleSave(store.id)} disabled={isSaving}>
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleSave(store.id)} disabled={isSaving || !!errorMessage}>
                     {isSaving ? <Loader className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
                     <span className="sr-only">Save {store.name}</span>
                   </Button>
