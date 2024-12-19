@@ -3,12 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { DeleteStoreMutation, GetStoresQuery } from "@/graphql-codegen/frontend/graphql";
-import { DELETE_STORE, UPDATE_STORE } from "@/graphql/mutation";
+import { AddStoreMutation, DeleteStoreMutation, GetStoresQuery } from "@/graphql-codegen/frontend/graphql";
+import { ADD_STORE, DELETE_STORE, UPDATE_STORE } from "@/graphql/mutation";
 import { getStoresQuery } from "@/graphql/query";
 import { useMutation, useQuery } from "@apollo/client";
-import { Check, Loader, Pencil, Plus, Store, Trash2 } from "lucide-react";
+import { Check, Loader, Pencil, Store, Trash2 } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
+import CreateStoreDialog from "./CreateStoreDialog";
 
 const StoresPage: React.FC = () => {
   const { loading, error, data } = useQuery<GetStoresQuery>(getStoresQuery);
@@ -19,9 +20,19 @@ const StoresPage: React.FC = () => {
     },
   });
   const [updateStore, { loading: isSaving }] = useMutation(UPDATE_STORE);
+  const [createStore, { loading: isCreating }] = useMutation<AddStoreMutation>(ADD_STORE, {
+    update(cache, { data }) {
+      const existingStores = cache.readQuery<GetStoresQuery>({ query: getStoresQuery });
+      cache.writeQuery({
+        query: getStoresQuery,
+        data: { getStores: [data!.addStore, ...existingStores!.getStores] },
+      });
+    },
+  });
   const [editingStoreId, setEditingStoreId] = useState<string | null>(null);
   const [storeName, setStoreName] = useState<string>("");
   const [selectedStore, setSelectedStore] = useState<{ id: string; name: string; groceryItemsCount: number } | null>(null);
+  const [isCreateDialogOpen, setCreateDialogOpen] = useState<boolean>(false);
   const cardRef = useRef<HTMLDivElement | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -67,6 +78,10 @@ const StoresPage: React.FC = () => {
     }
   };
 
+  const handleCreateStore = async (name: string) => {
+    await createStore({ variables: { name } });
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
@@ -75,12 +90,15 @@ const StoresPage: React.FC = () => {
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="mb-2 text-3xl font-bold tracking-tight">Stores</h1>
-          <p className="text-muted-foreground">Manage your store connections and settings</p>
+          <p className="text-muted-foreground">Manage your stores</p>
         </div>
-        <Button className="gap-2">
-          <Plus className="h-4 w-4" />
-          Add Store
-        </Button>
+        <CreateStoreDialog
+          isOpen={isCreateDialogOpen}
+          onOpenChange={setCreateDialogOpen}
+          onCreateStore={handleCreateStore}
+          isCreating={isCreating}
+          existingStores={data?.getStores || []}
+        />
       </div>
 
       <div className="grid gap-4">

@@ -10,11 +10,12 @@ export const addLabelMutation = gql`
   }
 `;
 
-export const addStoreMutation = gql`
+export const ADD_STORE = gql`
   mutation AddStore($name: String!) {
     addStore(name: $name) {
       id
       name
+      groceryItemsCount
     }
   }
 `;

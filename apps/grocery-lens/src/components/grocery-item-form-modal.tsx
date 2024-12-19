@@ -22,7 +22,7 @@ import {
   UpdateGroceryItemMutation,
   UpdateGroceryItemMutationVariables,
 } from "@/graphql-codegen/frontend/graphql";
-import { addGroceryItemMutation, addLabelMutation, addStoreMutation, updateGroceryItemMutation } from "@/graphql/mutation";
+import { ADD_STORE, addGroceryItemMutation, addLabelMutation, updateGroceryItemMutation } from "@/graphql/mutation";
 import { getLabelQuery, getStoresQuery, GroceryItem } from "@/graphql/query";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -88,7 +88,7 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
   const { data: getStoresData, loading: getStoresLoading } = useQuery<GetStoresQuery>(getStoresQuery);
 
   const [addLabel, { loading: addLabelLoading }] = useMutation<AddLabelMutation, AddLabelMutationVariables>(addLabelMutation);
-  const [addStore, { loading: addStoreLoading }] = useMutation<AddStoreMutation, AddStoreMutationVariables>(addStoreMutation);
+  const [addStore, { loading: addStoreLoading }] = useMutation<AddStoreMutation, AddStoreMutationVariables>(ADD_STORE);
   const [addGroceryItem] = useMutation<AddGroceryItemMutation, AddGroceryItemMutationVariables>(addGroceryItemMutation);
   const [updateGroceryItem] = useMutation<UpdateGroceryItemMutation, UpdateGroceryItemMutationVariables>(updateGroceryItemMutation);
 

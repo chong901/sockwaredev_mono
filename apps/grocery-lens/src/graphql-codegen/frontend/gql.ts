@@ -15,7 +15,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "\n  fragment GroceryItemFragment on GroceryItem {\n    id\n    name\n    store {\n      id\n      name\n    }\n    price\n    quantity\n    price\n    pricePerUnit\n    unit\n    notes\n    labels {\n      id\n      name\n    }\n    url\n    created_at\n  }\n": types.GroceryItemFragmentFragmentDoc,
     "\n  mutation AddLabel($name: String!) {\n    addLabel(name: $name) {\n      id\n      name\n    }\n  }\n": types.AddLabelDocument,
-    "\n  mutation AddStore($name: String!) {\n    addStore(name: $name) {\n      id\n      name\n    }\n  }\n": types.AddStoreDocument,
+    "\n  mutation AddStore($name: String!) {\n    addStore(name: $name) {\n      id\n      name\n      groceryItemsCount\n    }\n  }\n": types.AddStoreDocument,
     "\n  mutation AddGroceryItem($input: CreateGroceryItemInput!) {\n    addGroceryItem(input: $input) {\n      ...GroceryItemFragment\n    }\n  }\n  \n": types.AddGroceryItemDocument,
     "\n  mutation UpdateGroceryItem($id: ID!, $input: CreateGroceryItemInput!) {\n    updateGroceryItem(id: $id, input: $input) {\n      ...GroceryItemFragment\n    }\n  }\n  \n": types.UpdateGroceryItemDocument,
     "\n  mutation DeleteGroceryItem($id: ID!) {\n    deleteGroceryItem(id: $id) {\n      id\n    }\n  }\n": types.DeleteGroceryItemDocument,
@@ -51,7 +51,7 @@ export function graphql(source: "\n  mutation AddLabel($name: String!) {\n    ad
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation AddStore($name: String!) {\n    addStore(name: $name) {\n      id\n      name\n    }\n  }\n"): (typeof documents)["\n  mutation AddStore($name: String!) {\n    addStore(name: $name) {\n      id\n      name\n    }\n  }\n"];
+export function graphql(source: "\n  mutation AddStore($name: String!) {\n    addStore(name: $name) {\n      id\n      name\n      groceryItemsCount\n    }\n  }\n"): (typeof documents)["\n  mutation AddStore($name: String!) {\n    addStore(name: $name) {\n      id\n      name\n      groceryItemsCount\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
