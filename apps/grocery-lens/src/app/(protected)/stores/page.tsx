@@ -57,7 +57,7 @@ const StoresPage: React.FC = () => {
   if (error) return <p>Error: {error.message}</p>;
 
   return (
-    <div>
+    <div className="max-w-full">
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="mb-2 text-3xl font-bold tracking-tight">Stores</h1>
@@ -81,7 +81,7 @@ const StoresPage: React.FC = () => {
                   <Input value={storeName} onChange={(e) => setStoreName(e.target.value)} className="truncate font-medium" disabled={isSaving} />
                 ) : (
                   <>
-                    <h3 className="truncate font-medium">{store.name}</h3>
+                    <h3 className="break-words font-medium">{store.name}</h3>
                     <p className="text-sm text-muted-foreground">{store.groceryItemsCount} items</p>
                   </>
                 )}
