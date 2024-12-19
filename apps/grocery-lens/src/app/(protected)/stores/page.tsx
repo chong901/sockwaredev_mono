@@ -87,7 +87,7 @@ const StoresPage: React.FC = () => {
 
   return (
     <div className="max-w-full">
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex items-start justify-between">
         <div>
           <h1 className="mb-2 text-3xl font-bold tracking-tight">Stores</h1>
           <p className="text-muted-foreground">Manage your stores</p>

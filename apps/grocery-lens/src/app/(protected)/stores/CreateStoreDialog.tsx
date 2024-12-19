@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { GetStoresQuery } from "@/graphql-codegen/frontend/graphql";
-import { Loader, Plus } from "lucide-react";
+import { Loader, PlusIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 interface CreateStoreDialogProps {
@@ -57,9 +57,9 @@ const CreateStoreDialog: React.FC<CreateStoreDialogProps> = ({ isOpen, onOpenCha
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button className="gap-2">
-          <Plus className="h-4 w-4" />
-          Add Store
+        <Button className="bg-indigo-600 text-white hover:bg-indigo-700">
+          <p className="hidden sm:block">Add Store</p>
+          <PlusIcon className="sm:hidden" />
         </Button>
       </DialogTrigger>
       <DialogContent className="rounded-lg bg-white p-6 shadow-lg">
