@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Menu, X } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 import { useState } from "react";
 
 const navItems = [
@@ -29,9 +30,12 @@ export function Header() {
               <ul className="flex space-x-4">
                 {navItems.map((item) => (
                   <li key={item.name}>
-                    <a href={item.href} className="rounded-md px-3 py-2 text-sm font-medium text-white transition duration-150 ease-in-out hover:bg-purple-500 hover:bg-opacity-75">
+                    <Link
+                      href={item.href}
+                      className="rounded-md px-3 py-2 text-sm font-medium text-white transition duration-150 ease-in-out hover:bg-purple-500 hover:bg-opacity-75"
+                    >
                       {item.name}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
