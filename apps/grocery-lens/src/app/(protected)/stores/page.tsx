@@ -7,7 +7,8 @@ import { AddStoreMutation, DeleteStoreMutation, GetStoresQuery } from "@/graphql
 import { ADD_STORE, DELETE_STORE, UPDATE_STORE } from "@/graphql/mutation";
 import { getStoresQuery } from "@/graphql/query";
 import { useMutation, useQuery } from "@apollo/client";
-import { Check, Loader, Pencil, Store, Trash2 } from "lucide-react";
+import { Check, Loader, Pencil, Search, Store, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import CreateStoreDialog from "./CreateStoreDialog";
 
@@ -35,6 +36,7 @@ const StoresPage: React.FC = () => {
   const [isCreateDialogOpen, setCreateDialogOpen] = useState<boolean>(false);
   const cardRef = useRef<HTMLDivElement | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -80,6 +82,10 @@ const StoresPage: React.FC = () => {
 
   const handleCreateStore = async (name: string) => {
     await createStore({ variables: { name } });
+  };
+
+  const handleViewGroceryItems = (storeName: string) => {
+    router.push(`/?stores=${storeName}`);
   };
 
   if (loading) return <p>Loading...</p>;
@@ -128,10 +134,18 @@ const StoresPage: React.FC = () => {
                     <span className="sr-only">Save {store.name}</span>
                   </Button>
                 ) : (
-                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(store)}>
-                    <Pencil className="h-4 w-4" />
-                    <span className="sr-only">Edit {store.name}</span>
-                  </Button>
+                  <>
+                    {store.groceryItemsCount > 0 && (
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleViewGroceryItems(store.name)}>
+                        <Search className="h-4 w-4" />
+                        <span className="sr-only">View {store.name}</span>
+                      </Button>
+                    )}
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(store)}>
+                      <Pencil className="h-4 w-4" />
+                      <span className="sr-only">Edit {store.name}</span>
+                    </Button>
+                  </>
                 )}
                 <Button variant="ghost" size="icon" className={`relative h-8 w-8 text-destructive hover:text-destructive`} onClick={() => setSelectedStore(store)}>
                   <Trash2 className="h-4 w-4" />
