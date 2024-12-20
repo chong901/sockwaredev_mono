@@ -128,64 +128,57 @@ const StoresPage: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="flex-1 overflow-hidden">
+        <div className="flex h-full flex-1 flex-col gap-4 overflow-scroll">
           {data?.getStores.length === 0 ? (
             <EmptyStore onCreateNewStore={() => setCreateDialogOpen(true)} />
           ) : (
-            <div className="flex h-full flex-col gap-4 overflow-scroll">
-              {data?.getStores.map((store) => (
-                <Card key={store.id} ref={editingStoreId === store.id ? cardRef : null}>
-                  <CardContent className="flex items-center p-4">
-                    <div className="mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-                      <Store className="h-5 w-5 text-primary" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      {editingStoreId === store.id ? (
-                        <>
-                          <Input
-                            value={storeName}
-                            onChange={handleStoreNameChange}
-                            className={`truncate font-medium ${errorMessage ? "border-red-500" : ""}`}
-                            disabled={isSaving}
-                          />
-                          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-                        </>
-                      ) : (
-                        <>
-                          <h3 className="break-words font-medium">{store.name}</h3>
-                          <p className="text-sm text-muted-foreground">{store.groceryItemsCount} items</p>
-                        </>
-                      )}
-                    </div>
-                    <div className="ml-4 flex items-center gap-2">
-                      {editingStoreId === store.id ? (
-                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleSave(store.id)} disabled={isSaving || !!errorMessage}>
-                          {isSaving ? <Loader className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-                          <span className="sr-only">Save {store.name}</span>
-                        </Button>
-                      ) : (
-                        <>
-                          {store.groceryItemsCount > 0 && (
-                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleViewGroceryItems(store.name)}>
-                              <Search className="h-4 w-4" />
-                              <span className="sr-only">View {store.name}</span>
-                            </Button>
-                          )}
-                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(store)}>
-                            <Pencil className="h-4 w-4" />
-                            <span className="sr-only">Edit {store.name}</span>
-                          </Button>
-                        </>
-                      )}
-                      <Button variant="ghost" size="icon" className={`relative h-8 w-8 text-destructive hover:text-destructive`} onClick={() => setSelectedStore(store)}>
-                        <Trash2 className="h-4 w-4" />
-                        <span className="sr-only">Delete {store.name}</span>
+            data?.getStores.map((store) => (
+              <Card key={store.id} ref={editingStoreId === store.id ? cardRef : null}>
+                <CardContent className="flex items-center p-4">
+                  <div className="mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                    <Store className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    {editingStoreId === store.id ? (
+                      <>
+                        <Input value={storeName} onChange={handleStoreNameChange} className={`truncate font-medium ${errorMessage ? "border-red-500" : ""}`} disabled={isSaving} />
+                        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+                      </>
+                    ) : (
+                      <>
+                        <h3 className="break-words font-medium">{store.name}</h3>
+                        <p className="text-sm text-muted-foreground">{store.groceryItemsCount} items</p>
+                      </>
+                    )}
+                  </div>
+                  <div className="ml-4 flex items-center gap-2">
+                    {editingStoreId === store.id ? (
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleSave(store.id)} disabled={isSaving || !!errorMessage}>
+                        {isSaving ? <Loader className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+                        <span className="sr-only">Save {store.name}</span>
                       </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    ) : (
+                      <>
+                        {store.groceryItemsCount > 0 && (
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleViewGroceryItems(store.name)}>
+                            <Search className="h-4 w-4" />
+                            <span className="sr-only">View {store.name}</span>
+                          </Button>
+                        )}
+                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(store)}>
+                          <Pencil className="h-4 w-4" />
+                          <span className="sr-only">Edit {store.name}</span>
+                        </Button>
+                      </>
+                    )}
+                    <Button variant="ghost" size="icon" className={`relative h-8 w-8 text-destructive hover:text-destructive`} onClick={() => setSelectedStore(store)}>
+                      <Trash2 className="h-4 w-4" />
+                      <span className="sr-only">Delete {store.name}</span>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
           )}
         </div>
       )}

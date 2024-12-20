@@ -91,7 +91,7 @@ export function GroceryListComponent() {
           <GroceryFilterComponent />
         </div>
       </div>
-      <div className="flex-1 overflow-hidden">
+      <div className="grid flex-1 gap-4 overflow-scroll">
         <AnimatePresence>
           {loading && !previousData && !groceryItems ? (
             <>
@@ -102,7 +102,6 @@ export function GroceryListComponent() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -50 }}
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  className="mb-4"
                 >
                   <GroceryItemCardSkeleton />
                 </motion.div>
@@ -131,7 +130,6 @@ export function GroceryListComponent() {
                   onDelete={handleDelete}
                   onEdit={handleEdit}
                   onCopy={handleCopy}
-                  className="mb-4"
                   onLabelClick={addLabelFilter}
                   onStoreClick={addStoreFilter}
                 />
