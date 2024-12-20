@@ -1,4 +1,5 @@
 "use client";
+import EmptyStore from "@/components/empty-store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -92,7 +93,7 @@ const StoresPage: React.FC = () => {
   if (error) return <p>Error: {error.message}</p>;
 
   return (
-    <div className="max-w-full">
+    <div className="flex h-full max-w-full flex-col">
       <div className="mb-8 flex items-start justify-between">
         <div>
           <h1 className="mb-2 text-3xl font-bold tracking-tight">Stores</h1>
@@ -107,7 +108,8 @@ const StoresPage: React.FC = () => {
         />
       </div>
 
-      <div className="grid gap-4">
+      <div className="flex-1 gap-4 overflow-scroll">
+        {data?.getStores.length === 0 && <EmptyStore onCreateNewStore={() => setCreateDialogOpen(true)} />}
         {data?.getStores.map((store) => (
           <Card key={store.id} ref={editingStoreId === store.id ? cardRef : null}>
             <CardContent className="flex items-center p-4">

@@ -35,7 +35,7 @@ const groceryItemsCountLoader = new Dataloader<string, number>(
 
 export class StoreService {
   static getUserStores = async (userId: string) => {
-    return db.selectFrom("store").selectAll().where("user_id", "=", userId).execute();
+    return db.selectFrom("store").selectAll().where("user_id", "=", userId).orderBy("name asc").execute();
   };
 
   static getStoreByUserId = async (userId: string, storeId: string) => {
