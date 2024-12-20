@@ -46,7 +46,7 @@ export function InfiniteScrollList<T>({
 
   return (
     <>
-      {items.length === 0 ? emptyComponent : items.map(children)}
+      <div className="h-full overflow-scroll">{items.length === 0 ? emptyComponent : items.map(children)}</div>
       <div ref={loaderRef} className="flex items-center justify-center">
         {loading && loadingComponent}
       </div>

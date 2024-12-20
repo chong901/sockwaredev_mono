@@ -10,8 +10,8 @@ interface EmptySearchResultsProps {
 
 export default function EmptySearchResult({ onReset }: EmptySearchResultsProps) {
   return (
-    <Card className="flex h-full min-h-fit w-full flex-col justify-center p-12">
-      <div className="flex flex-col items-center justify-center space-y-6 text-center">
+    <Card className="h-full w-full overflow-scroll p-12">
+      <div className="flex h-full min-h-fit flex-col items-center justify-center space-y-6 text-center">
         <div className="relative flex h-24 w-24 items-center justify-center rounded-full bg-primary/10">
           <Search className="h-12 w-12 text-primary" />
         </div>
