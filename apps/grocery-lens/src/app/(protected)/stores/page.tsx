@@ -108,7 +108,7 @@ const StoresPage: React.FC = () => {
         />
       </div>
 
-      <div className="flex-1 gap-4 overflow-scroll">
+      <div className="grid flex-1 gap-4 overflow-scroll">
         {loading &&
           (!data || data.getStores.length === 0) &&
           [...Array(5)].map((_, index) => (

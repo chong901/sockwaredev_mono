@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 interface CreateStoreDialogProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onCreateStore: (name: string) => void;
+  onCreateStore: (name: string) => void | Promise<void>;
   isCreating: boolean;
   existingStores: GetStoresQuery["getStores"];
 }
@@ -20,9 +20,9 @@ const CreateStoreDialog: React.FC<CreateStoreDialogProps> = ({ isOpen, onOpenCha
 
   useEffect(() => {
     if (!isOpen) {
+      setIsDirty(false);
       setNewStoreName("");
       setErrorMessage(null);
-      setIsDirty(false);
     }
   }, [isOpen]);
 
@@ -39,13 +39,13 @@ const CreateStoreDialog: React.FC<CreateStoreDialogProps> = ({ isOpen, onOpenCha
     }
   }, [newStoreName, existingStores, isDirty]);
 
-  const handleCreateStore = () => {
+  const handleCreateStore = async () => {
     const trimmedName = newStoreName.trim();
     if (!trimmedName || errorMessage) {
       return;
     }
-    onCreateStore(trimmedName);
-    setNewStoreName("");
+    setIsDirty(false);
+    await onCreateStore(trimmedName);
     onOpenChange(false);
   };
 
