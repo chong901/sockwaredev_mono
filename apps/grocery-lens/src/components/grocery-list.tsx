@@ -91,7 +91,7 @@ export function GroceryListComponent() {
           <GroceryFilterComponent />
         </div>
       </div>
-      <div className="grid flex-1 gap-4 overflow-scroll">
+      <div className="grid max-w-full flex-1 gap-4 overflow-scroll">
         <AnimatePresence>
           {loading && !previousData && !groceryItems ? (
             <>

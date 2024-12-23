@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import UrlPreview from "@/components/url-preview";
 import { GroceryItem } from "@/graphql/query";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
@@ -94,7 +95,8 @@ export function GroceryItemCard({ item, onEdit, onDelete, className, onLabelClic
               <ShoppingBag className="mr-2 h-4 w-4" />
               <span className="text-sm">{item.store.name}</span>
             </div>
-            <div className="flex justify-between gap-2">
+            <div className="flex gap-2">
+              {item.url && <UrlPreview url={item.url} className="h-auto w-40" />}
               <div className="flex flex-col justify-end gap-2">
                 <div className="flex items-baseline">
                   <span className="text-2xl font-bold text-indigo-700">{item.quantity}</span>
@@ -105,7 +107,7 @@ export function GroceryItemCard({ item, onEdit, onDelete, className, onLabelClic
                 </div>
                 <div className="text-sm text-indigo-600">Created At: {format(new Date(item.created_at), "MMM dd, yyyy")}</div>
               </div>
-              <div className="flex flex-col justify-end gap-2">
+              <div className="ml-auto flex flex-col justify-end gap-2">
                 <div className="flex items-center justify-end">
                   <DollarSign className="h-5 w-5 text-green-600" />
                   <span className="text-3xl font-bold text-green-700">{item.price}</span>
