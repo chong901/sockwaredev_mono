@@ -1,5 +1,6 @@
 import { LabelService } from "@/app/api/graphql/(services)/label-service";
 import { StoreService } from "@/app/api/graphql/(services)/store-service";
+import { UrlService } from "@/app/api/graphql/(services)/url-service";
 import { CreateGroceryItemInput } from "@/app/api/graphql/(types)/(inputs)/create-grocery-item";
 import { GroceryItemFilter } from "@/app/api/graphql/(types)/(inputs)/grocery-item-filter";
 import { Pagination } from "@/app/api/graphql/(types)/(inputs)/pagination";
@@ -8,7 +9,7 @@ import { db } from "@/db/db";
 import { DB } from "@/db/types";
 import { SortBy } from "@/enums/sort-by";
 import DataLoader from "dataloader";
-import { Kysely, sql } from "kysely";
+import { InsertObject, Kysely, sql, UpdateObject } from "kysely";
 
 const groceryItemLabelDataloader = new DataLoader<string, Label[]>(
   async (groceryItemIds) => {
@@ -81,51 +82,56 @@ export class GroceryItemService {
     if (!store) {
       throw new Error("Store not found");
     }
+    const value: InsertObject<DB, "grocery_item"> = {
+      name: data.itemName,
+      user_id: userId,
+      store_id: data.storeId,
+      price: data.price,
+      quantity: data.quantity,
+      unit: data.unit,
+      notes: data.notes,
+      url: data.url,
+    };
+    if (data.url) {
+      const previewUrl = await UrlService.fetchUrlPreview(data.url);
+      value.url_preview_image = previewUrl.image;
+    }
     const labels = await LabelService.getUserLabelsByIds(userId, data.labels);
     const newGroceryItem = await db.transaction().execute(async (tx) => {
-      const result = await tx
-        .insertInto("grocery_item")
-        .values({
-          name: data.itemName,
-          user_id: userId,
-          store_id: data.storeId,
-          price: data.price,
-          quantity: data.quantity,
-          unit: data.unit,
-          notes: data.notes,
-          url: data.url,
-        })
-        .returningAll()
-        .execute();
-      const groceryItemId = result[0]!.id;
-      await this.addGroceryItemLabel(groceryItemId, labels, tx);
-      return result[0];
+      const groceryItem = await tx.insertInto("grocery_item").values(value).returningAll().executeTakeFirstOrThrow();
+      await this.addGroceryItemLabel(groceryItem.id, labels, tx);
+      return groceryItem;
     });
     return newGroceryItem;
   };
 
   static updateGroceryItem = async (itemId: string, userId: string, data: CreateGroceryItemInput) => {
     const store = await StoreService.getStoreByUserId(userId, data.storeId);
+    const dbGroceryItem = await db.selectFrom("grocery_item").where("id", "=", itemId).where("user_id", "=", userId).selectAll().executeTakeFirst();
+    if (!dbGroceryItem) {
+      throw new Error("Grocery item not found");
+    }
     if (!store) {
       throw new Error("Store not found");
     }
+    const value: UpdateObject<DB, "grocery_item"> = {
+      name: data.itemName,
+      store_id: data.storeId,
+      price: data.price,
+      quantity: data.quantity,
+      unit: data.unit,
+      notes: data.notes,
+      url: data.url,
+    };
+    if (!data.url) {
+      value.url_preview_image = null;
+    } else if (data.url !== dbGroceryItem.url) {
+      const previewUrl = await UrlService.fetchUrlPreview(data.url);
+      value.url_preview_image = previewUrl.image;
+    }
     const labels = await LabelService.getUserLabelsByIds(userId, data.labels);
     const updatedGroceryItem = await db.transaction().execute(async (tx) => {
-      const result = await tx
-        .updateTable("grocery_item")
-        .set({
-          name: data.itemName,
-          store_id: data.storeId,
-          price: data.price,
-          quantity: data.quantity,
-          unit: data.unit,
-          notes: data.notes,
-          url: data.url,
-        })
-        .where("id", "=", itemId)
-        .where("user_id", "=", userId)
-        .returningAll()
-        .execute();
+      const result = await tx.updateTable("grocery_item").set(value).where("id", "=", itemId).where("user_id", "=", userId).returningAll().execute();
       if (!result.length) {
         throw new Error("Grocery item not found");
       }
