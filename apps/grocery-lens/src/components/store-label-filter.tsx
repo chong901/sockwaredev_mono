@@ -90,16 +90,18 @@ const StoreLabelFilter = () => {
             Filter {totalAppliedFilters > 0 && `(${totalAppliedFilters})`}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-80" align="start">
+        <PopoverContent className="max-w-full overflow-y-scroll" align="start">
           {storeLoading || labelLoading ? (
             <div className="flex items-center justify-center">
               <LoadingSpinner />
             </div>
           ) : (
-            <div className="grid gap-4">
+            <div className="flex flex-col gap-4">
               {!hasFilterData && <NoFilterDataMessage />}
-              {(storeData?.getStores?.length ?? 0) > 0 && <StoreFilter storeData={storeData} selectedStores={selectedStores} handleStoreChange={handleStoreChange} />}
-              {(labelData?.getLabels?.length ?? 0) > 0 && <LabelFilter labelData={labelData} selectedLabels={selectedLabels} handleLabelChange={handleLabelChange} />}
+              <div className="flex max-h-40 flex-col gap-4 overflow-y-scroll">
+                {(storeData?.getStores?.length ?? 0) > 0 && <StoreFilter storeData={storeData} selectedStores={selectedStores} handleStoreChange={handleStoreChange} />}
+                {(labelData?.getLabels?.length ?? 0) > 0 && <LabelFilter labelData={labelData} selectedLabels={selectedLabels} handleLabelChange={handleLabelChange} />}
+              </div>
               <Button onClick={applyFilters} className="w-full bg-purple-600 text-white hover:bg-purple-700">
                 Apply Filters
               </Button>
@@ -153,13 +155,25 @@ const LabelFilter: React.FC<LabelFilterProps> = ({ labelData, selectedLabels, ha
 const AppliedFilters: React.FC<AppliedFiltersProps> = ({ appliedStores, appliedLabels, removeFilter, clearAllFilters }) => (
   <div className="flex flex-wrap items-center gap-2">
     {appliedStores.map((store) => (
-      <Button key={store} variant="outline" size="sm" className="border-blue-300 bg-blue-100 text-blue-600 hover:bg-blue-200" onClick={() => removeFilter("store", store)}>
+      <Button
+        key={store}
+        variant="outline"
+        size="sm"
+        className="hidden border-blue-300 bg-blue-100 text-blue-600 hover:bg-blue-200 sm:block"
+        onClick={() => removeFilter("store", store)}
+      >
         {store}
         <X className="ml-2 h-3 w-3" />
       </Button>
     ))}
     {appliedLabels.map((label) => (
-      <Button key={label} variant="outline" size="sm" className="border-purple-300 bg-purple-100 text-purple-600 hover:bg-purple-200" onClick={() => removeFilter("label", label)}>
+      <Button
+        key={label}
+        variant="outline"
+        size="sm"
+        className="hidden border-purple-300 bg-purple-100 text-purple-600 hover:bg-purple-200 sm:block"
+        onClick={() => removeFilter("label", label)}
+      >
         {label}
         <X className="ml-2 h-3 w-3" />
       </Button>
