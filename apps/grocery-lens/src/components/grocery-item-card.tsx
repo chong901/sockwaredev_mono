@@ -45,17 +45,15 @@ export function GroceryItemCard({ item, onEdit, onDelete, className, onLabelClic
       <Card className="w-full overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 shadow-lg transition-all duration-300 hover:shadow-xl">
         <CardContent className="p-0">
           <div className="relative flex flex-col gap-2 p-4">
-            <div className="flex items-center justify-between">
-              <h3 className="flex items-center gap-2 text-xl font-bold capitalize text-indigo-800 sm:text-2xl">
-                {item.name}
-                {item.url && (
-                  <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700">
-                    <ExternalLink className="h-5 w-5" />
-                    <span className="sr-only">View product</span>
-                  </a>
-                )}
-              </h3>
-              <div className="flex space-x-2">
+            <div className="flex items-center gap-2">
+              <h3 className="inline items-center gap-2 overflow-hidden text-ellipsis whitespace-nowrap text-xl font-bold capitalize text-indigo-800 sm:text-2xl">{item.name}</h3>
+              {item.url && (
+                <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700">
+                  <ExternalLink className="h-5 w-5" />
+                  <span className="sr-only">View product</span>
+                </a>
+              )}
+              <div className="ml-auto flex gap-2">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="ghost" size="icon" onClick={() => onEdit(item)} className="text-indigo-600 hover:bg-indigo-200 hover:text-indigo-800">
