@@ -6,7 +6,7 @@
         "cmd": "pnpm -F grocery-lens graphql:codegen"
       },
       {
-        "match": "src/graphql/(query|mutation).ts",
+        "match": "src/graphql/(query|mutation|fragment).ts",
         "cmd": "pnpm -F grocery-lens graphql:codegen"
       },
       {
