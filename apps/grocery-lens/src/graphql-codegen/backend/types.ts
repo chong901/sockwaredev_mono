@@ -42,6 +42,7 @@ export type GroceryItem = {
   store: Store;
   unit: Scalars['String']['output'];
   url?: Maybe<Scalars['String']['output']>;
+  url_preview_image?: Maybe<Scalars['String']['output']>;
 };
 
 export type GroceryItemFilter = {
@@ -262,6 +263,7 @@ export type GroceryItemResolvers<ContextType = ApolloContext, ParentType extends
   store?: Resolver<ResolversTypes['Store'], ParentType, ContextType>;
   unit?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   url?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  url_preview_image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 

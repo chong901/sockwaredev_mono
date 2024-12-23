@@ -20,5 +20,6 @@ export const GroceryItemFragment = gql`
     }
     url
     created_at
+    url_preview_image
   }
 `;

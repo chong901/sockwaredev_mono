@@ -13,7 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  fragment GroceryItemFragment on GroceryItem {\n    id\n    name\n    store {\n      id\n      name\n    }\n    price\n    quantity\n    price\n    pricePerUnit\n    unit\n    notes\n    labels {\n      id\n      name\n    }\n    url\n    created_at\n  }\n": types.GroceryItemFragmentFragmentDoc,
+    "\n  fragment GroceryItemFragment on GroceryItem {\n    id\n    name\n    store {\n      id\n      name\n    }\n    price\n    quantity\n    price\n    pricePerUnit\n    unit\n    notes\n    labels {\n      id\n      name\n    }\n    url\n    created_at\n    url_preview_image\n  }\n": types.GroceryItemFragmentFragmentDoc,
     "\n  mutation AddLabel($name: String!) {\n    addLabel(name: $name) {\n      id\n      name\n    }\n  }\n": types.AddLabelDocument,
     "\n  mutation AddStore($name: String!) {\n    addStore(name: $name) {\n      id\n      name\n      groceryItemsCount\n    }\n  }\n": types.AddStoreDocument,
     "\n  mutation AddGroceryItem($input: CreateGroceryItemInput!) {\n    addGroceryItem(input: $input) {\n      ...GroceryItemFragment\n    }\n  }\n  \n": types.AddGroceryItemDocument,
@@ -43,7 +43,7 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  fragment GroceryItemFragment on GroceryItem {\n    id\n    name\n    store {\n      id\n      name\n    }\n    price\n    quantity\n    price\n    pricePerUnit\n    unit\n    notes\n    labels {\n      id\n      name\n    }\n    url\n    created_at\n  }\n"): (typeof documents)["\n  fragment GroceryItemFragment on GroceryItem {\n    id\n    name\n    store {\n      id\n      name\n    }\n    price\n    quantity\n    price\n    pricePerUnit\n    unit\n    notes\n    labels {\n      id\n      name\n    }\n    url\n    created_at\n  }\n"];
+export function graphql(source: "\n  fragment GroceryItemFragment on GroceryItem {\n    id\n    name\n    store {\n      id\n      name\n    }\n    price\n    quantity\n    price\n    pricePerUnit\n    unit\n    notes\n    labels {\n      id\n      name\n    }\n    url\n    created_at\n    url_preview_image\n  }\n"): (typeof documents)["\n  fragment GroceryItemFragment on GroceryItem {\n    id\n    name\n    store {\n      id\n      name\n    }\n    price\n    quantity\n    price\n    pricePerUnit\n    unit\n    notes\n    labels {\n      id\n      name\n    }\n    url\n    created_at\n    url_preview_image\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

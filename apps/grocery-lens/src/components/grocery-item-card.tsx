@@ -94,7 +94,7 @@ export function GroceryItemCard({ item, onEdit, onDelete, className, onLabelClic
               <span className="text-sm">{item.store.name}</span>
             </div>
             <div className="flex gap-2">
-              {item.url && <UrlPreview url={item.url} className="h-auto w-40" />}
+              {item.url_preview_image && <UrlPreview url={item.url_preview_image} alt={item.name} className="h-auto w-40" />}
               <div className="flex flex-col justify-end gap-2">
                 <div className="flex items-baseline">
                   <span className="text-2xl font-bold text-indigo-700">{item.quantity}</span>

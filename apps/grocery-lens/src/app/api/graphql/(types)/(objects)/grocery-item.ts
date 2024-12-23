@@ -26,5 +26,8 @@ export class GroceryItem {
   @Field()
   created_at: Date;
 
+  @Field({ nullable: true })
+  url_preview_image?: string;
+
   store_id: string;
 }

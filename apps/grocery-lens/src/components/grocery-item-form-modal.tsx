@@ -58,7 +58,7 @@ const formSchema = z.object({
     message: "Unit is required",
   }),
   labels: z.array(z.string()),
-  url: z.string().url().optional(),
+  url: z.string().url().optional().or(z.literal("")),
   notes: z.string().optional(),
 });
 
@@ -155,6 +155,7 @@ export function GroceryItemFormModal({ onAfterAddItem }: { onAfterAddItem?: () =
         price: item.price,
         storeId: item.store.id,
         unit: item.unit as FormData["unit"],
+        url: item.url ?? "",
       });
     }
   }, [item, reset]);
