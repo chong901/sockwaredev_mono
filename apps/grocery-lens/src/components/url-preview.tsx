@@ -65,13 +65,13 @@ export default function UrlPreview({ url, className }: UrlPreviewProps & Pick<Co
 
   if (isLoading) {
     return (
-      <Card className={cn("h-full w-full overflow-hidden")}>
+      <Card className={cn("h-full w-full overflow-hidden", className)}>
         <Skeleton className="block h-full w-full bg-gradient-to-r from-indigo-200 via-purple-200 to-indigo-200" />
       </Card>
     );
   }
 
-  if (!previewData) {
+  if (!previewData || !previewData.image) {
     return null;
   }
 
