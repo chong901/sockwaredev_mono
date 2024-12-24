@@ -7,6 +7,8 @@ import { GroceryItemCard, GroceryItemCardSkeleton } from "@/components/grocery-i
 import { editingItemAtom, GroceryItemFormModal, isEditModalOpenAtom } from "@/components/grocery-item-form-modal";
 import { GroceryLensLogo } from "@/components/grocery-lens";
 import { InfiniteScrollList } from "@/components/infinite-scroll-list";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   DeleteGroceryItemMutation,
   DeleteGroceryItemMutationVariables,
@@ -21,11 +23,13 @@ import { useMutation, useQuery } from "@apollo/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSetAtom } from "jotai";
 import { Loader2 } from "lucide-react";
+import { useState } from "react";
 
 const limit = 10;
 
 export function GroceryListComponent() {
   const { labels, stores, keyword, sortBy, addLabelFilter, addStoreFilter, resetFilters } = useGroceryListFilter();
+  const [selectedItem, setSelectedItem] = useState<GroceryItem | null>(null);
 
   const {
     data: groceryItems,
@@ -66,6 +70,10 @@ export function GroceryListComponent() {
   const handleCopy = (item: GroceryItem) => {
     setEditingItem({ ...item, id: undefined });
     setEditItemModalOpen(true);
+  };
+
+  const handleNotesClick = (item: GroceryItem) => {
+    setSelectedItem(item);
   };
 
   const hasFilterApplied = labels.length > 0 || stores.length > 0 || keyword;
@@ -132,12 +140,29 @@ export function GroceryListComponent() {
                   onCopy={handleCopy}
                   onLabelClick={addLabelFilter}
                   onStoreClick={addStoreFilter}
+                  onNotesClick={handleNotesClick}
                 />
               )}
             </InfiniteScrollList>
           )}
         </AnimatePresence>
       </div>
+
+      {selectedItem && (
+        <Dialog open={!!selectedItem} onOpenChange={() => setSelectedItem(null)}>
+          <DialogContent className="bg-gradient-to-br from-purple-100 to-indigo-100">
+            <DialogHeader>
+              <DialogTitle>Notes for {selectedItem.name}</DialogTitle>
+              <DialogDescription>{selectedItem.notes}</DialogDescription>
+              <DialogClose asChild>
+                <Button variant="ghost" size="icon" onClick={() => setSelectedItem(null)}>
+                  <span className="sr-only">Close</span>
+                </Button>
+              </DialogClose>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

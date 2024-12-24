@@ -9,7 +9,7 @@ import UrlPreview from "@/components/url-preview";
 import { GroceryItem } from "@/graphql/query";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
-import { Copy, DollarSign, Edit2, ExternalLink, ShoppingBag, Tag, Trash2 } from "lucide-react";
+import { Copy, DollarSign, Edit2, ExternalLink, FileText, ShoppingBag, Tag, Trash2 } from "lucide-react";
 
 const shimmer = `
   @keyframes shimmer {
@@ -30,9 +30,10 @@ type GroceryItemCardProps = {
   onLabelClick?: (label: string) => void;
   onStoreClick?: (store: string) => void;
   onCopy?: (item: GroceryItem) => void;
+  onNotesClick?: (item: GroceryItem) => void;
 };
 
-export function GroceryItemCard({ item, onEdit, onDelete, className, onLabelClick, onStoreClick, onCopy }: GroceryItemCardProps) {
+export function GroceryItemCard({ item, onEdit, onDelete, className, onLabelClick, onStoreClick, onCopy, onNotesClick }: GroceryItemCardProps) {
   return (
     <motion.div
       layout
@@ -54,6 +55,19 @@ export function GroceryItemCard({ item, onEdit, onDelete, className, onLabelClic
                 </a>
               )}
               <div className="ml-auto flex gap-2">
+                {item.notes && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="icon" onClick={() => onNotesClick?.(item)} className="text-indigo-600 hover:bg-indigo-200 hover:text-indigo-800">
+                        <FileText className="h-4 w-4" />
+                        <span className="sr-only">View notes</span>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>View notes</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="ghost" size="icon" onClick={() => onEdit(item)} className="text-indigo-600 hover:bg-indigo-200 hover:text-indigo-800">
@@ -128,6 +142,7 @@ export function GroceryItemCard({ item, onEdit, onDelete, className, onLabelClic
     </motion.div>
   );
 }
+
 export function GroceryItemCardSkeleton() {
   return (
     <Card className="overflow-hidden border-indigo-200 bg-white/50 shadow-md">
