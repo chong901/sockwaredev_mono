@@ -3,13 +3,6 @@
 import { Card } from "@/components/ui/card";
 import { ComponentProps } from "react";
 
-interface UrlPreviewData {
-  title: string;
-  description: string;
-  image: string;
-  url: string;
-}
-
 interface UrlPreviewProps {
   url: string;
   alt: string;

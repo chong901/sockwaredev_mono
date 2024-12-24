@@ -16,4 +16,11 @@ if [ "$CHANGES_IN_PACKAGES" = true ]; then
   pnpm install
 fi
 
+# Run lint and cancel the commit if there are errors
+pnpm run --filter "@app/*" lint
+if [ $? -ne 0 ]; then
+  echo "Lint errors found. Commit canceled."
+  exit 1
+fi
+
 exit 0

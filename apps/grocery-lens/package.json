@@ -67,21 +67,21 @@
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   },
-  "name": "grocery-lens",
+  "name": "@app/grocery-lens",
   "private": true,
   "scripts": {
     "build": "next build",
+    "codegen:db": "kysely-codegen --out-file src/db/types.ts",
+    "db:migrate:add": "kysely migrate:make",
+    "db:migrate:down": "kysely migrate down",
+    "db:migrate:latest": "kysely migrate latest",
+    "db:migrate:up": "kysely migrate up",
     "dev": "next dev",
     "graphql:codegen": "pnpm graphql:codegen:be && pnpm graphql:codegen:fe",
     "graphql:codegen:be": "graphql-codegen --config codegen-backend.ts",
     "graphql:codegen:fe": "graphql-codegen --config codegen-frontend.ts",
     "lint": "next lint",
-    "start": "next start",
-    "codegen:db": "kysely-codegen --out-file src/db/types.ts",
-    "db:migrate:add": "kysely migrate:make",
-    "db:migrate:up": "kysely migrate up",
-    "db:migrate:down": "kysely migrate down",
-    "db:migrate:latest": "kysely migrate latest"
+    "start": "next start"
   },
   "version": "0.1.0"
 }
