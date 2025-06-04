@@ -31,7 +31,7 @@ export const getBusArrival: QueryResolvers["getBusArrival"] = async (
   { code },
 ) => {
   const result = await callLTAApi<BusArrivalData>(
-    `https://datamall2.mytransport.sg/ltaodataservice/BusArrivalv2?BusStopCode=${code}`,
+    `https://datamall2.mytransport.sg/ltaodataservice/v3/BusArrival?BusStopCode=${code}`,
   );
   return result;
 };
